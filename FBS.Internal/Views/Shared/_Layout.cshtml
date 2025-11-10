@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html lang="vi" dir="ltr">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="keywords"
+		  content="ecommerce, store, mart, fashion, grocery, super store, market, organic food, super market">
+	<meta name="description" content="Best multipurpose ecommerce html template for your online store.">
+	<meta name="author" content="Maraviya Infotech">
+
+	<title>Mantu - eCommerce HTML Template.</title>
+
+	<!-- App favicon -->
+	<link rel="shortcut icon" href="~/theme/client/img/favicon/favicon.png">
+
+	<!-- Icon CSS -->
+	<link href="~/theme/client/css/vendor/materialdesignicons.min.css" rel="stylesheet">
+	<link href="~/theme/client/css/vendor/remixicon.css" rel="stylesheet">
+	<!-- Vendor -->
+	<link href="~/theme/client/css/vendor/bootstrap.min.css" rel="stylesheet">
+	<link href="~/theme/client/css/vendor/animate.min.css" rel="stylesheet">
+	<link href="~/theme/client/css/vendor/owl.carousel.min.css" rel="stylesheet">
+	<link href="~/theme/client/css/vendor/slick.min.css" rel="stylesheet">
+	<link href="~/theme/client/css/vendor/swiper-bundle.min.css" rel="stylesheet">
+	<link href="~/theme/client/css/vendor/nouislider.css" rel="stylesheet">
+
+	<link id="mainCss" href="~/theme/client/css/style.css" rel="stylesheet">
+</head>
+
+<body data-mn-mode="light">
+
+	<main class="wrapper sb-default">
+
+		<div id="mn-overlay">
+			<div class="loader">
+				<img src="~/theme/client/img/logo/loader.png" alt="loader">
+				<span class="shape"></span>
+			</div>
+		</div>
+
+		<!-- Sidebar -->
+		@Html.Partial("_Sidebar")
+
+		<!-- Header -->
+		@Html.Partial("_Header")
+
+		<!-- Main Content -->
+		<div class="mn-main-content">
+			@RenderBody()
+			
+		</div>
+
+		<!-- Footer -->
+		@Html.Partial("_Footer")
+
+		<!-- Quick view Modal -->
+		<div class="modal fade quickview-modal" id="quickview_modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<button type="button" class="qty-close" data-bs-dismiss="modal" aria-label="Close"
+							title="Close"></button>
+					<div class="modal-body">
+						<div class="row mb-minus-24">
+							<div class="col-md-5 col-sm-12 col-xs-12 mb-24">
+								<div class="single-pro-img single-pro-img-no-sidebar">
+									<div class="single-product-scroll">
+										<div class="single-slide-quickview owl-carousel">
+											<img class="img-responsive" src="~/theme/client/img/product/1.jpg"
+												 alt="product-img-1">
+											<img class="img-responsive" src="~/theme/client/img/product/2.jpg"
+												 alt="product-img-1">
+											<img class="img-responsive" src="~/theme/client/img/product/3.jpg"
+												 alt="product-img-1">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-7 col-sm-12 col-xs-12 mb-24">
+								<div class="quickview-pro-content">
+									<h5 class="mn-quick-title">
+										<a href="product-detail.html">
+											Best cotton fabric women's half sleeve
+											T-shirt white color.
+										</a>
+									</h5>
+									<div class="mn-pro-rating">
+										<i class="ri-star-fill"></i>
+										<i class="ri-star-fill"></i>
+										<i class="ri-star-fill"></i>
+										<i class="ri-star-fill"></i>
+										<i class="ri-star-fill grey"></i>
+									</div>
+									<div class="mn-quickview-desc">
+										Lorem Ipsum is simply dummy text of the printing and
+										typesetting industry. Lorem Ipsum has been the industry's standard dummy text
+										ever
+										since the 1900s.
+									</div>
+									<div class="mn-quickview-price">
+										<span class="new-price">$50.00</span>
+										<span class="old-price">$62.00</span>
+									</div>
+									<div class="mn-pro-variations">
+										<ul>
+											<li class="active">
+												<a href="javascript:void(0)" class="mn-opt-sz"
+												   data-tooltip="Small">s</a>
+											</li>
+											<li>
+												<a href="javascript:void(0)" class="mn-opt-sz"
+												   data-tooltip="Medium">m</a>
+											</li>
+											<li>
+												<a href="javascript:void(0)" class="mn-opt-sz"
+												   data-tooltip="Large">l</a>
+											</li>
+											<li>
+												<a href="javascript:void(0)" class="mn-opt-sz"
+												   data-tooltip="Extra Large">xl</a>
+											</li>
+										</ul>
+									</div>
+									<div class="mn-quickview-qty">
+										<div class="qty-plus-minus">
+											<input class="qty-input" type="text" name="mn-qtybtn" value="1">
+										</div>
+										<div class="mn-quickview-cart">
+											<a href="cart.html" class="mn-btn-1">
+												<span><i class="ri-shopping-bag-line"></i>Add To Cart</span>
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Search Sidebar -->
+		@Html.Partial("_SearchSidebar")
+
+		<!-- Cart sidebar Start -->
+		@Html.Partial("_CartSidebar")
+
+		<!-- Wishlist sidebar Start -->
+		@Html.Partial("_WishlistSidebar")
+	</main>
+
+	<!-- Vendor Custom -->
+	<script src="~/theme/client/js/vendor/jquery-3.7.1.min.js"></script>
+	<script src="~/theme/client/js/vendor/bootstrap.bundle.min.js"></script>
+	<script src="~/theme/client/js/vendor/owl.carousel.min.js"></script>
+	<script src="~/theme/client/js/vendor/slick.min.js"></script>
+	<script src="~/theme/client/js/vendor/swiper-bundle.min.js"></script>
+	<script src="~/theme/client/js/vendor/countdownTimer.js"></script>
+	<script src="~/theme/client/js/vendor/infiniteslidev2.js"></script>
+	<script src="~/theme/client/js/vendor/nouislider.js"></script>
+	<script src="~/theme/client/js/vendor/smoothscroll.min.js"></script>
+	<script src="~/theme/client/js/vendor/jquery.zoom.min.js"></script>
+
+	<script src="~/theme/client/js/main.js"></script>
+</body>
+
+</html>

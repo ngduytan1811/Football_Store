@@ -1,0 +1,52 @@
+﻿@using FBS.Application.DataTranferObjects.Auth
+@{
+
+    ViewData["Title"] = "Login";
+    Layout = "~/Areas/Admin/Views/Shared/_EmptyLayout.cshtml";
+}
+@model LoginDto
+
+<div class="row m-0">
+    <div class="col-12 p-0">
+        <div class="login-card">
+            <div>
+                <div><a class="logo" href="index.html"><img class="img-fluid for-light" src="~/theme/admin/images/logo/logo2.png" alt="looginpage"></a></div>
+                <div class="login-main">
+                    <form class="theme-form" asp-action="Login" method="post" novalidate>
+                       
+                        <h4 class="text-center">Đăng nhập</h4>
+                        <p class="text-center">Nhập tên tài khoản và mật khẩu để tiếp tục</p>
+                        <div class="alert alert-danger dark" asp-validation-summary="ModelOnly">
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Username" class="col-form-label required">Tài khoản</label>
+                            <input class="form-control" type="text" asp-for="Username" placeholder="example">
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Password" class="col-form-label required">Mật khẩu</label>
+                            <div class="form-input position-relative">
+                                <input class="form-control" type="password" asp-for="Password"
+                                       placeholder="*********">
+                                <div class="show-hide"><span class="show"></span></div>
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-0">
+                            <div class="checkbox p-0">
+                                <input id="checkbox1" type="checkbox">
+                                <label class="text-muted" for="checkbox1">Ghi nhớ đăng nhập</label>
+                            </div><a class="link" href="forget-password.html">Quên mật khẩu?</a>
+                            <div class="text-end mt-3">
+                                <button class="btn btn-primary btn-block w-100" type="submit">Đăng nhập</button>
+                            </div>
+                        </div>
+
+                        <p class="mt-4 mb-0 text-center">Nếu bạn chưa có tài khoản?<a class="ms-2" href="sign-up.html">Tạo tài khoản</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

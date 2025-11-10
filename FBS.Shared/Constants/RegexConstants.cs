@@ -1,0 +1,13 @@
+﻿// <copyright file= RegexConstants.cs company=Giang Nguyen>
+// Copyright (c) Giang Nguyen. All rights reserved.
+// </copyright>
+
+namespace FBS.Shared.Constants
+{
+    public static class RegexConstants
+    {
+        public const string EmailFormat = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+        public const string AlphaNumericFormat = "^[a-zA-Z0-9]*$";
+        public const string AlphaNumericOrSpecialCharactersFormat = "^[a-zA-Z0-9 !\\\\\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~]*$";
+    }
+}
