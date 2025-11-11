@@ -1,19 +1,13 @@
-﻿using AngleSharp.Io;
-using FBS.Application.DataTranferObjects.Auth;
-using FBS.Application.Services;
+﻿using FBS.Application.DataTranferObjects.Auth;
 using FBS.Infrastructure.Entities;
-using FBS.Shared.Constants;
-using FBS.Shared.DataTranferObjects.Base;
 using FootballShop.Areas.Admin.Controllers;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace FBS.Internal.Areas.Admin.Controllers
 {
+    [AllowAnonymous]
     public class AuthController : BaseAdminController
     {
         private readonly UserManager<User> _userManager;

@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewData["Title"] = "Danh mục";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="col-sm-12">
+    <div class="text-end mb-3">
+        <a asp-action="Create" asp-controller="Category" class="btn btn-primary">Thêm mới danh mục</a>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h4>Danh sách danh mục</h4>
+        </div>
+        <div class="card-block row">
+            <div class="col-sm-12 col-lg-12 col-xl-12">
+                <div class="table-responsive theme-scrollbar px-4">
+                    <table class="table table-hover table-lg">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Tên Danh mục</th>
+                                <th scope="col">Danh mục cha</th>
+                                <th scope="col">Trạng thái</th>
+                                <th scope="col">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr >
+                                <th scope="row">1</th>
+                                <td>Mark Jecno	</td>
+                                <td>22/08/2022	</td>
+                                <td class="font-danger">On leave	</td>
+                                <td>29/30</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">2</th>
+                                <td>Elana Robbert	</td>
+                                <td>21/08/2022	</td>
+                                <td class="font-success">Present</td>
+                                <td>30/30</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">3</th>
+                                <td>John Deo	</td>
+                                <td>18/08/2022</td>
+                                <td class="font-danger">On leave	</td>
+                                <td>28/30</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

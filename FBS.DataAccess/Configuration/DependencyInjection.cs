@@ -46,18 +46,6 @@ namespace FBS.Infrastructure.Configuration
 
             services.AddDbContext<FBSDbContext>(options =>
                options.UseMySql(connectionString, serverVersion, builder => builder.MigrationsAssembly("FBS.Infrastructure")));
-
-            services.AddIdentity<User, Role>(options =>
-            {
-                options.Password.RequireDigit = false;
-                options.Password.RequireLowercase = false;
-            }).AddEntityFrameworkStores<FBSDbContext>()
-                .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = "/Admin/Auth/Login";
-                options.AccessDeniedPath = "/Account/AccessDenied";
-            });
         }
 
         public static IServiceCollection InitialApplicationServices(
@@ -73,6 +61,18 @@ namespace FBS.Infrastructure.Configuration
             services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 
             RegisterCacheInterfaces(services, configuration);
+
+            services.AddIdentity<User, Role>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+            }).AddEntityFrameworkStores<FBSDbContext>()
+                .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Admin/Auth/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+            });
 
             return services;
         }

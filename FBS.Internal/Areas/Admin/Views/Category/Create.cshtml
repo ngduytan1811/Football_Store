@@ -1,0 +1,67 @@
+﻿@using FBS.Application.DataTranferObjects.Categories
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+@model CategorySaveDto
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header pb-0">
+                <h4>Thêm mới danh mục</h4>
+            </div>
+            <form class="form theme-form" asp-action="Create" enctype="multipart/form-data" asp-controller="Category" method="post" novalidate>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label class="form-label required" asp-for="Name">Tên danh mục</label>
+                                <input class="form-control" type="text" asp-for="Name" placeholder="Nhập tên danh mục">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label class="form-label" asp-for="ParentId">Danh mục cha</label>
+                                <select class="form-select digits" asp-for="ParentId">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label class="form-label" asp-for="Description">Tóm tắt</label>
+                                <input class="form-control" type="text" asp-for="Description" placeholder="Nhập tên danh mục">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label class="form-label" asp-for="Logo">Hình ảnh</label>
+                                <input class="form-control" type="file" asp-for="Logo" placeholder="Nhập tên danh mục">
+                            </div>
+                        </div>
+                    </div>
+
+                    
+                </div>
+                <div class="card-footer text-end">
+                    <button class="btn btn-primary" type="submit">Lưu</button>
+                    <a class="btn btn-light" asp-action="Index" asp-controller="Category">Quay lại </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

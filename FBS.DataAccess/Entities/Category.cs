@@ -9,16 +9,12 @@ namespace FBS.Infrastructure.Entities
     [Table("Categories")]
     public class Category : BaseModel
     {
-        public string? Code { get; set; }
-
         public string? Name { get; set; }
 
         public string? Description { get; set; }
 
         public string? Logo { get; set; }
 
-        public int? Order { get; set; }
-
-        public bool IsOutstanding { get; set; } = false;
+        public Guid? ParentId { get; set; }
     }
 }
