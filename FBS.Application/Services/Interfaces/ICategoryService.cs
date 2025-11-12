@@ -13,6 +13,8 @@ namespace FBS.Application.Services.Interfaces
     {
         Task<BaseTableResponse<CategoryDto>> GetCategories(BaseSearchDto<CategorySearchDto> dto);
 
+        Task<BaseResponse<List<CategoryDto>>> GetCategoryDropdown();
+
         Task<BaseResponse<CategoryDto>> FindById(Guid categoryId);
 
         Task<BaseResponse<string>> CreateCategory(CategorySaveDto dto);

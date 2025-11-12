@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var categoryDropdown = (List<CategoryDto>)ViewData["Categogries"];
 }
 @model CategorySaveDto
 
@@ -26,11 +27,13 @@
                             <div class="mb-3">
                                 <label class="form-label" asp-for="ParentId">Danh mục cha</label>
                                 <select class="form-select digits" asp-for="ParentId">
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
+                                    @if (categoryDropdown != null)
+                                    {
+                                        @foreach (var item in categoryDropdown)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    }
                                 </select>
                             </div>
                         </div>
@@ -53,7 +56,6 @@
                             </div>
                         </div>
                     </div>
-
                     
                 </div>
                 <div class="card-footer text-end">

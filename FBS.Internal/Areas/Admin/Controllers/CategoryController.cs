@@ -21,8 +21,10 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return View();
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var data = await _categoryService.GetCategoryDropdown();
+            ViewData["Categogries"] = data?.Data;
             return View();
         }
 

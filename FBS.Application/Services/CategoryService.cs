@@ -93,6 +93,24 @@ namespace FBS.Application.Services
             return result;
         }
 
+        public async Task<BaseResponse<List<CategoryDto>>> GetCategoryDropdown()
+        {
+            var result = new BaseResponse<List<CategoryDto>>();
+
+            var queryCategory = await _unitOfWork.GetRepositoryReadOnlyAsync<Category>().QueryAll();
+
+            result.Data = queryCategory.Where(x => x.IsActive).Select(x => new CategoryDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Description = x.Description,
+                Logo = x.Logo,
+                Status = x.Status,
+            }).ToList();
+
+            return result;
+        }
+
         public async Task<BaseResponse<string>> CreateCategory(CategorySaveDto dto)
         {
             var result = new BaseResponse<string>();
