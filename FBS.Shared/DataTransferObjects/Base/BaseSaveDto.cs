@@ -8,6 +8,7 @@ namespace FBS.Shared.DataTranferObjects.Base
 
     public class BaseSaveDto
     {
+        public Guid? Id { get; set; }
         public StatusEnum? Status { get; set; } = StatusEnum.Active;
     }
 }
