@@ -1,0 +1,376 @@
+﻿
+@{
+    ViewData["Title"] = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="mn-breadcrumb m-b-30">
+	<div class="row">
+		<div class="col-12">
+			<div class="row gi_breadcrumb_inner">
+				<div class="col-md-6 col-sm-12">
+					<h2 class="mn-breadcrumb-title">Chi tiết bài viết</h2>
+				</div>
+				<div class="col-md-6 col-sm-12">
+					<!-- mn-breadcrumb-list start -->
+					<ul class="mn-breadcrumb-list">
+						<li class="mn-breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+						<li class="mn-breadcrumb-item active">Chi tiết bài viết</li>
+					</ul>
+					<!-- mn-breadcrumb-list end -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row m-b-30">
+	<div class="mn-blogs-rightside col-lg-8 col-md-12">
+		<!-- Blog content Start -->
+		<div class="mn-blogs-content">
+			<div class="mn-blogs-inner">
+				<div class="mn-single-blog-item">
+					<div class="single-blog-info">
+						<figure class="blog-img">
+							<a href="blog-detail-right-sidebar.html#">
+								<img src="~/theme/client/img/blog/8.jpg"
+									 alt="news imag">
+							</a>
+						</figure>
+						<div class="single-blog-detail">
+							<label>June 30, 2026 - <a href="blog-detail-right-sidebar.html#">Fashion</a></label>
+							<h3>Marketing Guide: 5 Steps to Success.</h3>
+							<p class="mn-text">
+								"Lorem Ipsum is simply dummy text of the printing
+								and
+								typesetting industry. Lorem Ipsum has been the industry's
+								standard dummy
+								text ever since the 1500s, when an unknown printer took a galley
+								of type and
+								scrambled it to make a type specimen book. It has survived not
+								only five
+								centuries, but also the leap into electronic typesetting,
+								remaining
+								essentially unchanged. It was popularised in the 1960s with the
+								release of
+								Letraset sheets containing Lorem Ipsum passages, and more
+								recently with
+								desktop publishing software like Aldus PageMaker including
+								versions of Lorem
+								Ipsum.
+							</p>
+							<p class="mn-text-highlight">
+								The standard chunk of Lorem Ipsum used
+								since the
+								1500s is reproduced below for those interested. Sections 1.10.32
+								and 1.10.33
+								from "de Finibus Bonorum et Malorum" by Cicero.
+							</p>
+							<p>
+								Contrary to popular belief, Lorem Ipsum is not simply random
+								text. It has
+								roots in a piece of passages of Lorem Ipsum classical Latin
+								literature from
+								45 BC, making it over 2000 years old. Richard McClintock, a
+								Latin professor
+								at Hampden-Sydney College in Virginia
+							</p>
+							<div class="sub-img">
+								<div class="row">
+									<div class="col-md-6">
+										<img src="~/theme/client/img/blog/3.jpg" alt="blog">
+									</div>
+									<div class="col-md-6">
+										<img src="~/theme/client/img/blog/4.jpg" alt="blog">
+									</div>
+								</div>
+							</div>
+							<p>
+								It is a long established fact that a reader will be distracted by
+								the
+								readable content of a page distracted by the readable when
+								looking at its
+								layout. The point of using Lorem Ipsum is that it has a
+								more-or-less normal
+								distribution of letters, as opposed to using.
+							</p>
+							<p>
+								There are many variations of passages of Lorem Ipsum available,
+								but the
+								majority have suffered distracted by the readable alteration in
+								some form,
+								by injected humour.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Pagination Start -->
+			<div class="mn-pro-pagination">
+				<span>Showing 1-6 of 20 items</span>
+				<ul class="mn-pro-pagination-inner">
+					<li><a class="active" href="blog-detail-right-sidebar.html#">1</a></li>
+					<li><a href="blog-detail-right-sidebar.html#">2</a></li>
+					<li><a href="blog-detail-right-sidebar.html#">3</a></li>
+					<li><span>...</span></li>
+					<li><a href="blog-detail-right-sidebar.html#">8</a></li>
+					<li>
+						<a class="next" href="blog-detail-right-sidebar.html#">Next <i class="ri-arrow-right-double-line"></i></a>
+					</li>
+				</ul>
+			</div>
+			<!-- Pagination End -->
+			<!-- Comments Start -->
+			<div class="mn-blog-comments m-t-30">
+				<div class="mn-blog-cmt-preview">
+					<div class="mn-blog-comment-wrapper">
+						<h4 class="mn-blog-dmn-title">Comments : 05</h4>
+						<div class="mn-single-comment-wrapper mt-35">
+							<div class="mn-blog-user-img">
+								<img src="~/theme/client/img/user/1.jpg" alt="blog image">
+							</div>
+							<div class="mn-blog-comment-content">
+								<h5>John Deo</h5>
+								<span>October 14, 2025 </span>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+									do
+									eiusmod tempor incididunt ut labore et dolor magna aliqua.
+									Ut enim
+									ad minim veniam.
+								</p>
+								<div class="mn-blog-details-btn">
+									<a href="javascript:void(0)">Reply</a>
+								</div>
+							</div>
+						</div>
+						<div class="mn-single-comment-wrapper sub-cmt">
+							<div class="mn-blog-user-img">
+								<img src="~/theme/client/img/user/2.jpg" alt="blog image">
+							</div>
+							<div class="mn-blog-comment-content">
+								<h5>Jenifer lowes</h5>
+								<span>October 14, 2025 </span>
+								<p>
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
+									do
+									eiusmod tempor incididunt ut labore et dolor magna aliqua.
+									labore et
+									dolor magna aliqua.
+								</p>
+								<div class="mn-blog-details-btn">
+									<a href="javascript:void(0)">Reply</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="mn-blog-cmt-form">
+					<div class="mn-blog-reply-wrapper mt-50">
+						<h4 class="mn-blog-dmn-title">Leave A Reply</h4>
+						<form class="mn-blog-form" action="blog-detail-right-sidebar.html#">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="mn-leave-form">
+										<input type="text" placeholder="Full Name">
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="mn-leave-form">
+										<input type="email" placeholder="Email Address ">
+									</div>
+								</div>
+								<div class="col-md-12">
+									<div class="mn-text-leave">
+										<textarea placeholder="Message"></textarea>
+										<a href="blog-detail-right-sidebar.html#" class="mn-btn-2"><span>Submit</span></a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- Comments End -->
+		</div>
+	</div>
+
+	<!-- Sidebar Area Start -->
+	<div class="mn-blogs-sidebar mn-blogs-leftside col-lg-4 col-md-12 m-t-991">
+		<div class="mn-blog-search">
+			<form class="mn-blog-search-form" action="blog-detail-right-sidebar.html#">
+				<input class="form-control" placeholder="Search Our Blog" type="text">
+				<button class="submit" type="submit"><i class="ri-search-line"></i></button>
+			</form>
+		</div>
+		<div class="mn-blog-sidebar-wrap">
+			<!-- Sidebar Recent Blog Block -->
+			<div class="mn-sidebar-block mn-sidebar-recent-blog">
+				<div class="mn-sb-title">
+					<h3 class="mn-sidebar-title">Recent Articles</h3>
+				</div>
+				<div class="mn-blog-block-content mn-sidebar-dropdown">
+					<div class="mn-sidebar-block-item">
+						<div class="mn-sidebar-block-img">
+							<img src="~/theme/client/img/blog/6.jpg" alt="blog imag">
+						</div>
+						<div class="mn-sidebar-block-detial">
+							<h5 class="mn-blog-title">
+								<a href="blog-detail-right-sidebar.html">
+									The best
+									fashion influencers.
+								</a>
+							</h5>
+							<div class="mn-blog-date">February 10, 2025-2026</div>
+							<a href="blog-right-sidebar.html">- Organic</a>
+						</div>
+					</div>
+					<div class="mn-sidebar-block-item">
+						<div class="mn-sidebar-block-img">
+							<img src="~/theme/client/img/blog/5.jpg" alt="blog imag">
+						</div>
+						<div class="mn-sidebar-block-detial">
+							<h5 class="mn-blog-title">
+								<a href="blog-detail-right-sidebar.html">
+									Vogue
+									Shopping
+									Weekend.
+								</a>
+							</h5>
+							<div class="mn-blog-date">March 14, 2025-2026</div>
+							<a href="blog-right-sidebar.html">- Fruits</a>
+						</div>
+					</div>
+					<div class="mn-sidebar-block-item">
+						<div class="mn-sidebar-block-img">
+							<img src="~/theme/client/img/blog/4.jpg" alt="blog imag">
+						</div>
+						<div class="mn-sidebar-block-detial">
+							<h5 class="mn-blog-title">
+								<a href="blog-detail-right-sidebar.html">
+									Fashion
+									Market
+									Reveals Her Jacket.
+								</a>
+							</h5>
+							<div class="mn-blog-date">June 09, 2025-2026</div>
+							<a href="blog-right-sidebar.html">- Vegetables</a>
+						</div>
+					</div>
+					<div class="mn-sidebar-block-item">
+						<div class="mn-sidebar-block-img">
+							<img src="~/theme/client/img/blog/3.jpg" alt="blog imag">
+						</div>
+						<div class="mn-sidebar-block-detial">
+							<h5 class="mn-blog-title">
+								<a href="blog-detail-right-sidebar.html">
+									Summer
+									Trending Fashion Market.
+								</a>
+							</h5>
+							<div class="mn-blog-date">July 17, 2025-2026</div>
+							<a href="blog-right-sidebar.html">- Fastfood</a>
+						</div>
+					</div>
+					<div class="mn-sidebar-block-item">
+						<div class="mn-sidebar-block-img">
+							<img src="~/theme/client/img/blog/2.jpg" alt="blog imag">
+						</div>
+						<div class="mn-sidebar-block-detial">
+							<h5 class="mn-blog-title">
+								<a href="blog-detail-right-sidebar.html">
+									Winter 2025
+									Trending Fashion Market.
+								</a>
+							</h5>
+							<div class="mn-blog-date">August 02, 2025-2026</div>
+							<a href="blog-right-sidebar.html">- Vegetables</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Sidebar Recent Blog Block -->
+			<!-- Sidebar Category Block -->
+			<div class="mn-sidebar-block">
+				<div class="mn-sb-title">
+					<h3 class="mn-sidebar-title">Categories</h3>
+				</div>
+				<div class="mn-blog-block-content mn-sidebar-dropdown">
+					<ul>
+						<li>
+							<div class="mn-sidebar-block-item">
+								<input type="checkbox" checked> <a href="javascript:void(0)">
+									Dairy &
+									Milk<span title="Products">- 68</span>
+								</a><span class="checked"></span>
+							</div>
+						</li>
+						<li>
+							<div class="mn-sidebar-block-item">
+								<input type="checkbox"> <a href="javascript:void(0)">
+									Seafood<span title="Products">
+										-
+										58
+									</span>
+								</a><span class="checked"></span>
+							</div>
+						</li>
+						<li>
+							<div class="mn-sidebar-block-item">
+								<input type="checkbox"> <a href="javascript:void(0)">
+									Bakery<span title="Products">- 84</span>
+								</a><span class="checked"></span>
+							</div>
+						</li>
+						<li>
+							<div class="mn-sidebar-block-item">
+								<input type="checkbox"> <a href="javascript:void(0)">
+									cosmetics<span title="Products">
+										-
+										63
+									</span>
+								</a><span class="checked"></span>
+							</div>
+						</li>
+						<li>
+							<div class="mn-sidebar-block-item">
+								<input type="checkbox"> <a href="javascript:void(0)">
+									electrics<span title="Products">
+										-
+										75
+									</span>
+								</a><span class="checked"></span>
+							</div>
+						</li>
+						<li>
+							<div class="mn-sidebar-block-item">
+								<input type="checkbox"> <a href="javascript:void(0)">
+									phones<span title="Products">- 26</span>
+								</a><span class="checked"></span>
+							</div>
+						</li>
+						<li>
+							<div class="mn-sidebar-block-item">
+								<input type="checkbox"> <a href="javascript:void(0)">
+									Clothes<span title="Products">
+										-
+										39
+									</span>
+								</a><span class="checked"></span>
+							</div>
+						</li>
+						<li>
+							<div class="mn-sidebar-block-item">
+								<input type="checkbox"> <a href="javascript:void(0)">
+									Watch<span title="Products">- 48</span>
+								</a><span class="checked"></span>
+							</div>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+			<!-- Sidebar Category Block -->
+		</div>
+	</div>
+</div>
+

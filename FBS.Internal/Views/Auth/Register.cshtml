@@ -1,0 +1,72 @@
+﻿
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="mn-breadcrumb m-b-30">
+	<div class="row">
+		<div class="col-12">
+			<div class="row gi_breadcrumb_inner">
+				<div class="col-md-6 col-sm-12">
+					<h2 class="mn-breadcrumb-title">Đăng ký</h2>
+				</div>
+				<div class="col-md-6 col-sm-12">
+					<ul class="mn-breadcrumb-list">
+						<li class="mn-breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
+						<li class="mn-breadcrumb-item active">Đăng ký</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<section class="mn-register p-b-15">
+	<div class="mn-title d-none">
+		<h2>Register<span></span></h2>
+		<p>Best place to buy and sell digital products.</p>
+	</div>
+	<div class="row">
+		<div class="mn-register-wrapper">
+			<div class="mn-register-container">
+				<div class="mn-register-form">
+					<form action="register.html#" method="post">
+						<span class="mn-register-wrap">
+							<label>Tài khoản*</label>
+							<input type="text" name="address" placeholder="Nhập tên tài khoản...">
+						</span>
+						<span class="mn-register-wrap mn-register-half">
+							<label>Họ*</label>
+							<input type="text" name="firstname" placeholder="Nhập họ..."
+								   required>
+						</span>
+						<span class="mn-register-wrap mn-register-half">
+							<label>Tên*</label>
+							<input type="text" name="lastname" placeholder="Nhập tên...">
+						</span>
+						<span class="mn-register-wrap mn-register-half">
+							<label>Email*</label>
+							<input type="email" name="email" placeholder="Nhập địa chỉ email...">
+						</span>
+						<span class="mn-register-wrap mn-register-half">
+							<label>Số điện thoại*</label>
+							<input type="text" name="phonenumber" placeholder="Nhập số điện thoại..."
+								   required>
+						</span>
+						<span class="mn-register-wrap">
+							<label>Địa chỉ</label>
+							<input type="text" name="address" placeholder="Nhập địa chỉ...">
+						</span>
+						
+						<span class="mn-register-wrap mn-register-btn">
+							<span>Nếu đã có tài khoản?<a asp-action="Login" asp-controller="Auth">Đăng nhập</a></span>
+							<button class="mn-btn-1" type="submit"><span>Đăng ký</span></button>
+						</span>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+

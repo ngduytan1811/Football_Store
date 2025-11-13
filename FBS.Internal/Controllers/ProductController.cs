@@ -2,14 +2,14 @@
 
 namespace FBS.Internal.Controllers
 {
-    public class AuthController : Controller
+    public class ProductController : Controller
     {
-        public IActionResult Login()
+        public IActionResult List()
         {
             return View();
         }
 
-        public IActionResult Register()
+        public IActionResult Detail(string productId)
         {
             return View();
         }

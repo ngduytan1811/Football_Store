@@ -7,7 +7,7 @@
                         <span class="inner-ring"></span>
                     </span>
                 </a>
-                <a href="index.html" class="logo"><img src="~/theme/client/img/logo/logo.png" alt="logo"></a>
+                <a asp-controller="Home" asp-action="Index" class="logo"><img src="~/theme/client/img/logo/logo.png" alt="logo"></a>
                 <a href="javascript:void(0)" class="mn-toggle-menu">
                     <div class="header-icon">
                         <i class="ri-menu-3-fill"></i>
@@ -36,25 +36,25 @@
                                                             <a href="javascript:void(0)">Classic</a>
                                                         </li>
                                                         <li>
-                                                            <a href="shop-right-sidebar.html">
+                                                            <a asp-action="List" asp-controller="Product">
                                                                 Shop Right
                                                                 sidebar
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="shop-banner-right-sidebar.html">
+                                                            <a asp-action="List" asp-controller="Product">
                                                                 Banner
                                                                 Right sidebar
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="shop-full-width.html">
+                                                            <a asp-action="List" asp-controller="Product">
                                                                 Shop Full
                                                                 Width
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="shop-banner-full-width.html">
+                                                            <a asp-action="List" asp-controller="Product">
                                                                 Banner Full
                                                                 Width
                                                             </a>
@@ -65,25 +65,25 @@
                                                             <a href="javascript:void(0)">List</a>
                                                         </li>
                                                         <li>
-                                                            <a href="shop-list-right-sidebar.html">
+                                                            <a asp-action="List" asp-controller="Product">
                                                                 Shop Right
                                                                 sidebar
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="shop-list-banner-right-sidebar.html">
+                                                            <a asp-action="List" asp-controller="Product">
                                                                 Banner
                                                                 Right sidebar
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="shop-list-full-width.html">
+                                                            <a asp-action="List" asp-controller="Product">
                                                                 Shop
                                                                 Full Width
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="shop-list-banner-full-width.html">
+                                                            <a asp-action="List" asp-controller="Product">
                                                                 Banner
                                                                 Full Width
                                                             </a>
@@ -93,15 +93,15 @@
                                             </ul>
                                         </li>
                                         <li class="non-drop">
-                                            <a asp-controller="Home" asp-action="Index">Bài viết</a>
+                                            <a asp-controller="Blog" asp-action="Index">Bài viết</a>
                                         </li>
 
                                         <li class="non-drop">
-                                            <a asp-controller="Home" asp-action="Index">Thông tin</a>
+                                            <a asp-controller="Home" asp-action="About">Thông tin</a>
                                         </li>
 
                                         <li class="non-drop">
-                                            <a asp-controller="Home" asp-action="Index">Liên hệ</a>
+                                            <a asp-controller="Home" asp-action="Contact">Liên hệ</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -128,25 +128,25 @@
                                             <a href="javascript:void(0)">Classic</a>
                                             <ul class="sub-menu">
                                                 <li>
-                                                    <a href="shop-right-sidebar.html">
+                                                    <a asp-action="List" asp-controller="Product">
                                                         Shop Right
                                                         sidebar
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="shop-banner-right-sidebar.html">
+                                                    <a asp-action="List" asp-controller="Product">
                                                         Banner
                                                         Right sidebar
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="shop-full-width.html">
+                                                    <a asp-action="List" asp-controller="Product">
                                                         Shop Full
                                                         Width
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="shop-banner-full-width.html">
+                                                    <a asp-action="List" asp-controller="Product">
                                                         Banner Full
                                                         Width
                                                     </a>
@@ -157,25 +157,25 @@
                                             <a href="javascript:void(0)">List</a>
                                             <ul class="sub-menu">
                                                 <li>
-                                                    <a href="shop-list-right-sidebar.html">
+                                                    <a asp-action="List" asp-controller="Product">
                                                         Shop Right
                                                         sidebar
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="shop-list-banner-right-sidebar.html">
+                                                    <a asp-action="List" asp-controller="Product">
                                                         Banner
                                                         Right sidebar
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="shop-list-full-width.html">
+                                                    <a asp-action="List" asp-controller="Product">
                                                         Shop
                                                         Full Width
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="shop-list-banner-full-width.html">
+                                                    <a asp-action="List" asp-controller="Product">
                                                         Banner
                                                         Full Width
                                                     </a>
@@ -185,13 +185,13 @@
                                     </ul>
                                 </li>
                                 <li>
-                                    <a asp-controller="Home" asp-action="Index">Bài viết</a>
+                                    <a asp-controller="Blog" asp-action="Index">Bài viết</a>
                                 </li>
                                 <li>
-                                    <a asp-controller="Home" asp-action="Index">Thông tin</a>
+                                    <a asp-controller="Home" asp-action="About">Thông tin</a>
                                 </li>
                                 <li>
-                                    <a asp-controller="Home" asp-action="Index">Liên hệ</a>
+                                    <a asp-controller="Home" asp-action="Contact">Liên hệ</a>
                                 </li>
                             </ul>
                         </div>
@@ -201,16 +201,16 @@
                                 <div class="header-top-social">
                                     <ul class="mb-0">
                                         <li class="list-inline-item">
-                                            <a href="index.html#"><i class="ri-facebook-fill"></i></a>
+                                            <a asp-controller="Home" asp-action="Index"><i class="ri-facebook-fill"></i></a>
                                         </li>
                                         <li class="list-inline-item">
-                                            <a href="index.html#"><i class="ri-twitter-fill"></i></a>
+                                            <a asp-controller="Home" asp-action="Index"><i class="ri-twitter-fill"></i></a>
                                         </li>
                                         <li class="list-inline-item">
-                                            <a href="index.html#"><i class="ri-instagram-line"></i></a>
+                                            <a asp-controller="Home" asp-action="Index"><i class="ri-instagram-line"></i></a>
                                         </li>
                                         <li class="list-inline-item">
-                                            <a href="index.html#"><i class="ri-linkedin-fill"></i></a>
+                                            <a asp-controller="Home" asp-action="Index"><i class="ri-linkedin-fill"></i></a>
                                         </li>
                                     </ul>
                                 </div>
@@ -228,8 +228,8 @@
                             <g>
                             <path d="M606.209 578.714 448.198 423.228C489.576 378.272 515 318.817 515 253.393 514.98 113.439 399.704 0 257.493 0S.006 113.439.006 253.393s115.276 253.393 257.487 253.393c61.445 0 117.801-21.253 162.068-56.586l158.624 156.099c7.729 7.614 20.277 7.614 28.006 0a19.291 19.291 0 0 0 .018-27.585zM257.493 467.8c-120.326 0-217.869-95.993-217.869-214.407S137.167 38.986 257.493 38.986c120.327 0 217.869 95.993 217.869 214.407S377.82 467.8 257.493 467.8z"
                                   fill="#000000" opacity="1" data-original="#000000"></path>
-          </g>
-         </svg>
+                            </g>
+                         </svg>
                         </a>
                     </div>
                     <div class="mn-tool-user">
@@ -242,13 +242,13 @@
                         </a>
                         <ul class="sub-menu">
                             <li>
-                                <a href="login.html">Đăng nhập</a>
+                                <a asp-action="Login" asp-controller="Auth">Đăng nhập</a>
                             </li>
                             <li>
-                                <a href="register.html">Đăng ký</a>
+                                <a asp-action="Register" asp-controller="Auth">Đăng ký</a>
                             </li>
                             <li>
-                                <a href="checkout.html">Đơn hàng</a>
+                                <a asp-action="Index" asp-controller="Cart">Đơn hàng</a>
                             </li>
                         </ul>
                     </div>
@@ -261,8 +261,8 @@
                             <g>
                             <path d="M474.644 74.27C449.391 45.616 414.358 29.836 376 29.836c-53.948 0-88.103 32.22-107.255 59.25-4.969 7.014-9.196 14.047-12.745 20.665-3.549-6.618-7.775-13.651-12.745-20.665-19.152-27.03-53.307-59.25-107.255-59.25-38.358 0-73.391 15.781-98.645 44.435C13.267 101.605 0 138.213 0 177.351c0 42.603 16.633 82.228 52.345 124.7 31.917 37.96 77.834 77.088 131.005 122.397 19.813 16.884 40.302 34.344 62.115 53.429l.655.574c2.828 2.476 6.354 3.713 9.88 3.713s7.052-1.238 9.88-3.713l.655-.574c21.813-19.085 42.302-36.544 62.118-53.431 53.168-45.306 99.085-84.434 131.002-122.395C495.367 259.578 512 219.954 512 177.351c0-39.138-13.267-75.746-37.356-103.081zM309.193 401.614c-17.08 14.554-34.658 29.533-53.193 45.646-18.534-16.111-36.113-31.091-53.196-45.648C98.745 312.939 30 254.358 30 177.351c0-31.83 10.605-61.394 29.862-83.245C79.34 72.007 106.379 59.836 136 59.836c41.129 0 67.716 25.338 82.776 46.594 13.509 19.064 20.558 38.282 22.962 45.659a15 15 0 0 0 28.524 0c2.404-7.377 9.453-26.595 22.962-45.66 15.06-21.255 41.647-46.593 82.776-46.593 29.621 0 56.66 12.171 76.137 34.27C471.395 115.957 482 145.521 482 177.351c0 77.007-68.745 135.588-172.807 224.263z"
                                   fill="#000000" opacity="1" data-original="#000000"></path>
-          </g>
-         </svg>
+                             </g>
+                            </svg>
                         </a>
                     </div>
                     <div class="mn-tool-cart">
