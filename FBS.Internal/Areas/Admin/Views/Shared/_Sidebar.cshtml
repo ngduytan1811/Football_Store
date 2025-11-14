@@ -23,9 +23,16 @@
                     <hr>
                     <li class="sidebar-list">
                         <i class="fa fa-thumb-tack"></i>
-                        <a class="sidebar-link sidebar-title link-nav" asp-action="Index" asp-controller="Home">
-                            <i data-feather="git-pull-request"> </i>
+                        <a class="sidebar-link sidebar-title link-nav" asp-action="Index" asp-controller="Dashboard">
+                            <i data-feather="home"> </i>
                             <span>Trang chủ</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-list">
+                        <i class="fa fa-thumb-tack"></i>
+                        <a class="sidebar-link sidebar-title link-nav" asp-action="Index" asp-controller="Order">
+                            <i data-feather="shopping-bag"> </i>
+                            <span>Đơn hàng</span>
                         </a>
                     </li>
                     <li class="sidebar-list">
@@ -36,17 +43,24 @@
                         </ul>
                     </li>
                     <li class="sidebar-list">
-                        <i class="fa fa-thumb-tack"></i><a class="sidebar-link sidebar-title" href="javascript:void(0)"><i data-feather="shopping-bag"></i><span>Bài viết</span></a>
-                        <ul class="sidebar-submenu">
-                            <li><a asp-controller="Blog" asp-action="Index">Bài viết</a></li>
-                            <li><a href="product-page.html">Sản phẩm</a></li>
-                        </ul>
+                        <i class="fa fa-thumb-tack"></i>
+                        <a class="sidebar-link sidebar-title link-nav" asp-action="Index" asp-controller="Blog">
+                            <i data-feather="clipboard"> </i>
+                            <span>Bài viết</span>
+                        </a>
                     </li>
                     <li class="sidebar-list">
                         <i class="fa fa-thumb-tack"></i>
                         <a class="sidebar-link sidebar-title link-nav" asp-action="Index" asp-controller="User">
                             <i data-feather="user"> </i>
                             <span>Tài khoản</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-list">
+                        <i class="fa fa-thumb-tack"></i>
+                        <a class="sidebar-link sidebar-title link-nav" asp-action="Index" asp-controller="Contact">
+                            <i data-feather="phone"></i>
+                            <span>Liên hệ</span>
                         </a>
                     </li>
                 </ul>
