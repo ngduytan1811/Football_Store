@@ -17,11 +17,12 @@
     <link rel="stylesheet" type="text/css" href="~/theme/admin/css/vendors/feather-icon.css">
     <link rel="stylesheet" type="text/css" href="~/theme/admin/css/vendors/scrollbar.css">
     <link rel="stylesheet" type="text/css" href="~/theme/admin/css/vendors/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="~/theme/admin/css/vendors/dropzone.css">
     <link rel="stylesheet" type="text/css" href="~/theme/admin/css/style.css">
     <link id="color" rel="stylesheet" href="~/theme/admin/css/color-1.css" media="screen">
     <link rel="stylesheet" type="text/css" href="~/theme/admin/css/responsive.css">
 </head>
-<body >
+<body>
     <div class="tap-top"><i data-feather="chevrons-up"></i></div>
     <div class="loader-wrapper">
         <div class="dot"></div>
@@ -31,14 +32,11 @@
         <div class="dot"></div>
     </div>
     <div class="page-wrapper compact-wrapper" id="pageWrapper">
-       @Html.Partial("_Header")
+        @Html.Partial("_Header")
         <div class="page-body-wrapper">
             @Html.Partial("_Sidebar")
             <div class="page-body">
-                @Html.Partial("_PageTitle")
-                <div class="container-fluid dashboard-default">
-                   @RenderBody()
-                </div>
+                @RenderBody()
             </div>
             @Html.Partial("_Footer")
         </div>

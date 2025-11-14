@@ -1,3 +1,5 @@
+using FBS.Application.Services;
+using FBS.Application.Services.Interfaces;
 using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories;
 using FBS.Infrastructure.Repositories.Interfaces;
@@ -6,17 +8,24 @@ using FootballShop.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace FootballShop.Controllers
 {
     public class HomeController : BaseController
     {
-        public HomeController(UserManager<User> userManager, IUnitOfWork unitOfWork) : base(userManager, unitOfWork)
+        private readonly IProductService _productService;
+
+        public HomeController(UserManager<User> userManager, IUnitOfWork unitOfWork, IProductService productService) : base(userManager, unitOfWork)
         {
+            _productService = productService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var randomProducts = await _productService.GetRandomProducts();
+            ViewData["RandomProducts"] = randomProducts;
+
             return View();
         }
 

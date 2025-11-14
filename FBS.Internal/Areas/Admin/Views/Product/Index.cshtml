@@ -1,19 +1,15 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-}
-
+﻿@using FBS.API.Responses.Base
+@using FBS.Application.DataTranferObjects.Products
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var products = (BaseTableResponse<ProductDto>)ViewData["Products"];
 }
-
 
 <div class="container-fluid basic_table">
     <div class="text-end mb-3">
-        <a asp-action="Create" asp-controller="Category" class="btn btn-primary">Thêm mới sản phẩm</a>
+        <a asp-action="Create" asp-controller="Product" class="btn btn-primary">Thêm mới sản phẩm</a>
     </div>
     <div class="row">
         <div class="col-sm-12">
@@ -22,61 +18,34 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">Id</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Signal Name	</th>
-                                <th scope="col">Security</th>
-                                <th scope="col">Stage</th>
-                                <th scope="col">Schedule</th>
-                                <th scope="col">Team Lead</th>
+                                <th scope="col">#</th>
+                                <th scope="col">Tên sản phẩm</th>
+                                <th scope="col">Danh mục</th>
+                                <th scope="col">Đơn giá</th>
+                                <th scope="col">Kích thước</th>
+                                <th scope="col">Màu</th>
+                                <th scope="col">Trạng thái</th>
+                                <th scope="col">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td class="d-flex align-items-center"><i class="bg-light-success font-success" data-feather="alert-triangle"></i><span class="font-success">No Signal</span></td>
-                                <td>Astrid: NE Shared managed</td>
-                                <td>Medium</td>
-                                <td>Triaged</td>
-                                <td>0.33	</td>
-                                <td>Chase Nguyen	</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td class="d-flex align-items-center"><i class="bg-light-danger font-danger" data-feather="alert-triangle"></i><span class="font-danger">Offline</span></td>
-                                <td>Cosmo: prod shared ares	</td>
-                                <td>Huge</td>
-                                <td>Triaged</td>
-                                <td>0.39</td>
-                                <td>Brie Furman</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td class="d-flex align-items-center"> <i class="bg-light-primary font-primary" data-feather="alert-circle"></i><span class="font-primary">Online</span></td>
-                                <td>Phoenix: prod shared lyra-lists	</td>
-                                <td>Minor</td>
-                                <td>No Triaged</td>
-                                <td>3.12	</td>
-                                <td>Jeremy Lake</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">4</th>
-                                <td class="d-flex align-items-center"> <i class="bg-light-success font-success" data-feather="check-circle"></i><span class="font-success">No Signal</span></td>
-                                <td>Astrid: NE Shared managed</td>
-                                <td>Negligible</td>
-                                <td>Triaged</td>
-                                <td>13.18</td>
-                                <td>Angelica Howards</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">5</th>
-                                <td class="d-flex align-items-center"> <i class="bg-light-danger font-danger" data-feather="check-circle"></i><span class="font-danger">Online</span></td>
-                                <td>Astrid: NE Shared managed</td>
-                                <td>Medium</td>
-                                <td>No Triaged</td>
-                                <td>5.33		</td>
-                                <td>Diane Okuma</td>
-                            </tr>
+                            @foreach(var product in products.Items)
+                            {
+                                <tr>
+                                    <th scope="row">@product.Index</th>
+                                    <td>@product.Name</td>
+                                    <td>@(product.CategoryName ?? "--")</td>
+                                    <td>@(product.Price.HasValue? product.PriceString: "--")</td>
+                                    <td>@product.Size</td>
+                                    <td>@product.Color</td>
+                                    <td>@product.StatusName</td>
+                                    <td>
+                                        <a class="text-primary" asp-action="Edit" asp-controller="Product" asp-route-id="@product.Id">
+                                            <i data-feather="edit-2"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>

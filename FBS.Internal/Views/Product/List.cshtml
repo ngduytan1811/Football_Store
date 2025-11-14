@@ -1,7 +1,10 @@
-﻿
+﻿@using FBS.API.Responses.Base
+@using FBS.Application.DataTranferObjects.Products
+
 @{
-    ViewData["Title"] = "List";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "List";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	var products = (BaseTableResponse<ProductDto>)ViewData["Products"];
 }
 
 <div class="mn-breadcrumb m-b-30">
@@ -89,1079 +92,112 @@
 					<div class="shop-pro-content">
 						<div class="shop-pro-inner">
 							<div class="row">
-								<div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
-									<div class="mn-product-card">
-										<div class="mn-product-img">
-											<div class="lbl">
-												<span class="new">new</span>
-											</div>
-											<div class="mn-img">
-												<a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-													<img class="main-img" src="~/theme/client/img/product/17.jpg"
-														 alt="product">
-													<img class="hover-img" src="~/theme/client/img/product/18.jpg"
-														 alt="product">
-												</a>
-												<div class="mn-pro-loader"></div>
-												<div class="mn-options">
-													<ul>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Quick View"
-															   data-link-action="quickview"
-															   data-bs-toggle="modal"
-															   data-bs-target="#quickview_modal">
-																<i class="ri-eye-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Compare" class="mn-compare">
-																<i class="ri-repeat-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Add To Cart" class="mn-add-cart">
-																<i class="ri-shopping-cart-line"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-										<div class="mn-product-detail">
-											<div class="cat">
-												<a href="shop-right-sidebar.html">T-shirt</a>
-												<ul>
-													<li>s</li>
-													<li>m</li>
-													<li>xl</li>
-												</ul>
-											</div>
-											<h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">Cotton fabric T-shirt</a></h5>
-											<p class="mn-info">
+								@foreach (var product in products.Items)
+								{
+									<div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
+										<div class="mn-product-card">
+											<div class="mn-product-img">
 												
-											</p>
-											<div class="mn-price">
-												<div class="mn-price-new">$120</div>
-												<div class="mn-price-old">$130</div>
-											</div>
-											<div class="mn-pro-option">
-												<div class="mn-pro-color">
-													<ul class="mn-opt-swatch mn-change-img">
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/19.jpg"
-															   data-src-hover="~/theme/client/img/product/20.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#de8abc;"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/21.jpg"
-															   data-src-hover="~/theme/client/img/product/22.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#5e68ce;"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/17.jpg"
-															   data-src-hover="~/theme/client/img/product/18.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#eee;"></span>
-															</a>
-														</li>
-													</ul>
+												<div class="mn-img">
+													<a asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id" class="image">
+														<img class="main-img" src="~/theme/client/img/product/17.jpg"
+															 alt="product">
+														<img class="hover-img" src="~/theme/client/img/product/18.jpg"
+															 alt="product">
+													</a>
+													<div class="mn-pro-loader"></div>
+													<div class="mn-options">
+														<ul>
+															<li>
+																<a href="javascript:void(0)" data-tooltip
+																   title="Xem nhanh"
+																   data-link-action="quickview"
+																   data-bs-toggle="modal"
+																   data-bs-target="#quickview_modal">
+																	<i class="ri-eye-line"></i>
+																</a>
+															</li>
+															
+															<li>
+																<a href="javascript:void(0)" data-tooltip
+																   title="Thêm giỏ hàng" class="mn-add-cart">
+																	
+																	<form asp-action="AddToCart" asp-controller="Cart" method="post">
+																		<input type="hidden" name="ProductId" value="@product.Id" />
+																		<input type="hidden" name="Quantity" value="1" />
+																		<button style="border:none;background-color:transparent" type="submit">
+																			<i class="ri-shopping-cart-line"></i>
+																		</button>
+																	</form>
+																</a>
+															</li>
+														</ul>
+													</div>
 												</div>
-												<a href="javascript:void(0);" class="mn-wishlist"
-												   data-tooltip title="Wishlist">
-													<i class="ri-heart-line"></i>
-												</a>
 											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
-									<div class="mn-product-card">
-										<div class="mn-product-img">
-											<div class="lbl">
-												<span class="sale">Sale</span>
-											</div>
-											<div class="mn-img">
-												<a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-													<img class="main-img" src="~/theme/client/img/product/39.jpg"
-														 alt="product">
-													<img class="hover-img" src="~/theme/client/img/product/40.jpg"
-														 alt="product">
-												</a>
-												<div class="mn-pro-loader"></div>
-												<div class="mn-options">
+											<div class="mn-product-detail">
+												<div class="cat">
+													<a href="shop-right-sidebar.html">@product.CategoryName</a>
 													<ul>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Quick View"
-															   data-link-action="quickview"
-															   data-bs-toggle="modal"
-															   data-bs-target="#quickview_modal">
-																<i class="ri-eye-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Compare" class="mn-compare">
-																<i class="ri-repeat-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Add To Cart" class="mn-add-cart">
-																<i class="ri-shopping-cart-line"></i>
-															</a>
-														</li>
+														<li>Size: @product.Size</li>
 													</ul>
 												</div>
-											</div>
-										</div>
-										<div class="mn-product-detail">
-											<div class="cat">
-												<a href="shop-right-sidebar.html">T-shirt</a>
-												<ul>
-													<li>s</li>
-													<li>l</li>
-												</ul>
-											</div>
-											<h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">Leather purse</a></h5>
-											<p class="mn-info">
-												Lorem Ipsum is simply dummy text of the
-												printing and typesetting industry. Lorem Ipsum has been the
-												industry's standard dummy text ever since the 1500s.
-											</p>
-											<div class="mn-price">
-												<div class="mn-price-new">$90</div>
-												<div class="mn-price-old">$95</div>
-											</div>
-											<div class="mn-pro-option">
-												<div class="mn-pro-color">
-													<ul class="mn-opt-swatch mn-change-img">
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/39.jpg"
-															   data-src-hover="~/theme/client/img/product/39.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#cfa394;"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/40.jpg"
-															   data-src-hover="~/theme/client/img/product/40.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#705a82;"></span>
-															</a>
-														</li>
-													</ul>
+												<h5><a asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id">
+													@product.Name
+												</a></h5>
+												<p class="mn-info">
+
+												</p>
+												<div class="mn-price">
+													<div class="mn-price-new">@product.PriceString</div>
+													<div class="mn-price-old">@product.PriceString</div>
 												</div>
-												<a href="javascript:void(0);" class="mn-wishlist"
-												   data-tooltip title="Wishlist">
-													<i class="ri-heart-line"></i>
-												</a>
+												<div class="mn-pro-option">
+													<div class="mn-pro-color">
+														<ul class="mn-opt-swatch mn-change-img">
+															<li>
+																<a asp-controller="Product" asp-action="List" class="mn-opt-clr-img"
+																   data-src="../../theme/client/img/product/19.jpg"
+																   data-src-hover="../../theme/client/img/product/20.jpg"
+																   data-tooltip="Orange">
+																	<span style="background-color:#de8abc;"></span>
+																</a>
+															</li>
+															<li>
+																<a asp-controller="Product" asp-action="List" class="mn-opt-clr-img"
+																   data-src="../../theme/client/img/product/21.jpg"
+																   data-src-hover="../../theme/client/img/product/22.jpg"
+																   data-tooltip="Orange">
+																	<span style="background-color:#5e68ce;"></span>
+																</a>
+															</li>
+															<li>
+																<a asp-controller="Product" asp-action="List" class="mn-opt-clr-img"
+																   data-src="../../theme/client/img/product/17.jpg"
+																   data-src-hover="../../theme/client/img/product/18.jpg"
+																   data-tooltip="Orange">
+																	<span style="background-color:#eee;"></span>
+																</a>
+															</li>
+														</ul>
+													</div>
+													
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
-									<div class="mn-product-card">
-										<div class="mn-product-img">
-											<div class="lbl">
-												<span class="trending">trending</span>
-											</div>
-											<div class="mn-img">
-												<a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-													<img class="main-img" src="~/theme/client/img/product/5.jpg"
-														 alt="product">
-													<img class="hover-img" src="~/theme/client/img/product/6.jpg"
-														 alt="product">
-												</a>
-												<div class="mn-pro-loader"></div>
-												<div class="mn-options">
-													<ul>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Quick View"
-															   data-link-action="quickview"
-															   data-bs-toggle="modal"
-															   data-bs-target="#quickview_modal">
-																<i class="ri-eye-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Compare" class="mn-compare">
-																<i class="ri-repeat-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Add To Cart" class="mn-add-cart">
-																<i class="ri-shopping-cart-line"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-										<div class="mn-product-detail">
-											<div class="cat">
-												<a href="shop-right-sidebar.html">T-shirt</a>
-												<ul>
-													<li>s</li>
-													<li>m</li>
-													<li>xl</li>
-												</ul>
-											</div>
-											<h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">Cotton fabric T-shirt</a></h5>
-											<p class="mn-info">
-												Lorem Ipsum is simply dummy text of the
-												printing and typesetting industry. Lorem Ipsum has been the
-												industry's standard dummy text ever since the 1500s.
-											</p>
-											<div class="mn-price">
-												<div class="mn-price-new">$120</div>
-												<div class="mn-price-old">$130</div>
-											</div>
-											<div class="mn-pro-option">
-												<div class="mn-pro-color">
-													<ul class="mn-opt-swatch mn-change-img">
-														<li class="active">
-															<a asp-controller="Product" asp-action="List" 
-															   class="mn-opt-clr-img active"
-															   data-src="~/theme/client/img/product/5.jpg"
-															   data-src-hover="~/theme/client/img/product/5.jpg"
-															   data-tooltip="Gray">
-																<span style="background-image:url('../../theme/client/img/product/bg/5.jpg');"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/6.jpg"
-															   data-src-hover="~/theme/client/img/product/6.jpg"
-															   data-tooltip="Orange">
-																<span style="background-image:url('../../theme/client/img/product/bg/6.jpg');"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/7.jpg"
-															   data-src-hover="~/theme/client/img/product/7.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#e97e70;"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/8.jpg"
-															   data-src-hover="~/theme/client/img/product/8.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#70e98a;"></span>
-															</a>
-														</li>
-													</ul>
-												</div>
-												<a href="javascript:void(0);" class="mn-wishlist"
-												   data-tooltip title="Wishlist">
-													<i class="ri-heart-line"></i>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
-									<div class="mn-product-card">
-										<div class="mn-product-img">
-											<div class="mn-img">
-												<a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-													<img class="main-img" src="~/theme/client/img/product/9.jpg"
-														 alt="product">
-													<img class="hover-img" src="~/theme/client/img/product/10.jpg"
-														 alt="product">
-												</a>
-												<div class="mn-pro-loader"></div>
-												<div class="mn-options">
-													<ul>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Quick View"
-															   data-link-action="quickview"
-															   data-bs-toggle="modal"
-															   data-bs-target="#quickview_modal">
-																<i class="ri-eye-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Compare" class="mn-compare">
-																<i class="ri-repeat-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Add To Cart" class="mn-add-cart">
-																<i class="ri-shopping-cart-line"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-										<div class="mn-product-detail">
-											<div class="cat">
-												<a href="shop-right-sidebar.html">Shoes</a>
-												<ul>
-													<li>7</li>
-													<li>8</li>
-													<li>10</li>
-												</ul>
-											</div>
-											<h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">Special sport shoes</a></h5>
-											<p class="mn-info">
-												Lorem Ipsum is simply dummy text of the
-												printing and typesetting industry. Lorem Ipsum has been the
-												industry's standard dummy text ever since the 1500s.
-											</p>
-											<div class="mn-price">
-												<div class="mn-price-new">$55</div>
-											</div>
-											<div class="mn-pro-option">
-												<div class="mn-pro-color">
-													<ul class="mn-opt-swatch mn-change-img">
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/9.jpg"
-															   data-src-hover="~/theme/client/img/product/9.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#0e0e0e;"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/10.jpg"
-															   data-src-hover="~/theme/client/img/product/10.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#c54367;"></span>
-															</a>
-														</li>
-													</ul>
-												</div>
-												<a href="javascript:void(0);" class="mn-wishlist active"
-												   data-tooltip title="Wishlist">
-													<i class="ri-heart-line"></i>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
-									<div class="mn-product-card">
-										<div class="mn-product-img">
-											<div class="lbl">
-												<span class="new">new</span>
-											</div>
-											<div class="mn-img">
-												<a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-													<img class="main-img" src="~/theme/client/img/product/1.jpg"
-														 alt="product">
-													<img class="hover-img" src="~/theme/client/img/product/3.jpg"
-														 alt="product">
-												</a>
-												<div class="mn-pro-loader"></div>
-												<div class="mn-options">
-													<ul>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Quick View"
-															   data-link-action="quickview"
-															   data-bs-toggle="modal"
-															   data-bs-target="#quickview_modal">
-																<i class="ri-eye-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Compare" class="mn-compare">
-																<i class="ri-repeat-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Add To Cart" class="mn-add-cart">
-																<i class="ri-shopping-cart-line"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-										<div class="mn-product-detail">
-											<div class="cat">
-												<a href="shop-right-sidebar.html">Top</a>
-												<ul>
-													<li>s</li>
-													<li>m</li>
-												</ul>
-											</div>
-											<h5><a href="shop-right-sidebar.html">Cotton fabric Top</a></h5>
-											<p class="mn-info">
-												Lorem Ipsum is simply dummy text of the
-												printing and typesetting industry. Lorem Ipsum has been the
-												industry's standard dummy text ever since the 1500s.
-											</p>
-											<div class="mn-price">
-												<div class="mn-price-new">$120</div>
-												<div class="mn-price-old">$130</div>
-											</div>
-											<div class="mn-pro-option">
-												<div class="mn-pro-color">
-													<ul class="mn-opt-swatch mn-change-img">
-														<li class="active">
-															<a asp-controller="Product" asp-action="List" 
-															   class="mn-opt-clr-img active"
-															   data-src="~/theme/client/img/product/1.jpg"
-															   data-src-hover="~/theme/client/img/product/3.jpg"
-															   data-tooltip="Gray">
-																<span style="background-color:#f3f3f3;"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/2.jpg"
-															   data-src-hover="~/theme/client/img/product/4.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#e8c2ff;"></span>
-															</a>
-														</li>
-													</ul>
-												</div>
-												<a href="javascript:void(0);" class="mn-wishlist"
-												   data-tooltip title="Wishlist">
-													<i class="ri-heart-line"></i>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
-									<div class="mn-product-card">
-										<div class="mn-product-img">
-											<div class="lbl">
-												<span class="sale">sale</span>
-											</div>
-											<div class="mn-img">
-												<a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-													<img class="main-img" src="~/theme/client/img/product/11.jpg"
-														 alt="product">
-													<img class="hover-img" src="~/theme/client/img/product/12.jpg"
-														 alt="product">
-												</a>
-												<div class="mn-pro-loader"></div>
-												<div class="mn-options">
-													<ul>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Quick View"
-															   data-link-action="quickview"
-															   data-bs-toggle="modal"
-															   data-bs-target="#quickview_modal">
-																<i class="ri-eye-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Compare" class="mn-compare">
-																<i class="ri-repeat-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Add To Cart" class="mn-add-cart">
-																<i class="ri-shopping-cart-line"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-										<div class="mn-product-detail">
-											<div class="cat">
-												<a href="shop-right-sidebar.html">watches</a>
-											</div>
-											<h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">Mantu smart watch</a></h5>
-											<p class="mn-info">
-												Lorem Ipsum is simply dummy text of the
-												printing and typesetting industry. Lorem Ipsum has been the
-												industry's standard dummy text ever since the 1500s.
-											</p>
-											<div class="mn-price">
-												<div class="mn-price-new">$955</div>
-												<div class="mn-price-old">$999</div>
-											</div>
-											<div class="mn-pro-option">
-												<div class="mn-pro-color">
-													<ul class="mn-opt-swatch mn-change-img">
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/11.jpg"
-															   data-src-hover="~/theme/client/img/product/12.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#f3f3f3;"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/12.jpg"
-															   data-src-hover="~/theme/client/img/product/11.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#242424;"></span>
-															</a>
-														</li>
-													</ul>
-												</div>
-												<a href="javascript:void(0);" class="mn-wishlist"
-												   data-tooltip title="Wishlist">
-													<i class="ri-heart-line"></i>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
-									<div class="mn-product-card">
-										<div class="mn-product-img">
-											<div class="lbl">
-												<span class="discount">20% off</span>
-											</div>
-											<div class="mn-img">
-												<a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-													<img class="main-img" src="~/theme/client/img/product/13.jpg"
-														 alt="product">
-													<img class="hover-img" src="~/theme/client/img/product/14.jpg"
-														 alt="product">
-												</a>
-												<div class="mn-pro-loader"></div>
-												<div class="mn-options">
-													<ul>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Quick View"
-															   data-link-action="quickview"
-															   data-bs-toggle="modal"
-															   data-bs-target="#quickview_modal">
-																<i class="ri-eye-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Compare" class="mn-compare">
-																<i class="ri-repeat-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Add To Cart" class="mn-add-cart">
-																<i class="ri-shopping-cart-line"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-										<div class="mn-product-detail">
-											<div class="cat">
-												<a href="shop-right-sidebar.html">belt</a>
-											</div>
-											<h5><a href="shop-right-sidebar.html">Mantu leather belt</a></h5>
-											<p class="mn-info">
-												Lorem Ipsum is simply dummy text of the
-												printing and typesetting industry. Lorem Ipsum has been the
-												industry's standard dummy text ever since the 1500s.
-											</p>
-											<div class="mn-price">
-												<div class="mn-price-new">$10</div>
-												<div class="mn-price-old">$12</div>
-											</div>
-											<div class="mn-pro-option">
-												<div class="mn-pro-color">
-													<ul class="mn-opt-swatch mn-change-img">
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/13.jpg"
-															   data-src-hover="~/theme/client/img/product/14.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#d48a5b;"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/14.jpg"
-															   data-src-hover="~/theme/client/img/product/13.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#242424;"></span>
-															</a>
-														</li>
-													</ul>
-												</div>
-												<a href="javascript:void(0);" class="mn-wishlist"
-												   data-tooltip title="Wishlist">
-													<i class="ri-heart-line"></i>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
-									<div class="mn-product-card">
-										<div class="mn-product-img">
-											<div class="mn-img">
-												<a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-													<img class="main-img" src="~/theme/client/img/product/15.jpg"
-														 alt="product">
-													<img class="hover-img" src="~/theme/client/img/product/16.jpg"
-														 alt="product">
-												</a>
-												<div class="mn-pro-loader"></div>
-												<div class="mn-options">
-													<ul>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Quick View"
-															   data-link-action="quickview"
-															   data-bs-toggle="modal"
-															   data-bs-target="#quickview_modal">
-																<i class="ri-eye-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Compare" class="mn-compare">
-																<i class="ri-repeat-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Add To Cart" class="mn-add-cart">
-																<i class="ri-shopping-cart-line"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-										<div class="mn-product-detail">
-											<div class="cat">
-												<a href="shop-right-sidebar.html">Bag</a>
-												<ul>
-													<li>m</li>
-													<li>l</li>
-												</ul>
-											</div>
-											<h5><a href="shop-right-sidebar.html">Leather bag</a></h5>
-											<p class="mn-info">
-												Lorem Ipsum is simply dummy text of the
-												printing and typesetting industry. Lorem Ipsum has been the
-												industry's standard dummy text ever since the 1500s.
-											</p>
-											<div class="mn-price">
-												<div class="mn-price-new">$66</div>
-											</div>
-											<div class="mn-pro-option">
-												<div class="mn-pro-color">
-													<ul class="mn-opt-swatch mn-change-img">
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/15.jpg"
-															   data-src-hover="~/theme/client/img/product/16.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#b75956;"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/16.jpg"
-															   data-src-hover="~/theme/client/img/product/15.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#0e0e0e;"></span>
-															</a>
-														</li>
-													</ul>
-												</div>
-												<a href="javascript:void(0);" class="mn-wishlist"
-												   data-tooltip title="Wishlist">
-													<i class="ri-heart-line"></i>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
-									<div class="mn-product-card">
-										<div class="mn-product-img">
-											<div class="mn-img">
-												<a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-													<img class="main-img" src="~/theme/client/img/product/23.jpg"
-														 alt="product">
-													<img class="hover-img" src="~/theme/client/img/product/24.jpg"
-														 alt="product">
-												</a>
-												<div class="mn-pro-loader"></div>
-												<div class="mn-options">
-													<ul>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Quick View"
-															   data-link-action="quickview"
-															   data-bs-toggle="modal"
-															   data-bs-target="#quickview_modal">
-																<i class="ri-eye-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Compare" class="mn-compare">
-																<i class="ri-repeat-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Add To Cart" class="mn-add-cart">
-																<i class="ri-shopping-cart-line"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-										<div class="mn-product-detail">
-											<div class="cat">
-												<a href="shop-right-sidebar.html">Coats</a>
-												<ul>
-													<li>s</li>
-													<li>m</li>
-												</ul>
-											</div>
-											<h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">Cotton coat for womens</a></h5>
-											<p class="mn-info">
-												Lorem Ipsum is simply dummy text of the
-												printing and typesetting industry. Lorem Ipsum has been the
-												industry's standard dummy text ever since the 1500s.
-											</p>
-											<div class="mn-price">
-												<div class="mn-price-new">$220</div>
-											</div>
-											<div class="mn-pro-option">
-												<div class="mn-pro-color">
-													<ul class="mn-opt-swatch mn-change-img">
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/23.jpg"
-															   data-src-hover="~/theme/client/img/product/24.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#c9a68a;"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/25.jpg"
-															   data-src-hover="~/theme/client/img/product/26.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#d7523e;"></span>
-															</a>
-														</li>
-													</ul>
-												</div>
-												<a href="javascript:void(0);" class="mn-wishlist"
-												   data-tooltip title="Wishlist">
-													<i class="ri-heart-line"></i>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
-									<div class="mn-product-card">
-										<div class="mn-product-img">
-											<div class="mn-img">
-												<a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-													<img class="main-img" src="~/theme/client/img/product/29.jpg"
-														 alt="product">
-													<img class="hover-img" src="~/theme/client/img/product/30.jpg"
-														 alt="product">
-												</a>
-												<div class="mn-pro-loader"></div>
-												<div class="mn-options">
-													<ul>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Quick View"
-															   data-link-action="quickview"
-															   data-bs-toggle="modal"
-															   data-bs-target="#quickview_modal">
-																<i class="ri-eye-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Compare" class="mn-compare">
-																<i class="ri-repeat-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Add To Cart" class="mn-add-cart">
-																<i class="ri-shopping-cart-line"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-										<div class="mn-product-detail">
-											<div class="cat">
-												<a href="shop-right-sidebar.html">T-shirt</a>
-												<ul>
-													<li>xl</li>
-													<li>xxl</li>
-												</ul>
-											</div>
-											<h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">T-shirt for womens</a></h5>
-											<p class="mn-info">
-												Lorem Ipsum is simply dummy text of the
-												printing and typesetting industry. Lorem Ipsum has been the
-												industry's standard dummy text ever since the 1500s.
-											</p>
-											<div class="mn-price">
-												<div class="mn-price-new">$66</div>
-											</div>
-											<div class="mn-pro-option">
-												<div class="mn-pro-color">
-													<ul class="mn-opt-swatch mn-change-img">
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/29.jpg"
-															   data-src-hover="~/theme/client/img/product/29.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#4a63a9;"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/30.jpg"
-															   data-src-hover="~/theme/client/img/product/30.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#303035;"></span>
-															</a>
-														</li>
-													</ul>
-												</div>
-												<a href="javascript:void(0);" class="mn-wishlist"
-												   data-tooltip title="Wishlist">
-													<i class="ri-heart-line"></i>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
-									<div class="mn-product-card">
-										<div class="mn-product-img">
-											<div class="mn-img">
-												<a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-													<img class="main-img" src="~/theme/client/img/product/31.jpg"
-														 alt="product">
-													<img class="hover-img" src="~/theme/client/img/product/32.jpg"
-														 alt="product">
-												</a>
-												<div class="mn-pro-loader"></div>
-												<div class="mn-options">
-													<ul>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Quick View"
-															   data-link-action="quickview"
-															   data-bs-toggle="modal"
-															   data-bs-target="#quickview_modal">
-																<i class="ri-eye-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Compare" class="mn-compare">
-																<i class="ri-repeat-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Add To Cart" class="mn-add-cart">
-																<i class="ri-shopping-cart-line"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-										<div class="mn-product-detail">
-											<div class="cat">
-												<a href="shop-right-sidebar.html">Suit</a>
-												<ul>
-													<li>s</li>
-													<li>m</li>
-												</ul>
-											</div>
-											<h5><a href="shop-right-sidebar.html">Official Men's Suits</a></h5>
-											<p class="mn-info">
-												Lorem Ipsum is simply dummy text of the
-												printing and typesetting industry. Lorem Ipsum has been the
-												industry's standard dummy text ever since the 1500s.
-											</p>
-											<div class="mn-price">
-												<div class="mn-price-new">$524</div>
-											</div>
-											<div class="mn-pro-option">
-												<div class="mn-pro-color">
-													<ul class="mn-opt-swatch mn-change-img">
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/31.jpg"
-															   data-src-hover="~/theme/client/img/product/32.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#485170;"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/33.jpg"
-															   data-src-hover="~/theme/client/img/product/34.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#50814b;"></span>
-															</a>
-														</li>
-													</ul>
-												</div>
-												<a href="javascript:void(0);" class="mn-wishlist"
-												   data-tooltip title="Wishlist">
-													<i class="ri-heart-line"></i>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
-									<div class="mn-product-card">
-										<div class="mn-product-img">
-											<div class="mn-img">
-												<a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-													<img class="main-img" src="~/theme/client/img/product/35.jpg"
-														 alt="product">
-													<img class="hover-img" src="~/theme/client/img/product/36.jpg"
-														 alt="product">
-												</a>
-												<div class="mn-pro-loader"></div>
-												<div class="mn-options">
-													<ul>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Quick View"
-															   data-link-action="quickview"
-															   data-bs-toggle="modal"
-															   data-bs-target="#quickview_modal">
-																<i class="ri-eye-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Compare" class="mn-compare">
-																<i class="ri-repeat-line"></i>
-															</a>
-														</li>
-														<li>
-															<a href="javascript:void(0)" data-tooltip
-															   title="Add To Cart" class="mn-add-cart">
-																<i class="ri-shopping-cart-line"></i>
-															</a>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-										<div class="mn-product-detail">
-											<div class="cat">
-												<a href="shop-right-sidebar.html">jacket</a>
-												<ul>
-													<li>m</li>
-													<li>l</li>
-												</ul>
-											</div>
-											<h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">T-shirt with jacket for boy</a></h5>
-											<p class="mn-info">
-												Lorem Ipsum is simply dummy text of the
-												printing and typesetting industry. Lorem Ipsum has been the
-												industry's standard dummy text ever since the 1500s.
-											</p>
-											<div class="mn-price">
-												<div class="mn-price-new">$866</div>
-											</div>
-											<div class="mn-pro-option">
-												<div class="mn-pro-color">
-													<ul class="mn-opt-swatch mn-change-img">
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/35.jpg"
-															   data-src-hover="~/theme/client/img/product/36.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#3b607a;"></span>
-															</a>
-														</li>
-														<li>
-															<a asp-controller="Product" asp-action="List"  class="mn-opt-clr-img"
-															   data-src="~/theme/client/img/product/36.jpg"
-															   data-src-hover="~/theme/client/img/product/35.jpg"
-															   data-tooltip="Orange">
-																<span style="background-color:#19594f;"></span>
-															</a>
-														</li>
-													</ul>
-												</div>
-												<a href="javascript:void(0);" class="mn-wishlist"
-												   data-tooltip title="Wishlist">
-													<i class="ri-heart-line"></i>
-												</a>
-											</div>
-										</div>
-									</div>
-								</div>
+								}
 							</div>
 						</div>
-						<!-- Pagination Start -->
 						<div class="mn-pro-pagination m-b-15">
-							<span>Hiển thị 1-12 của 21 sản phẩm</span>
 							<ul class="mn-pro-pagination-inner">
-								<li><a class="active" asp-controller="Product" asp-action="List" >1</a></li>
-								<li><a asp-controller="Product" asp-action="List" >2</a></li>
-								<li><a asp-controller="Product" asp-action="List" >3</a></li>
-								<li><span>...</span></li>
-								<li><a asp-controller="Product" asp-action="List" >8</a></li>
-								<li>
-									<a class="next" asp-controller="Product" asp-action="List" >
-										Next <i class="ri-arrow-right-double-line"></i>
-									</a>
-								</li>
+								@for(var i = 1; i < products.TotalPage; i++)
+								{
+									<li><a class="active" asp-controller="Product" asp-action="List" asp-route-page="@i">@i</a></li>
+								}
 							</ul>
 						</div>
-						<!-- Pagination End -->
 					</div>
-					<!--Shop content End -->
-
 				</div>
 				<!-- Sidebar Area Start -->
 				<div class="mn-shop-sidebar col-lg-3 col-md-12 m-t-991">

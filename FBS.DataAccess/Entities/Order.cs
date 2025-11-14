@@ -20,5 +20,7 @@ namespace FBS.Infrastructure.Entities
         public string? CustomerAddress { get; set; }
 
         public string? Note { get; set; }
+
+        public virtual ICollection<OrderItem> OrderItems { get; set; }
     }
 }

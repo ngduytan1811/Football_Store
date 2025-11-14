@@ -19,6 +19,7 @@ namespace FBS.Application.DataTranferObjects.Categories
 
         public int? Order { get; set; }
 
-        public bool IsOutstanding { get; set; } = false;
+        public Guid? ParentId { get; set; }
+        public string? ParentName { get; set; }
     }
 }

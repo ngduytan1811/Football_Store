@@ -1,4 +1,10 @@
-﻿<div class="mn-side-cart-overlay"></div>
+﻿@using FBS.Application.DataTranferObjects.Cart
+@using System.Globalization
+@{
+	var cart = (List<CartItemDto>)ViewData["Cart"] ?? new List<CartItemDto>();
+	var subTotal = cart.Any() ? cart.Sum(x => x.Price) : 0;
+}
+<div class="mn-side-cart-overlay"></div>
 <div id="mn-side-cart" class="mn-side-cart">
 	<div class="mn-cart-inner">
 		<div class="mn-cart-top">
@@ -9,62 +15,19 @@
 				</a>
 			</div>
 			<ul class="mn-cart-pro-items">
-				<li class="cart-sidebar-list">
-					<a href="product-detail.html" class="mn-pro-img">
-						<img src="~/theme/client/img/product/11.jpg"
-							 alt="product">
-					</a>
-					<div class="mn-pro-content">
-						<a href="product-detail.html" class="cart-pro-title">Smart watch</a>
-						<span class="cart-price"><span>$255.00</span> x 1</span>
-						<div class="qty-plus-minus">
-							<input class="qty-input" type="text" name="mn-qtybtn" value="1">
+				@foreach(var item in cart)
+				{
+					<li class="cart-sidebar-list">
+						<a asp-action="Detail" asp-controller="Product" asp-route-id="@item.ProductId" class="mn-pro-img">
+							<img src="~/theme/client/img/product/11.jpg"
+								 alt="product">
+						</a>
+						<div class="mn-pro-content">
+							<a asp-action="Detail" asp-controller="Product" asp-route-id="@item.ProductId" class="cart-pro-title">@item.ProductName x @item.Quantity</a>
+							<span class="cart-price"><span>@item.PriceString</span> </span>
 						</div>
-						<a href="javascript:void(0)" class="cart-remove-item">×</a>
-					</div>
-				</li>
-				<li class="cart-sidebar-list">
-					<a href="product-detail.html" class="mn-pro-img">
-						<img src="~/theme/client/img/product/5.jpg"
-							 alt="product">
-					</a>
-					<div class="mn-pro-content">
-						<a href="product-detail.html" class="cart-pro-title">T-Shirt for men</a>
-						<span class="cart-price"><span>$64.00</span> x 1</span>
-						<div class="qty-plus-minus">
-							<input class="qty-input" type="text" name="mn-qtybtn" value="1">
-						</div>
-						<a href="javascript:void(0)" class="cart-remove-item">×</a>
-					</div>
-				</li>
-				<li class="cart-sidebar-list">
-					<a href="product-detail.html" class="mn-pro-img">
-						<img src="~/theme/client/img/product/13.jpg"
-							 alt="product">
-					</a>
-					<div class="mn-pro-content">
-						<a href="product-detail.html" class="cart-pro-title">Leather Belt</a>
-						<span class="cart-price"><span>$59.00</span> x 1</span>
-						<div class="qty-plus-minus">
-							<input class="qty-input" type="text" name="mn-qtybtn" value="1">
-						</div>
-						<a href="javascript:void(0)" class="cart-remove-item">×</a>
-					</div>
-				</li>
-				<li class="cart-sidebar-list">
-					<a href="product-detail.html" class="mn-pro-img">
-						<img src="~/theme/client/img/product/2.jpg"
-							 alt="product">
-					</a>
-					<div class="mn-pro-content">
-						<a href="product-detail.html" class="cart-pro-title">T-Shirt for girls</a>
-						<span class="cart-price"><span>$39.00</span> x 1</span>
-						<div class="qty-plus-minus">
-							<input class="qty-input" type="text" name="mn-qtybtn" value="1">
-						</div>
-						<a href="javascript:void(0)" class="cart-remove-item">×</a>
-					</div>
-				</li>
+					</li>
+				}
 			</ul>
 		</div>
 		<div class="mn-cart-bottom">
@@ -72,16 +35,12 @@
 				<table class="table cart-table">
 					<tbody>
 						<tr>
-							<td class="text-left">Sub-Total :</td>
-							<td class="text-right">$417.00</td>
+							<td class="text-left">Tạm tính :</td>
+							<td class="text-right">@subTotal.Value.ToString("C", new CultureInfo("vi-VN"))</td>
 						</tr>
 						<tr>
-							<td class="text-left">VAT (20%) :</td>
-							<td class="text-right">$83.40</td>
-						</tr>
-						<tr>
-							<td class="text-left">Total :</td>
-							<td class="text-right primary-color">$500.40</td>
+							<td class="text-left">Tổng tiền :</td>
+							<td class="text-right primary-color">@subTotal.Value.ToString("C", new CultureInfo("vi-VN"))</td>
 						</tr>
 					</tbody>
 				</table>

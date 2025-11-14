@@ -60,8 +60,6 @@ namespace FBS.Infrastructure.Configuration
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 
-            RegisterCacheInterfaces(services, configuration);
-
             services.AddIdentity<User, Role>(options =>
             {
                 options.Password.RequireDigit = false;
@@ -91,17 +89,6 @@ namespace FBS.Infrastructure.Configuration
                     throw new InvalidDataException(ex.Message);
                 }
             }
-        }
-
-        private static void RegisterCacheInterfaces(IServiceCollection services, IConfiguration configuration)
-        {
-            var redisConfiguration = configuration.GetSection("RedisCache:Configuration").Value;
-            var redisInstanceName = configuration.GetSection("RedisCache:InstanceName").Value;
-            services.AddStackExchangeRedisCache(option =>
-            {
-                option.Configuration = string.IsNullOrWhiteSpace(redisConfiguration) ? CacheSettings.DistributedRedisConfiguration : redisConfiguration;
-                option.InstanceName = string.IsNullOrWhiteSpace(redisInstanceName) ? CacheSettings.DistributedRedisInstanceName : redisInstanceName;
-            });
         }
 
         private static void RegisterServiceInterfaces(IServiceCollection services)

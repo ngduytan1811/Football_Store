@@ -57,6 +57,11 @@ namespace FBS.DataAccess.Contexts
             builder.ApplyConfiguration(new UserRoleConfiguration());
             builder.ApplyConfiguration(new UserTokenConfiguration());
             builder.ApplyConfiguration(new OrderConfiguration());
+            builder.ApplyConfiguration(new OrderItemConfiguration());
+            builder.ApplyConfiguration(new ProductConfiguration());
+            builder.ApplyConfiguration(new ProductSizeConfiguration());
+            builder.ApplyConfiguration(new ProductColorConfiguration());
+            builder.ApplyConfiguration(new ProductReviewConfiguration());
         }
     }
 }

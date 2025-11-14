@@ -11,12 +11,18 @@ builder.Services.AddRazorPages()
     .AddRazorRuntimeCompilation();
 
 builder.Services.InitialApplicationServices(builder.Configuration);
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
+    options.Cookie.SameSite = SameSiteMode.Lax;
+});
+
 var app = builder.Build();
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
-{
-    ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor,
-});
 app.Services.InitialDBAndSeedData();
 
 // Configure the HTTP request pipeline.
@@ -31,6 +37,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();

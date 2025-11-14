@@ -69,7 +69,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             var user = await _userService.FindById(userId);
             if (user.Data == null)
             {
-                return View();
+                return RedirectToAction("Create");
             }
 
             var model = new UserSaveDto
@@ -84,7 +84,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Guid userId, UserSaveDto request)
+        public async Task<IActionResult> Update(Guid userId, UserSaveDto request)
         {
             var user = await _userService.FindById(userId);
             if (user.Data == null)

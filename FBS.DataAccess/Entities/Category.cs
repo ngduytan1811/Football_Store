@@ -16,5 +16,7 @@ namespace FBS.Infrastructure.Entities
         public string? Logo { get; set; }
 
         public Guid? ParentId { get; set; }
+
+        public virtual ICollection<Product> Products { get; set; }
     }
 }
