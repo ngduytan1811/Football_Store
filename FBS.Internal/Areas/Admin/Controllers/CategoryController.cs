@@ -1,7 +1,10 @@
 ﻿using FBS.Application.DataTranferObjects.Categories;
 using FBS.Application.Services.Interfaces;
+using FBS.Infrastructure.Entities;
+using FBS.Infrastructure.Repositories.Interfaces;
 using FBS.Shared.Constants;
 using FootballShop.Areas.Admin.Controllers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -11,7 +14,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
     {
         private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, UserManager<User> userManager, IUnitOfWork unitOfWork) : base(userManager, unitOfWork)
         {
             _categoryService = categoryService;
         }

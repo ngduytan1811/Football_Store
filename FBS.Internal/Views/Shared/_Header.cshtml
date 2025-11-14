@@ -1,4 +1,8 @@
-﻿<header>
+﻿@using FBS.Internal.Models
+@{
+    var currentUser = (CurrentUserViewModel?)ViewData["CurrentUser"];
+}
+<header>
     <div class="mn-header">
         <div class="mn-header-items">
             <div class="left-header">
@@ -28,7 +32,7 @@
                                             <a href="javascript:void(0)" class="dropdown-arrow">
                                                 Danh mục<i class="ri-arrow-down-s-line"></i>
                                             </a>
-                                            <ul class="mega-menu d-block">
+                                            <ul class="mega-menu d-block" style="width:60em">
                                                 <li class="d-flex">
                                                     <span class="bg"></span>
                                                     <ul class="d-block mega-block">
@@ -259,16 +263,25 @@
                                 </path>
                             </svg>
                         </a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a asp-action="Login" asp-controller="Auth">Đăng nhập</a>
-                            </li>
-                            <li>
-                                <a asp-action="Register" asp-controller="Auth">Đăng ký</a>
-                            </li>
-                            <li>
-                                <a asp-action="Index" asp-controller="Cart">Đơn hàng</a>
-                            </li>
+                        <ul class="sub-menu" style="width:200px">
+                            @if (currentUser != null)
+                            {
+                                <li class="border-bottom">
+                                    <a href="javascript:void(0)" class="text-primary">@currentUser.UserName</a>
+                                </li>
+                                <li>
+                                    <a asp-action="Logout" asp-controller="Auth">Đăng xuất</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a asp-action="Login" asp-controller="Auth">Đăng nhập</a>
+                                </li>
+                                <li>
+                                    <a asp-action="Register" asp-controller="Auth">Đăng ký</a>
+                                </li>
+                            }
                         </ul>
                     </div>
                     <div class="mn-tool-wish">

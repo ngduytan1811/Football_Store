@@ -1,5 +1,6 @@
 ﻿using FBS.Application.DataTranferObjects.Auth;
 using FBS.Infrastructure.Entities;
+using FBS.Infrastructure.Repositories.Interfaces;
 using FootballShop.Areas.Admin.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +14,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
-        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AuthController(UserManager<User> userManager, SignInManager<User> signInManager, IUnitOfWork unitOfWork) : base(userManager, unitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;

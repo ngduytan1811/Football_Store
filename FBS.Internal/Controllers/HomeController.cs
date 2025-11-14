@@ -1,16 +1,18 @@
-using System.Diagnostics;
+using FBS.Infrastructure.Entities;
+using FBS.Infrastructure.Repositories;
+using FBS.Infrastructure.Repositories.Interfaces;
+using FBS.Internal.Controllers;
 using FootballShop.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace FootballShop.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(UserManager<User> userManager, IUnitOfWork unitOfWork) : base(userManager, unitOfWork)
         {
-            _logger = logger;
         }
 
         public IActionResult Index()

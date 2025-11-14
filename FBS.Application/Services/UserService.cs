@@ -133,7 +133,24 @@ namespace FBS.Application.Services
                 Status = StatusEnum.Active,
                 CreatedAt = DateTime.Now,
             };
+
             var resultCreate = await _userManager.CreateAsync(newUser, GlobalConstants.PasswordDefault);
+            if (resultCreate != null && resultCreate.Succeeded)
+            {
+                var memberRep = _unitOfWork.GetRepositoryAsync<Member>();
+                var newMember = new Member
+                {
+                    PhoneNumber = dto.PhoneNumber,
+                    Address = dto.Address,
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName,
+                    UserId = newUser.Id
+                };
+
+                await memberRep.Add(newMember);
+                await _unitOfWork.SaveChangesAsync();
+            }
+
             return result;
         }
 

@@ -3,10 +3,12 @@ using FBS.Application.DataTranferObjects.Categories;
 using FBS.Application.DataTranferObjects.Users;
 using FBS.Application.Services;
 using FBS.Application.Services.Interfaces;
+using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
 using FBS.Shared.Constants;
 using FBS.Shared.DataTranferObjects.Base;
 using FootballShop.Areas.Admin.Controllers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System.Threading.Tasks;
@@ -17,7 +19,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
     {
         private readonly IUserService _userService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, UserManager<User> userManager, IUnitOfWork unitOfWork) : base(userManager, unitOfWork)
         {
             _userService = userService;
         }

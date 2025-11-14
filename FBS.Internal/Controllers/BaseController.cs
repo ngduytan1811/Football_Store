@@ -1,24 +1,21 @@
 ﻿using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
 using FBS.Internal.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Security.Claims;
 
-namespace FootballShop.Areas.Admin.Controllers
+namespace FBS.Internal.Controllers
 {
-    [Area("admin")]
-    [Authorize]
-    public class BaseAdminController : Controller
+    public class BaseController : Controller
     {
         protected readonly UserManager<User> _userManager;
         protected readonly IUnitOfWork _unitOfWork;
 
         private CurrentUserViewModel? _currentUser;
 
-        public BaseAdminController(UserManager<User> userManager, IUnitOfWork unitOfWork)
+        public BaseController(UserManager<User> userManager, IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
@@ -37,6 +34,7 @@ namespace FootballShop.Areas.Admin.Controllers
                 return _currentUser;
             }
         }
+
 
         protected async Task<CurrentUserViewModel?> GetCurrentUserAsync()
         {
