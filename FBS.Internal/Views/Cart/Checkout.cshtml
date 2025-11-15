@@ -4,6 +4,15 @@
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var cart = (List<CartItemDto>)ViewData["Cart"];
+    
+    decimal shipping = 80000;
+
+    decimal subtotal = cart.Sum(x => x.Price ?? 0);
+
+    decimal total = subtotal + shipping;
+
+
+
 }
 @model CheckoutDto
 
@@ -84,16 +93,16 @@
                         <div class="mn-checkout-summary">
                             <div>
                                 <span class="text-left">Tạm tính</span>
-                                <span class="text-right">$295.00</span>
+                                <span class="text-right">@subtotal.ToString("N0") đ</span>
                             </div>
                             <div>
                                 <span class="text-left">Phí vận chuyển</span>
-                                <span class="text-right">$80.00</span>
+                                <span class="text-right">@shipping.ToString("N0") đ</span>
                             </div>
 
                             <div class="mn-checkout-summary-total">
                                 <span class="text-left">Tổng tiền</span>
-                                <span class="text-right">$375.00</span>
+                                <span class="text-right">@total.ToString("N0") đ</span>
                             </div>
                         </div>
                         <div class="mn-checkout-pro">
