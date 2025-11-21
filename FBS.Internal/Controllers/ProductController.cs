@@ -17,10 +17,14 @@ namespace FBS.Internal.Controllers
         {
             _productService = productService;
         }
-        public async Task<IActionResult> List(int page = 1)
+        public async Task<IActionResult> List(Guid? categoryId = null, int page = 1)
         {
             var dataSearch = new BaseSearchDto<ProductSearchDto>()
             {
+                SearchParams = new ProductSearchDto
+                {
+                    CategoryId = categoryId,
+                },
                 Page = page,
             };
 

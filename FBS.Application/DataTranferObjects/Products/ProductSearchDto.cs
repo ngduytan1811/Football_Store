@@ -8,5 +8,6 @@ namespace FBS.Application.DataTranferObjects.Products
 {
     public class ProductSearchDto
     {
+        public Guid? CategoryId { get; set; }
     }
 }

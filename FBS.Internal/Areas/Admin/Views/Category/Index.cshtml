@@ -1,5 +1,6 @@
 ﻿@using FBS.API.Responses.Base
 @using FBS.Application.DataTranferObjects.Categories
+@using FBS.Shared.Enums
 
 @{
     ViewData["Title"] = "Danh mục";
@@ -36,16 +37,24 @@
                                         <td class="p-2">@category.Index</td>
                                         <td class="py-2">@category.Name</td>
                                         <td class="py-2">@(category.ParentName ?? "--")</td>
-                                        <td class="font-danger py-2">@category.StatusName</td>
-                                        <td class="py-2 ">
-                                            <a class="edit" asp-action="Edit" asp-controller="Category" asp-route-id="@category.Id">
+                                        <td class="@(category.Status == StatusEnum.Inactive ? "font-danger" : "font-primary") py-2">@category.StatusName</td>
+                                        <td class="py-2">
+                                            <a asp-action="Edit"
+                                               asp-controller="Category"
+                                               asp-route-id="@category.Id"
+                                               class="btn btn-link p-0 m-1">
                                                 <i data-feather="edit-2"></i>
                                             </a>
-                                            <a>
-                                                <form asp-action="Delete" asp-controller="Category" asp-route-id="@category.Id">
-                                                    <button type="submit"><i data-feather="edit-2"></i></button>
-                                                </form>
-                                            </a>
+
+                                            <form asp-action="Delete"
+                                                  asp-controller="Category"
+                                                  asp-route-id="@category.Id"
+                                                  method="post"
+                                                  class="d-inline">
+                                                <button type="submit" class="btn btn-link text-danger p-0 m-1">
+                                                    <i data-feather="trash-2"></i>
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 }

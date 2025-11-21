@@ -71,7 +71,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
         public async Task<IActionResult> Edit(Guid id)
         {
-            var dataDrop = await _categoryService.GetCategoryDropdown();
+            var dataDrop = await _categoryService.GetCategoryDropdown(id);
             ViewData["Categogries"] = dataDrop?.Data;
 
             var data = await _categoryService.FindById(id);

@@ -32,7 +32,6 @@ namespace FBS.Application.Services
         {
             var result = new BaseTableResponse<CategoryDto>();
             var queryCategory = await _unitOfWork.GetRepositoryReadOnlyAsync<Category>().QueryAll();
-
             var searchData = dto.SearchParams ?? new CategorySearchDto();
 
             if (!string.IsNullOrEmpty(searchData?.Name))
@@ -47,6 +46,7 @@ namespace FBS.Application.Services
             {
                 Id = category.Id,
                 Status = category.Status,
+                ParentId = category.ParentId,
                 Name = category.Name,
                 Description = category.Description,
                 Logo = category.Logo,
@@ -61,6 +61,16 @@ namespace FBS.Application.Services
             };
 
             var (items, totalPage) = TableResponseHelper.MakeToList(query, result.Total, dto.Start, dto.PageSize);
+
+            var parentIds = items.Where(x => x.ParentId.HasValue).Select(x => x.ParentId).ToList();
+            queryCategory = await _unitOfWork.GetRepositoryReadOnlyAsync<Category>().QueryAll();
+            var parents = queryCategory.Where(x => parentIds.Contains(x.Id)).ToList();
+
+            foreach (var item in items)
+            {
+                var parent = parents.Find(x => x.Id == item.ParentId);
+                item.ParentName = parent?.Name;
+            }
 
             result.Items = items;
             result.TotalPage = totalPage;
@@ -93,12 +103,15 @@ namespace FBS.Application.Services
             return result;
         }
 
-        public async Task<BaseResponse<List<CategoryDto>>> GetCategoryDropdown()
+        public async Task<BaseResponse<List<CategoryDto>>> GetCategoryDropdown(Guid? expectcategoryId = null)
         {
             var result = new BaseResponse<List<CategoryDto>>();
 
             var queryCategory = await _unitOfWork.GetRepositoryReadOnlyAsync<Category>().QueryAll();
-
+            if (expectcategoryId.HasValue)
+            {
+                queryCategory = queryCategory.Where(x => x.Id != expectcategoryId);
+            }
             result.Data = queryCategory.Where(x => x.IsActive).Select(x => new CategoryDto
             {
                 Id = x.Id,

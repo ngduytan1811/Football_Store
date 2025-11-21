@@ -61,6 +61,11 @@ namespace FBS.Application.Services
             queryProduct = queryProduct.Include(x => x.ProductSize).Include(x => x.ProductColor).Include(x => x.Category);
             var searchData = dto.SearchParams ?? new ProductSearchDto();
 
+            if (searchData.CategoryId.HasValue)
+            {
+                queryProduct = queryProduct.Where(x => x.CategoryId == searchData.CategoryId);
+            }
+
             result.Total = queryProduct.Count();
 
             var query = queryProduct.Select(product => new ProductDto

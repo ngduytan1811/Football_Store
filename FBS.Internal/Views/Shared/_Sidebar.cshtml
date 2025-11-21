@@ -4,59 +4,22 @@
 		<button type="button" class="side-close" title="Close"></button>
 		<ul class="mn-sb-list">
 			<li class="mn-sb-title condense"><span>Danh mục</span></li>
-			<li class="mn-sb-item sb-drop-item">
-				<a href="javascript:void(0)" class="mn-drop-toggle">
-					<span class="condense">Giày cỏ nhân tạo<i class="drop-arrow ri-arrow-down-s-line"></i></span>
-				</a>
-				<ul class="mn-sb-drop">
-					<li class="list">
-						<a asp-action="List" asp-controller="Product" class="mn-page-link drop">Giày bóng đá adidas</a>
-					</li>
-					<li class="list">
-						<a asp-action="List" asp-controller="Product" class="mn-page-link drop">Giày bóng đá nike</a>
-					</li>
-					<li class="list">
-						<a asp-action="List" asp-controller="Product" class="mn-page-link drop">Giày bóng đá puma</a>
-					</li>
-					<li class="list">
-						<a asp-action="List" asp-controller="Product" class="mn-page-link drop">Giày bóng đá mizuno</a>
-					</li>
-					<li class="list">
-						<a asp-action="List" asp-controller="Product" class="mn-page-link drop">Giày bóng đá 3 sọc</a>
-					</li>
-					
-				</ul>
-			</li>
-			<li class="mn-sb-item sb-drop-item">
-				<a href="javascript:void(0)" class="mn-drop-toggle">
-					
-					<span class="condense">Giày Futsal<i class="drop-arrow ri-arrow-down-s-line"></i></span>
-				</a>
-				<ul class="mn-sb-drop">
-					<li class="list">
-						<a asp-action="List" asp-controller="Product" class="mn-page-link drop">Giày Futsal adidas</a>
-					</li>
-					<li class="list">
-						<a asp-action="List" asp-controller="Product" class="mn-page-link drop">Giày Futsal kamito</a>
-					</li>
-					<li class="list">
-						<a asp-action="List" asp-controller="Product" class="mn-page-link drop">Giày Futsak Pan</a>
-					</li>
-				</ul>
-			</li>
-			<li class="mn-sb-item sb-drop-item">
-				<a asp-action="List" asp-controller="Product" class="mn-drop-toggle">
-					
-					<span class="condense">Quần Áo Bóng Đá</span>
-				</a>
-			</li>
-			<li class="mn-sb-item sb-drop-item">
-				<a asp-action="List" asp-controller="Product" class="mn-drop-toggle">
-					
-					<span class="condense">Phụ Kiện Bóng Đá</span>
-				</a>
-			</li>
-			
+			@foreach (var item in ViewBag.Categories)
+			{
+				<li class="mn-sb-item sb-drop-item">
+					<a href="javascript:void(0)" class="mn-drop-toggle">
+						<span class="condense">@item.Name<i class="drop-arrow ri-arrow-down-s-line"></i></span>
+					</a>
+					<ul class="mn-sb-drop">
+						@foreach (var subItem in item.Items)
+						{
+							<li class="list">
+								<a asp-route-categoryId="@subItem.Id" asp-action="List" asp-controller="Product" class="mn-page-link drop">@subItem.Name</a>
+						</li>							
+						}
+					</ul>
+				</li>
+			}
 		</ul>
 	</div>
 </div>

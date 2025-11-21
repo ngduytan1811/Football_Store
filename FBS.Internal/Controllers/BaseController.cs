@@ -1,13 +1,16 @@
 ﻿using FBS.Application.DataTranferObjects.Cart;
+using FBS.Application.DataTranferObjects.Categories;
 using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
 using FBS.Internal.Models;
 using FBS.Internal.Utils;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FBS.Internal.Controllers
 {
@@ -41,7 +44,6 @@ namespace FBS.Internal.Controllers
             }
         }
 
-
         protected async Task<CurrentUserViewModel?> GetCurrentUserAsync()
         {
             if (User.Identity.IsAuthenticated)
@@ -67,7 +69,9 @@ namespace FBS.Internal.Controllers
 
         protected string? CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        public override void OnActionExecuting(ActionExecutingContext context)
+        public override async Task OnActionExecutionAsync(
+       ActionExecutingContext context,
+       ActionExecutionDelegate next)
         {
             base.OnActionExecuting(context);
 
@@ -84,6 +88,27 @@ namespace FBS.Internal.Controllers
             {
                 ViewData["CurrentUser"] = null;
             }
+
+            var query = await _unitOfWork.GetRepositoryReadOnlyAsync<Category>().QueryAll();
+
+            var dataCategory = query.Where(x => x.IsActive).Select(x => new CategoryDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                ParentId = x.ParentId,
+                Status = x.Status,
+            }).ToList();
+
+            var categories = dataCategory.Where(x => !x.ParentId.HasValue).ToList();
+
+            foreach (var category in categories)
+            {
+                category.Items = dataCategory.Where(x => x.ParentId == category.Id).ToList();
+            }
+
+            ViewBag.Categories = categories;
+
+            await next();
         }
 
         protected List<CartItemDto> GetCart()

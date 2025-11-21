@@ -13,7 +13,7 @@
                         <span class="inner-ring"></span>
                     </span>
                 </a>
-                <a asp-controller="Home" asp-action="Index" ><b>Thoc Store</b></a>
+                <a asp-controller="Home" asp-action="Index"><b>Thoc Store</b></a>
                 <a href="javascript:void(0)" class="mn-toggle-menu">
                     <div class="header-icon">
                         <i class="ri-menu-3-fill"></i>
@@ -31,89 +31,28 @@
                                             <a asp-controller="Home" asp-action="Index">Trang chủ</a>
                                         </li>
                                         <li class="dropdown drop-list">
-                                            <a href="javascript:void(0)" class="dropdown-arrow">
+                                            <a asp-action="List" asp-controller="Product" class="dropdown-arrow">
                                                 Danh mục<i class="ri-arrow-down-s-line"></i>
                                             </a>
                                             <ul class="mega-menu d-block" style="width:60em">
                                                 <li class="d-flex">
                                                     <span class="bg"></span>
-                                                    <ul class="d-block mega-block">
-                                                        <li class="menu_title">
-                                                            <a href="javascript:void(0)">Giày cỏ nhân tạo</a>
-                                                        </li>
-                                                        <li>
-                                                            <a asp-action="List" asp-controller="Product">
-                                                                Giày bóng đá adidas
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a asp-action="List" asp-controller="Product">
-                                                                Giày bóng đá nike
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a asp-action="List" asp-controller="Product">
-                                                                Giày bóng đá puma
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a asp-action="List" asp-controller="Product">
-                                                                Giày bóng đá mizuno
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a asp-action="List" asp-controller="Product">
-                                                                Giày bóng đá 3 sọc
-                                                            </a>
-                                                        </li>
-
-                                                    </ul>
-                                                    <ul class="d-block mega-block">
-                                                        <li class="menu_title">
-                                                            <a href="javascript:void(0)">Giày Futsal</a>
-                                                        </li>
-                                                        <li>
-                                                            <a asp-action="List" asp-controller="Product">
-                                                                Giày Futsal adidas
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a asp-action="List" asp-controller="Product">
-                                                                Giày Futsal kamito
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a asp-action="List" asp-controller="Product">
-                                                                Shop
-                                                                Full Width
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a asp-action="List" asp-controller="Product">
-                                                                Giày Futsak Pan
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                    <ul class="d-block mega-block">
-                                                        <li class="menu_title">
-                                                            <a href="javascript:void(0)">Quần Áo Bóng Đá</a>
-                                                        </li>
-                                                        <li>
-                                                            <a asp-action="List" asp-controller="Product">
-                                                                Quần áo thi đấu clb
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                    <ul class="d-block mega-block">
-                                                        <li class="menu_title">
-                                                            <a href="javascript:void(0)">Phụ Kiện Bóng Đá</a>
-                                                        </li>
-                                                        <li>
-                                                            <a asp-action="List" asp-controller="Product">
-                                                                Phụ kiện bóng đá
-                                                            </a>
-                                                        </li>
-                                                    </ul>
+                                                    @foreach (var category in ViewBag.Categories)
+                                                    {
+                                                        <ul class="d-block mega-block">
+                                                            <li class="menu_title">
+                                                                <a href="javascript:void(0)">@category.Name</a>
+                                                            </li>
+                                                            @foreach (var subCategory in category.Items)
+                                                            {
+                                                                <li>
+                                                                    <a asp-route-categoryId="@subCategory.Id" asp-action="List" asp-controller="Product">
+                                                                        @subCategory.Name
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    }
                                                 </li>
                                             </ul>
                                         </li>
@@ -143,70 +82,32 @@
                     <div class="mn-menu-inner">
                         <div class="mn-menu-content">
                             <ul>
+                                @foreach (var category in ViewBag.Categories)
+                                {
+
+                                }
                                 <li>
                                     <a asp-controller="Home" asp-action="Index">Trang chủ</a>
                                 </li>
                                 <li>
-                                    <a href="javascript:void(0)">Danh mục</a>
+                                    <a asp-action="List" asp-controller="Product">Danh mục</a>
                                     <ul class="sub-menu">
-                                        <li>
-                                            <a href="javascript:void(0)">Classic</a>
-                                            <ul class="sub-menu">
-                                                <li>
-                                                    <a asp-action="List" asp-controller="Product">
-                                                        Shop Right
-                                                        sidebar
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a asp-action="List" asp-controller="Product">
-                                                        Banner
-                                                        Right sidebar
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a asp-action="List" asp-controller="Product">
-                                                        Shop Full
-                                                        Width
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a asp-action="List" asp-controller="Product">
-                                                        Banner Full
-                                                        Width
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)">List</a>
-                                            <ul class="sub-menu">
-                                                <li>
-                                                    <a asp-action="List" asp-controller="Product">
-                                                        Shop Right
-                                                        sidebar
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a asp-action="List" asp-controller="Product">
-                                                        Banner
-                                                        Right sidebar
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a asp-action="List" asp-controller="Product">
-                                                        Shop
-                                                        Full Width
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a asp-action="List" asp-controller="Product">
-                                                        Banner
-                                                        Full Width
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </li>
+                                        @foreach (var category in ViewBag.Categories)
+                                        {
+                                            <li>
+                                                <a href="javascript:void(0)">@category.Name</a>
+                                                <ul class="sub-menu">
+                                                    @foreach (var subCategory in category.Items)
+                                                    {
+                                                        <li>
+                                                            <a asp-route-categoryId="@subCategory.Id" asp-action="List" asp-controller="Product">
+                                                                @subCategory.Name
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </li>
+                                        }
                                     </ul>
                                 </li>
                                 <li>
@@ -244,7 +145,7 @@
                 </div>
                 <!-- Main menu icons -->
                 <div class="mn-tool-icons">
-                    
+
                     <div class="mn-tool-user">
                         <a href="javascript:void(0)" class="mn-main-user">
                             <svg class="svg-icon" viewBox="0 0 1024 1024" version="1.1"
@@ -274,7 +175,7 @@
                             }
                         </ul>
                     </div>
-                   
+
                     <div class="mn-tool-cart">
                         <a href="javascript:void(0)" class="mn-main-cart mn-cart-toggle">
                             <span class="label lbl-2">@cart.Count</span>

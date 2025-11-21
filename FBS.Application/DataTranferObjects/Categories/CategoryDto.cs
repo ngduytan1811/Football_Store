@@ -20,6 +20,9 @@ namespace FBS.Application.DataTranferObjects.Categories
         public int? Order { get; set; }
 
         public Guid? ParentId { get; set; }
+
         public string? ParentName { get; set; }
+
+        public List<CategoryDto>? Items { get; set; }
     }
 }
