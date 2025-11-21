@@ -225,9 +225,9 @@
                                     </div>
                                     <div class="mn-img">
                                         <a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-                                            <img class="main-img" src="~/theme/client/img/product/5.jpg"
+                                            <img class="main-img" src="~/theme/client/img/giay/30.jpg"
                                                  alt="product">
-                                            <img class="hover-img" src="~/theme/client/img/product/6.jpg"
+                                            <img class="hover-img" src="~/theme/client/img/giay/29.jpg"
                                                  alt="product">
                                         </a>
                                         <div class="mn-pro-loader"></div>
@@ -259,49 +259,47 @@
                                 </div>
                                 <div class="mn-product-detail">
                                     <div class="cat">
-                                        <a asp-controller="Product" asp-action="List">T-shirt</a>
+                                        <a asp-controller="Product" asp-action="List">@product.CategoryName</a>
                                         <ul>
-                                            <li>s</li>
-                                            <li>m</li>
-                                            <li>xl</li>
+                                            <li>Size: @product.Size</li>
                                         </ul>
                                     </div>
-                                    <h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">Cotton fabric T-shirt</a></h5>
+                                    <h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">@product.Name</a></h5>
                                     <div class="mn-price">
-                                        <div class="mn-price-new">$120</div>
-                                        <div class="mn-price-old">$130</div>
+                                        <div class="mn-price-new">@product.PriceString</div>
+                                        <div class="mn-price-old">@product.PriceString</div>
                                     </div>
                                     <div class="mn-pro-option">
                                         <div class="mn-pro-color">
                                             <ul class="mn-opt-swatch mn-change-img">
                                                 <li class="active">
                                                     <a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="mn-opt-clr-img active"
-                                                       data-src="./../theme/client/img/product/5.jpg"
-                                                       data-src-hover="../../theme/client/img/product/5.jpg"
+                                                       data-src="./../theme/client/img/product/29.jpg"
+                                                       data-src-hover="../../theme/client/img/product/30.jpg"
                                                        data-tooltip="Gray">
                                                         <span style="background-image:url('../../theme/client/img/product/bg/5.jpg');"></span>
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="mn-opt-clr-img"
-                                                       data-src="../../theme/client/img/product/6.jpg"
-                                                       data-src-hover="../../theme/client/img/product/6.jpg"
+                                                       data-src="../../theme/client/img/product/29.jpg"
+                                                       data-src-hover="../../theme/client/img/product/29.jpg"
                                                        data-tooltip="Orange">
                                                         <span style="background-image:url('../../theme/client/img/product/bg/6.jpg');"></span>
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="mn-opt-clr-img"
-                                                       data-src="../../theme/client/img/product/7.jpg"
-                                                       data-src-hover="../../theme/client/img/product/7.jpg"
+                                                       data-src="../../theme/client/img/product/30.jpg"
+                                                       data-src-hover="../../theme/client/img/product/30.jpg"
                                                        data-tooltip="Orange">
                                                         <span style="background-color:#e97e70;"></span>
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="mn-opt-clr-img"
-                                                       data-src="../../theme/client/img/product/8.jpg"
-                                                       data-src-hover="../../theme/client/img/product/8.jpg"
+                                                       data-src="../../theme/client/img/product/29.jpg"
+                                                       data-src-hover="../../theme/client/img/product/29.jpg"
                                                        data-tooltip="Orange">
                                                         <span style="background-color:#70e98a;"></span>
                                                     </a>
@@ -353,32 +351,37 @@
                                 </div>
                                 <div class="mn-product-detail">
                                     <div class="cat">
-                                        <a asp-controller="Product" asp-action="List">Shoes</a>
+                                        <a asp-controller="Product" asp-action="List">@product.CategoryName</a>
                                         <ul>
-                                            <li>7</li>
-                                            <li>8</li>
-                                            <li>10</li>
+                                            <ul>
+                                                <li>Size: @product.Size</li>
+                                            </ul>
                                         </ul>
                                     </div>
-                                    <h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">Special sport shoes</a></h5>
+                                    <h5>
+                                        <a asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id">
+                                            @product.Name
+                                        </a>
+                                    </h5>
                                     <div class="mn-price">
-                                        <div class="mn-price-new">$55</div>
+                                        <div class="mn-price-new">@product.PriceString</div>
+                                        <div class="mn-price-old">@product.PriceString</div>
                                     </div>
                                     <div class="mn-pro-option">
                                         <div class="mn-pro-color">
                                             <ul class="mn-opt-swatch mn-change-img">
                                                 <li>
                                                     <a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="mn-opt-clr-img"
-                                                       data-src="../../theme/client/img/product/9.jpg"
-                                                       data-src-hover="../../theme/client/img/product/9.jpg"
+                                                       data-src="../../theme/client/img/product/29.jpg"
+                                                       data-src-hover="../../theme/client/img/product/29.jpg"
                                                        data-tooltip="Orange">
                                                         <span style="background-color:#0e0e0e;"></span>
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="mn-opt-clr-img"
-                                                       data-src="~/theme/client/img/product/10.jpg"
-                                                       data-src-hover="~/theme/client/img/product/10.jpg"
+                                                       data-src="../../theme/client/img/product/30.jpg"
+                                                       data-src-hover="../../theme/client/img/product/30.jpg "
                                                        data-tooltip="Orange">
                                                         <span style="background-color:#c54367;"></span>
                                                     </a>
@@ -399,9 +402,9 @@
                                     </div>
                                     <div class="mn-img">
                                         <a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-                                            <img class="main-img" src="~/theme/client/img/product/1.jpg"
+                                            <img class="main-img" src="~/theme/client/img/product/30.jpg"
                                                  alt="product">
-                                            <img class="hover-img" src="~/theme/client/img/product/3.jpg"
+                                            <img class="hover-img" src="~/theme/client/img/product/30.jpg"
                                                  alt="product">
                                         </a>
                                         <div class="mn-pro-loader"></div>
@@ -433,32 +436,34 @@
                                 </div>
                                 <div class="mn-product-detail">
                                     <div class="cat">
-                                        <a asp-controller="Product" asp-action="List">Top</a>
+                                        <a asp-controller="Product" asp-action="List">@product.CategoryName</a>
                                         <ul>
-                                            <li>s</li>
-                                            <li>m</li>
+                                            <li>Size: @product.Size</li>
                                         </ul>
                                     </div>
-                                    <h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">Cotton fabric Top</a></h5>
+                                    <a asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id">
+                                        @product.Name
+                                    </a>
+                                    </h5>
                                     <div class="mn-price">
-                                        <div class="mn-price-new">$120</div>
-                                        <div class="mn-price-old">$130</div>
+                                        <div class="mn-price-new">@product.PriceString</div>
+                                        <div class="mn-price-old">@product.PriceString</div>
                                     </div>
                                     <div class="mn-pro-option">
                                         <div class="mn-pro-color">
                                             <ul class="mn-opt-swatch mn-change-img">
                                                 <li class="active">
                                                     <a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="mn-opt-clr-img active"
-                                                       data-src="../../theme/client/img/product/1.jpg"
-                                                       data-src-hover="../../theme/client/img/product/3.jpg"
+                                                       data-src="../../theme/client/img/product/30.jpg"
+                                                       data-src-hover="../../theme/client/img/product/30.jpg"
                                                        data-tooltip="Gray">
                                                         <span style="background-color:#f3f3f3;"></span>
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="mn-opt-clr-img"
-                                                       data-src="../../theme/client/img/product/2.jpg"
-                                                       data-src-hover="../../theme/client/img/product/4.jpg"
+                                                       data-src="../../theme/client/img/product/30.jpg"
+                                                       data-src-hover="../../theme/client/img/product/30.jpg"
                                                        data-tooltip="Orange">
                                                         <span style="background-color:#e8c2ff;"></span>
                                                     </a>
@@ -479,9 +484,9 @@
                                     </div>
                                     <div class="mn-img">
                                         <a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-                                            <img class="main-img" src="~/theme/client/img/product/11.jpg"
+                                            <img class="main-img" src="~/theme/client/img/product/30.jpg"
                                                  alt="product">
-                                            <img class="hover-img" src="~/theme/client/img/product/12.jpg"
+                                            <img class="hover-img" src="~/theme/client/img/product/30.jpg"
                                                  alt="product">
                                         </a>
                                         <div class="mn-pro-loader"></div>
@@ -511,42 +516,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mn-product-detail">
-                                    <div class="cat">
-                                        <a asp-controller="Product" asp-action="List">watches</a>
-                                    </div>
-                                    <h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">Mantu smart watch</a></h5>
-                                    <div class="mn-price">
-                                        <div class="mn-price-new">$955</div>
-                                        <div class="mn-price-old">$999</div>
-                                    </div>
-                                    <div class="mn-pro-option">
-                                        <div class="mn-pro-color">
-                                            <ul class="mn-opt-swatch mn-change-img">
-                                                <li>
-                                                    <a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="mn-opt-clr-img"
-                                                       data-src="../../theme/client/img/product/11.jpg"
-                                                       data-src-hover="../../theme/client/img/product/12.jpg"
-                                                       data-tooltip="Orange">
-                                                        <span style="background-color:#f3f3f3;"></span>
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="mn-opt-clr-img"
-                                                       data-src="../../theme/client/img/product/12.jpg"
-                                                       data-src-hover="../../theme/client/img/product/11.jpg"
-                                                       data-tooltip="Orange">
-                                                        <span style="background-color:#242424;"></span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <a href="javascript:void(0);" class="mn-wishlist" data-tooltip
-                                           title="Wishlist">
-                                            <i class="ri-heart-line"></i>
-                                        </a>
-                                    </div>
-                                </div>
+                             
                             </div>
                             <div class="mn-product-card">
                                 <div class="mn-product-img">
@@ -707,150 +677,10 @@
                 <div class="mn-shop-sidebar col-lg-3 col-md-12 m-t-991">
                     <div id="shop_sidebar">
                         <div class="mn-sidebar-wrap">
-                            <!-- Sidebar Filters Block -->
-                            <div class="mn-sidebar-block drop">
-                                <div class="mn-sb-title">
-                                    <h3 class="mn-sidebar-title">Filters</h3>
-                                </div>
-                                <div class="mn-sb-block-content p-t-15">
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void(0)"
-                                               class="mn-sidebar-block-item main drop">clothes</a>
-                                            <ul style="display: block;">
-                                                <li>
-                                                    <div class="mn-sidebar-sub-item">
-                                                        <a asp-controller="Product" asp-action="Detail" asp-router-productId="124">
-                                                            Men
-                                                            <span>-25</span>
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="mn-sidebar-sub-item">
-                                                        <a asp-controller="Product" asp-action="Detail" asp-router-productId="124">
-                                                            Women
-                                                            <span>-52</span>
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="mn-sidebar-sub-item">
-                                                        <a asp-controller="Product" asp-action="Detail" asp-router-productId="124">
-                                                            Boy
-                                                            <span>-40</span>
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="mn-sb-block-content">
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void(0)"
-                                               class="mn-sidebar-block-item main drop">cosmetics</a>
-                                            <ul>
-                                                <li>
-                                                    <div class="mn-sidebar-sub-item">
-                                                        <a asp-controller="Product" asp-action="List">
-                                                            Shampoo
-                                                            <span>-25</span>
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="mn-sidebar-sub-item">
-                                                        <a asp-controller="Product" asp-action="List">
-                                                            Body Wash
-                                                            <span>-52</span>
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="mn-sidebar-sub-item">
-                                                        <a asp-controller="Product" asp-action="List">
-                                                            Sunscreen
-                                                            <span>-40</span>
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="mn-sidebar-sub-item">
-                                                        <a asp-controller="Product" asp-action="List">
-                                                            Makeup
-                                                            <span>-35</span>
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="mn-sb-block-content">
-                                    <ul>
-                                        <li>
-                                            <a asp-controller="Product" asp-action="List"
-                                               class="mn-sidebar-block-item main">shoes<span>-15</span></a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="mn-sb-block-content">
-                                    <ul>
-                                        <li>
-                                            <a asp-controller="Product" asp-action="List"
-                                               class="mn-sidebar-block-item main">bag<span>-27</span></a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="mn-sb-block-content">
-                                    <ul>
-                                        <li>
-                                            <a href="javascript:void(0)"
-                                               class="mn-sidebar-block-item main drop">electronics</a>
-                                            <ul>
-                                                <li>
-                                                    <div class="mn-sidebar-sub-item">
-                                                        <a asp-controller="Product" asp-action="List">
-                                                            Laptop
-                                                            <span>-25</span>
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="mn-sidebar-sub-item">
-                                                        <a asp-controller="Product" asp-action="List">
-                                                            Air Conditioner
-                                                            <span>-52</span>
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="mn-sidebar-sub-item">
-                                                        <a asp-controller="Product" asp-action="List">
-                                                            Trimmer
-                                                            <span>-40</span>
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="mn-sidebar-sub-item">
-                                                        <a asp-controller="Product" asp-action="List">
-                                                            Watches
-                                                            <span>-35</span>
-                                                        </a>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Sidebar Brand Block -->
+
                             <div class="mn-sidebar-block">
                                 <div class="mn-sb-title">
-                                    <h3 class="mn-sidebar-title">Brand</h3>
+                                    <h3 class="mn-sidebar-title">Thương hiệu</h3>
                                 </div>
                                 <div class="mn-sb-block-content">
                                     <ul>
@@ -858,7 +688,7 @@
                                             <div class="mn-sidebar-block-item">
                                                 <input type="checkbox" checked>
                                                 <a href="javascript:void(0)">
-                                                    <span>Zencart Mart</span>
+                                                    <span>Adidas</span>
                                                 </a>
                                                 <span class="checked"></span>
                                             </div>
@@ -867,7 +697,7 @@
                                             <div class="mn-sidebar-block-item">
                                                 <input type="checkbox">
                                                 <a href="javascript:void(0)">
-                                                    <span>Xeta Store</span>
+                                                    <span>Nike</span>
                                                 </a>
                                                 <span class="checked"></span>
                                             </div>
@@ -876,7 +706,7 @@
                                             <div class="mn-sidebar-block-item">
                                                 <input type="checkbox">
                                                 <a href="javascript:void(0)">
-                                                    <span>Pili Market</span>
+                                                    <span>Puma</span>
                                                 </a>
                                                 <span class="checked"></span>
                                             </div>
@@ -885,7 +715,16 @@
                                             <div class="mn-sidebar-block-item">
                                                 <input type="checkbox">
                                                 <a href="javascript:void(0)">
-                                                    <span>Indiana Store</span>
+                                                    <span>Mizuno</span>
+                                                </a>
+                                                <span class="checked"></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="mn-sidebar-block-item">
+                                                <input type="checkbox">
+                                                <a href="javascript:void(0)">
+                                                    <span>Wika</span>
                                                 </a>
                                                 <span class="checked"></span>
                                             </div>
@@ -896,35 +735,56 @@
                             <!-- Sidebar Weight Block -->
                             <div class="mn-sidebar-block">
                                 <div class="mn-sb-title">
-                                    <h3 class="mn-sidebar-title">Size</h3>
+                                    <h3 class="mn-sidebar-title">Kích cỡ</h3>
                                 </div>
                                 <div class="mn-sb-block-content">
                                     <ul>
                                         <li>
                                             <div class="mn-sidebar-block-item">
                                                 <input type="checkbox" value="" checked>
-                                                <a asp-controller="Product" asp-action="Detail" asp-router-productId="124">S - Size</a>
+                                                <a asp-controller="Product" asp-action="List">36 - Size</a>
                                                 <span class="checked"></span>
                                             </div>
                                         </li>
                                         <li>
                                             <div class="mn-sidebar-block-item">
                                                 <input type="checkbox" value="">
-                                                <a asp-controller="Product" asp-action="Detail" asp-router-productId="124">M - Size</a>
+                                                <a asp-controller="Product" asp-action="List">37 - Size</a>
                                                 <span class="checked"></span>
                                             </div>
                                         </li>
                                         <li>
                                             <div class="mn-sidebar-block-item">
                                                 <input type="checkbox" value="">
-                                                <a asp-controller="Product" asp-action="Detail" asp-router-productId="124">L - Size</a>
+                                                <a asp-controller="Product" asp-action="List">38- Size</a>
                                                 <span class="checked"></span>
                                             </div>
                                         </li>
                                         <li>
                                             <div class="mn-sidebar-block-item">
                                                 <input type="checkbox" value="">
-                                                <a asp-controller="Product" asp-action="Detail" asp-router-productId="124">XL - Size</a>
+                                                <a asp-controller="Product" asp-action="List">39- Size</a>
+                                                <span class="checked"></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="mn-sidebar-block-item">
+                                                <input type="checkbox" value="">
+                                                <a asp-controller="Product" asp-action="List">40- Size</a>
+                                                <span class="checked"></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="mn-sidebar-block-item">
+                                                <input type="checkbox" value="">
+                                                <a asp-controller="Product" asp-action="List">41- Size</a>
+                                                <span class="checked"></span>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="mn-sidebar-block-item">
+                                                <input type="checkbox" value="">
+                                                <a asp-controller="Product" asp-action="List">42- Size</a>
                                                 <span class="checked"></span>
                                             </div>
                                         </li>
@@ -932,156 +792,27 @@
                                 </div>
                             </div>
                             <!-- Sidebar Color item -->
-                            <div class="mn-sidebar-block color-block mn-sidebar-block-clr">
-                                <div class="mn-sb-title">
-                                    <h3 class="mn-sidebar-title">Color</h3>
-                                </div>
-                                <div class="mn-sb-block-content">
-                                    <ul>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <span class="mn-clr-block"
-                                                      style="background-color:#c4d6f9;"></span>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <span class="mn-clr-block"
-                                                      style="background-color:#ff748b;"></span>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <span class="mn-clr-block"
-                                                      style="background-color:#000000;"></span>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li class="active">
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <span class="mn-clr-block"
-                                                      style="background-color:#2bff4a;"></span>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <span class="mn-clr-block"
-                                                      style="background-color:#ff7c5e;"></span>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <span class="mn-clr-block"
-                                                      style="background-color:#f155ff;"></span>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <span class="mn-clr-block"
-                                                      style="background-color:#ffef00;"></span>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <span class="mn-clr-block"
-                                                      style="background-color:#c89fff;"></span>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <span class="mn-clr-block"
-                                                      style="background-color:#7bfffa;"></span>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <span class="mn-clr-block"
-                                                      style="background-color:#56ffc1;"></span>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <span class="mn-clr-block"
-                                                      style="background-color:#ffdb9f;"></span>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <span class="mn-clr-block"
-                                                      style="background-color:#9f9f9f;"></span>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <span class="mn-clr-block"
-                                                      style="background-color:#6556ff;"></span>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
+
+                            <div class="mn-sb-title">
+                                <h3 class="mn-sidebar-title">Giá</h3>
                             </div>
-                            <!-- Sidebar Price Block -->
-                            <div class="mn-sidebar-block">
-                                <div class="mn-sb-title">
-                                    <h3 class="mn-sidebar-title">Price</h3>
-                                </div>
-                                <div class="mn-sb-block-content mn-price-range-slider es-price-slider">
-                                    <div class="mn-price-filter">
-                                        <div class="mn-price-input">
-                                            <label class="filter__label">
-                                                From<input type="text" class="filter__input">
-                                            </label>
-                                            <span class="mn-price-divider"></span>
-                                            <label class="filter__label">
-                                                To<input type="text" class="filter__input">
-                                            </label>
-                                        </div>
-                                        <div id="mn-sliderPrice" class="filter__slider-price" data-min="0"
-                                             data-max="250" data-step="10"></div>
+                            <div class="mn-sb-block-content mn-price-range-slider es-price-slider">
+                                <div class="mn-price-filter">
+                                    <div class="mn-price-input">
+                                        <label class="filter__label">
+                                            Thấp nhất<input type="text" class="filter__input">
+                                        </label>
+                                        <span class="mn-price-divider"></span>
+                                        <label class="filter__label">
+                                            Cao nhất<input type="text" class="filter__input">
+                                        </label>
                                     </div>
-                                </div>
-                            </div>
-                            <!-- Sidebar tags -->
-                            <div class="mn-sidebar-block">
-                                <div class="mn-sb-title">
-                                    <h3 class="mn-sidebar-title">Tags</h3>
-                                </div>
-                                <div class="mn-tag-block mn-sb-block-content">
-                                    <a asp-controller="Product" asp-action="List"><span>Clothes</span></a>
-                                    <a asp-controller="Product" asp-action="List"><span>Fruits</span></a>
-                                    <a asp-controller="Product" asp-action="List"><span>Snacks</span></a>
-                                    <a asp-controller="Product" asp-action="List"><span>Dairy</span></a>
-                                    <a asp-controller="Product" asp-action="List"><span>Seafood</span></a>
-                                    <a asp-controller="Product" asp-action="List"><span>Fastfood</span></a>
-                                    <a asp-controller="Product" asp-action="List"><span>Toys</span></a>
+                                    <div id="mn-sliderPrice" class="filter__slider-price" data-min="0"
+                                         data-max="3000" data-step="10"></div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
