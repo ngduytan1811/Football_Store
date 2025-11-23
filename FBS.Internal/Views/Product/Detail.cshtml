@@ -86,7 +86,7 @@
                                                 <span>Size</span>
                                                 <div class="mn-pro-variation-content">
                                                     <ul>
-                                                        <li><span>@product.Size</span></li>
+                                                        <li><span>@product.Sizes</span></li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -261,7 +261,7 @@
                                     <div class="cat">
                                         <a asp-controller="Product" asp-action="List">@product.CategoryName</a>
                                         <ul>
-                                            <li>Size: @product.Size</li>
+                                            <li>Size: @product.Sizes</li>
                                         </ul>
                                     </div>
                                     <h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">@product.Name</a></h5>
@@ -354,7 +354,7 @@
                                         <a asp-controller="Product" asp-action="List">@product.CategoryName</a>
                                         <ul>
                                             <ul>
-                                                <li>Size: @product.Size</li>
+                                                <li>Size: @product.Sizes</li>
                                             </ul>
                                         </ul>
                                     </div>
@@ -438,7 +438,7 @@
                                     <div class="cat">
                                         <a asp-controller="Product" asp-action="List">@product.CategoryName</a>
                                         <ul>
-                                            <li>Size: @product.Size</li>
+                                            <li>Size: @product.Sizes</li>
                                         </ul>
                                     </div>
                                     <a asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id">

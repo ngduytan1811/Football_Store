@@ -33,7 +33,7 @@ namespace FBS.Application.Services
         public async Task<List<ProductDto>> GetRandomProducts()
         {
             var queryProduct = await _unitOfWork.GetRepositoryReadOnlyAsync<Product>().QueryAll();
-            queryProduct = queryProduct.Include(x => x.ProductSize).Include(x => x.ProductColor).Include(x => x.Category);
+            queryProduct = queryProduct.Include(x => x.ProductSizes).Include(x => x.ProductColor).Include(x => x.Category);
 
             var query = queryProduct.OrderBy(x => Guid.NewGuid())
                 .Take(6).Select(product => new ProductDto
@@ -45,7 +45,8 @@ namespace FBS.Application.Services
                     Price = product.Price,
                     Name = product.Name,
                     Color = product.ProductColor.Color,
-                    Size = product.ProductSize.Size,
+                    Sizes = product.ProductSizes.Select(ps => ps.Size).ToList(),
+
                     Description = product.Description,
                     CreatedAt = product.CreatedAt,
                 });
@@ -58,7 +59,7 @@ namespace FBS.Application.Services
             var result = new BaseTableResponse<ProductDto>();
             var queryProduct = await _unitOfWork.GetRepositoryReadOnlyAsync<Product>().QueryAll();
             var queryProductReview = await _unitOfWork.GetRepositoryReadOnlyAsync<ProductReview>().QueryAll();
-            queryProduct = queryProduct.Include(x => x.ProductSize).Include(x => x.ProductColor).Include(x => x.Category);
+            queryProduct = queryProduct.Include(x => x.ProductSizes).Include(x => x.ProductColor).Include(x => x.Category);
             var searchData = dto.SearchParams ?? new ProductSearchDto();
 
             if (searchData.CategoryId.HasValue)
@@ -77,7 +78,8 @@ namespace FBS.Application.Services
                 Price = product.Price,
                 Name = product.Name,
                 Color = product.ProductColor.Color,
-                Size = product.ProductSize.Size,
+                Sizes = product.ProductSizes.Select(ps => ps.Size).ToList(),
+
                 Description = product.Description,
                 CreatedAt = product.CreatedAt,
             });
@@ -117,7 +119,7 @@ namespace FBS.Application.Services
             var queryProduct = await _unitOfWork.GetRepositoryReadOnlyAsync<Product>().QueryAll();
             var queryProductReview = await _unitOfWork.GetRepositoryReadOnlyAsync<ProductReview>().QueryAll();
 
-            queryProduct = queryProduct.Include(x => x.ProductSize).Include(x => x.ProductColor);
+            queryProduct = queryProduct.Include(x => x.ProductSizes).Include(x => x.ProductColor);
             var product = queryProduct.FirstOrDefault(i => i.Id == productId);
 
             if (product == null)
@@ -132,9 +134,13 @@ namespace FBS.Application.Services
                 Description = product.Description,
                 Status = product.Status,
                 Color = product.ProductColor.Color,
-                Size = product.ProductSize.Size,
+                Sizes = product.ProductSizes.Select(ps => ps.Size).ToList(),
                 Price = product.Price,
+
+               
+                CategoryId = product.CategoryId
             };
+
 
             var reivews = queryProductReview.Where(x => x.ProductId == product.Id).ToList();
 
@@ -187,11 +193,13 @@ namespace FBS.Application.Services
                 Color = dto.Color,
             });
 
-            await productSizeRep.Add(new ProductSize
+            var productSizesinsert = dto.Sizes.Select(x=>new ProductSize
             {
                 Product = newProduct,
-                Size = dto.Size,
-            });
+                Size = x,
+            }).ToList();
+            await productSizeRep.Add(productSizesinsert);
+           
 
             await _unitOfWork.SaveChangesAsync();
 
@@ -213,25 +221,46 @@ namespace FBS.Application.Services
                 return result;
             }
 
+            // GET COLOR
             var productColor = await productColorRep.Single(x => x.ProductId == product.Id);
-            var productSize = await productSizeRep.Single(x => x.ProductId == product.Id);
 
+            // GET ALL SIZES (dùng QueryCondition)
+            var query = await productSizeRep.QueryCondition(x => x.ProductId == product.Id);
+            var productSizes = await query.ToListAsync();
+
+            // UPDATE PRODUCT INFO
             product.Name = dto.Name.Trim();
             product.CategoryId = dto.CategoryId;
             product.Status = dto.Status;
             product.Price = dto.Price;
             product.Description = dto.Description;
 
+            // UPDATE COLOR
             productColor.Color = dto.Color;
-            productSize.Size = dto.Size;
 
+            // ❗ DELETE OLD SIZES
+            foreach (var item in productSizes)
+            {
+                await productSizeRep.Delete(item);
+            }
+
+            // ❗ ADD NEW SIZES (distinct tránh trùng)
+            var newSizes = dto.Sizes.Distinct().Select(size => new ProductSize
+            {
+                ProductId = product.Id,
+                Size = size
+            }).ToList();
+
+            await productSizeRep.Add(newSizes);
+
+            // SAVE ALL
             await productRep.Update(product);
-            await productSizeRep.Update(productSize);
             await productColorRep.Update(productColor);
             await _unitOfWork.SaveChangesAsync();
 
             return result;
         }
+
 
         public async Task<BaseResponse<string>> DeleteProduct(Guid id)
         {

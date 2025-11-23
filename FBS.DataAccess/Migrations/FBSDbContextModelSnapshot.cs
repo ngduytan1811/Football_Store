@@ -497,8 +497,7 @@ namespace FBS.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId")
-                        .IsUnique();
+                    b.HasIndex("ProductId");
 
                     b.ToTable("ProductSizes");
                 });
@@ -724,7 +723,7 @@ namespace FBS.Infrastructure.Migrations
                             IsAdmin = true,
                             LockoutEnabled = true,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAELJ4WXb0p6MqC+EM50xoQR+16kpz7iovH+0CSHIVqTYq89Rs44KdmI9wGLhx0+4CHQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJJgwjK1jjURlVbZbtLW6mNhGnz1ztH1DldOzeTZAyAZ6AJOyt7EXIR1TgHp9lTN9g==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "ZY5BGSWBARTE74T6ZLO7WKKMMILBEB2E",
                             Status = 1,
@@ -893,8 +892,8 @@ namespace FBS.Infrastructure.Migrations
             modelBuilder.Entity("FBS.Infrastructure.Entities.ProductSize", b =>
                 {
                     b.HasOne("FBS.Infrastructure.Entities.Product", "Product")
-                        .WithOne("ProductSize")
-                        .HasForeignKey("FBS.Infrastructure.Entities.ProductSize", "ProductId")
+                        .WithMany("ProductSizes")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -981,8 +980,7 @@ namespace FBS.Infrastructure.Migrations
 
                     b.Navigation("ProductReviews");
 
-                    b.Navigation("ProductSize")
-                        .IsRequired();
+                    b.Navigation("ProductSizes");
                 });
 
             modelBuilder.Entity("FBS.Infrastructure.Entities.Role", b =>

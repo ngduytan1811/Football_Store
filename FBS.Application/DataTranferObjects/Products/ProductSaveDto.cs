@@ -15,7 +15,8 @@ namespace FBS.Application.DataTranferObjects.Products
         [Required(ErrorMessage ="Tên sản phẩm là bắt buộc")]
         public string? Name { get; set; }
         public string? Color { get; set; }
-        public string? Size { get; set; }
+        public List<string> Sizes { get; set; } = new();
+
         public string? Description { get; set; }
         public string? Detail { get; set; }
         public string? Image { get; set; }

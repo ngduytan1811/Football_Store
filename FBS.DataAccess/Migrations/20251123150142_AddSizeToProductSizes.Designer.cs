@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FBS.Infrastructure.Migrations
 {
     [DbContext(typeof(FBSDbContext))]
-    [Migration("20251110090848_InitialDatabase")]
-    partial class InitialDatabase
+    [Migration("20251123150142_AddSizeToProductSizes")]
+    partial class AddSizeToProductSizes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,9 +31,6 @@ namespace FBS.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("Code")
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
@@ -46,17 +43,14 @@ namespace FBS.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("IsOutstanding")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<string>("Logo")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("Order")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("char(36)");
 
                     b.Property<int?>("Status")
                         .HasColumnType("int");
@@ -292,6 +286,225 @@ namespace FBS.Infrastructure.Migrations
                     b.ToTable("Orders");
                 });
 
+            modelBuilder.Entity("FBS.Infrastructure.Entities.OrderItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid?>("OrderId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<string>("ProductColor")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid?>("ProductId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ProductSize")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("FBS.Infrastructure.Entities.Product", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Detail")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("Discount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(65,30)");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("FBS.Infrastructure.Entities.ProductColor", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.ToTable("ProductColors");
+                });
+
+            modelBuilder.Entity("FBS.Infrastructure.Entities.ProductReview", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid?>("ProductId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductReviews");
+                });
+
+            modelBuilder.Entity("FBS.Infrastructure.Entities.ProductSize", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Size")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductSizes");
+                });
+
             modelBuilder.Entity("FBS.Infrastructure.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -513,7 +726,7 @@ namespace FBS.Infrastructure.Migrations
                             IsAdmin = true,
                             LockoutEnabled = true,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAELgW7e/rjU/FIN7ITqsuXa6ORhedpxtieoJUr7NQUOQjVD/Btjt4d/yZkqEvntMBwg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJJgwjK1jjURlVbZbtLW6mNhGnz1ztH1DldOzeTZAyAZ6AJOyt7EXIR1TgHp9lTN9g==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "ZY5BGSWBARTE74T6ZLO7WKKMMILBEB2E",
                             Status = 1,
@@ -635,6 +848,61 @@ namespace FBS.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("FBS.Infrastructure.Entities.OrderItem", b =>
+                {
+                    b.HasOne("FBS.Infrastructure.Entities.Order", "Order")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId");
+
+                    b.HasOne("FBS.Infrastructure.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("FBS.Infrastructure.Entities.Product", b =>
+                {
+                    b.HasOne("FBS.Infrastructure.Entities.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("FBS.Infrastructure.Entities.ProductColor", b =>
+                {
+                    b.HasOne("FBS.Infrastructure.Entities.Product", "Product")
+                        .WithOne("ProductColor")
+                        .HasForeignKey("FBS.Infrastructure.Entities.ProductColor", "ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("FBS.Infrastructure.Entities.ProductReview", b =>
+                {
+                    b.HasOne("FBS.Infrastructure.Entities.Product", "Product")
+                        .WithMany("ProductReviews")
+                        .HasForeignKey("ProductId");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("FBS.Infrastructure.Entities.ProductSize", b =>
+                {
+                    b.HasOne("FBS.Infrastructure.Entities.Product", "Product")
+                        .WithMany("ProductSizes")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("FBS.Infrastructure.Entities.RoleClaim", b =>
                 {
                     b.HasOne("FBS.Infrastructure.Entities.Role", "Role")
@@ -696,6 +964,26 @@ namespace FBS.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FBS.Infrastructure.Entities.Category", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("FBS.Infrastructure.Entities.Order", b =>
+                {
+                    b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("FBS.Infrastructure.Entities.Product", b =>
+                {
+                    b.Navigation("ProductColor")
+                        .IsRequired();
+
+                    b.Navigation("ProductReviews");
+
+                    b.Navigation("ProductSizes");
                 });
 
             modelBuilder.Entity("FBS.Infrastructure.Entities.Role", b =>

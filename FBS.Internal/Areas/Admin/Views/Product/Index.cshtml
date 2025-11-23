@@ -36,7 +36,8 @@
                                     <td>@product.Name</td>
                                     <td>@(product.CategoryName ?? "--")</td>
                                     <td>@(product.Price.HasValue? product.PriceString: "--")</td>
-                                    <td>@product.Size</td>
+                                    <td>@string.Join(", ", product.Sizes)</td>
+
                                     <td>@product.Color</td>
                                     <td>@product.StatusName</td>
                                     <td>

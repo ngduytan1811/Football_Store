@@ -13,7 +13,7 @@ namespace FBS.Application.DataTranferObjects.Products
         public string? Image { get; set; }
         public decimal? Price { get; set; }
         public string? PriceString => Price.HasValue ? Price.Value.ToString("C", new CultureInfo("vi-VN")) : string.Empty;
-        public string? Size { get; set; }
+        public List<string> Sizes { get; set; } = new();
         public string? Color { get; set; }
         public int? Discount { get; set; }
 

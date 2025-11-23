@@ -46,7 +46,7 @@ namespace FBS.Internal.Controllers
                 ProductId = request.ProductId,
                 ProductName = productData?.Data?.Name,
                 Price = productData?.Data?.Price,
-                Size = productData?.Data?.Size,
+               
                 Color = productData?.Data?.Color,
             };
 

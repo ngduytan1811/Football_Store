@@ -54,6 +54,9 @@ namespace FBS.Internal.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
+                var dataDrop = await _categoryService.GetCategoryDropdown();
+                ViewData["Categories"] = dataDrop?.Data;
+                
                 return View(request);
             }
 
@@ -62,14 +65,16 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 var result = await _productService.CreateProduct(request);
                 if (result.Type != GlobalConstants.ResponseType.Success)
                 {
-                    return View();
+                    return View(request);
                 }
 
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                return View();
+                var dataDrop = await _categoryService.GetCategoryDropdown();
+                ViewData["Categories"] = dataDrop?.Data;
+                return View(request);
             }
         }
 
@@ -90,9 +95,10 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 Name = data.Data.Name,
                 Description = data.Data.Description,
                 Price = data.Data.Price,
-                Size = data.Data.Size,
+                Sizes = data.Data.Sizes,
                 Color = data.Data.Color,
                 Status = data.Data.Status,
+                CategoryId = data.Data.CategoryId,
             };
 
             return View(model);

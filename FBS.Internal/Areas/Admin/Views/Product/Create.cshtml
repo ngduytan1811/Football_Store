@@ -70,13 +70,14 @@
                                     <div class="col-sm-6">
                                         <div class="mb-3">
                                             <label class="form-label">Thương hiệu</label>
-                                            <select class="form-select">
-                                                <option>Chọn..</option>
-                                                <option>Levi's</option>
-                                                <option>Hudson</option>
-                                                <option>Denizen</option>
-                                                <option>Spykar</option>
+                                            <select asp-for="CategoryId" class="form-select">
+                                                <option selected hidden value="">Chọn..</option>
+                                                @foreach (var cate in categoryDropdown)
+                                                {
+                                                    <option value="@cate.Id">@cate.Name</option>
+                                                }
                                             </select>
+
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
@@ -109,17 +110,19 @@
                             <div class="product-group">
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Kích thước</label>
-                                            <select asp-for="Size" class="form-select">
-                                                <option value="39">39 </option>
-                                                <option value="40">40 </option>
-                                                <option value="41">41 </option>
-                                                <option value="42">42 </option>
-                                                <option value="43">43</option>
-                                            </select>
+                                        <label class="form-label">Kích thước</label>
+                                        <div class="form-group">
+                                            @foreach (var s in new[] { "39", "40", "41", "42", "43" })
+                                            {
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="Sizes[]" value="@s" />
+
+                                                    <label class="form-check-label" for="size_@s">@s</label>
+                                                </div>
+                                            }
                                         </div>
                                     </div>
+
                                     <div class="col-sm-6">
                                         <div class="mb-3">
                                             <label class="form-label">Giá</label>

@@ -20,10 +20,11 @@ namespace FBS.Infrastructure.Entities
         public decimal? Price { get; set; }
         public int? Discount { get; set; }
 
-        public virtual ICollection<ProductReview> ProductReviews { get; set; }
+        public virtual ICollection<ProductReview> ProductReviews { get; set; } = new List<ProductReview>();
+
 
         public virtual ProductColor ProductColor { get; set; }
 
-        public virtual ProductSize ProductSize { get; set; }
+        public virtual ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
     }
 }
