@@ -6,8 +6,6 @@ using FBS.Infrastructure.Repositories;
 using FBS.Infrastructure.Repositories.Interfaces;
 using FBS.Internal.Utils;
 using FBS.Shared.Constants;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -19,11 +17,17 @@ namespace FBS.Internal.Controllers
         private readonly IProductService _productService;
         private readonly IOrderService _orderService;
 
-        public CartController(UserManager<User> userManager, IProductService productService, IOrderService orderService, IUnitOfWork unitOfWork) : base(userManager, unitOfWork)
+        public CartController(
+            UserManager<User> userManager,
+            IProductService productService,
+            IOrderService orderService,
+            IUnitOfWork unitOfWork
+        ) : base(userManager, unitOfWork)
         {
             _productService = productService;
             _orderService = orderService;
         }
+
         public IActionResult Index()
         {
             return View();
@@ -34,6 +38,9 @@ namespace FBS.Internal.Controllers
             return View();
         }
 
+        // =============================
+        // 🟦 Thêm vào giỏ hàng
+        // =============================
         [HttpPost]
         public async Task<IActionResult> AddToCart(CartItemDto request)
         {
@@ -46,11 +53,11 @@ namespace FBS.Internal.Controllers
                 ProductId = request.ProductId,
                 ProductName = productData?.Data?.Name,
                 Price = productData?.Data?.Price,
-               
                 Color = productData?.Data?.Color,
+                Size = request.Size
             };
 
-            var existingItem = cart.FirstOrDefault(i => i.ProductId == request.ProductId);
+            var existingItem = cart.FirstOrDefault(i => i.ProductId == request.ProductId && i.Size == request.Size);
 
             if (existingItem != null)
             {
@@ -66,6 +73,9 @@ namespace FBS.Internal.Controllers
             return RedirectToAction("Index", "Cart");
         }
 
+        // =============================
+        // 🟥 Xóa sản phẩm khỏi giỏ hàng
+        // =============================
         public IActionResult RemoveFromCart(Guid productId)
         {
             var cart = GetCart();
@@ -80,6 +90,29 @@ namespace FBS.Internal.Controllers
             return RedirectToAction("Index");
         }
 
+        // =============================
+        // 🟩 Cập nhật số lượng — thêm hàm này !!!
+        // =============================
+        [HttpPost]
+        public IActionResult UpdateQuantity(Guid productId, string size, int quantity)
+        {
+            var cart = GetCart();
+
+            var item = cart.FirstOrDefault(x => x.ProductId == productId && x.Size == size);
+            if (item != null)
+            {
+                if (quantity > 0)
+                    item.Quantity = quantity;
+
+                SaveCart(cart);
+            }
+
+            return Json(new { success = true });
+        }
+
+        // =============================
+        // 🟦 Đặt hàng
+        // =============================
         [HttpPost]
         public async Task<IActionResult> Checkout(CheckoutDto request)
         {

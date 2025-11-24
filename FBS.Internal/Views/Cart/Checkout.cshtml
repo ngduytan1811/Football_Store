@@ -7,7 +7,8 @@
     
     decimal shipping = 80000;
 
-    decimal subtotal = cart.Sum(x => x.Price ?? 0);
+    decimal subtotal = cart.Sum(x => (x.Price ?? 0) * x.Quantity);
+
 
     decimal total = subtotal + shipping;
 

@@ -136,7 +136,8 @@
 												<div class="cat">
 													<a href="shop-right-sidebar.html">@product.CategoryName</a>
 														<ul>
-															<li>Size: @product.Sizes</li>
+														<li>Size: @string.Join(", ", product.Sizes)</li>
+
 														</ul>
 												</div>
 												<h5><a asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id">
@@ -149,37 +150,7 @@
 													<div class="mn-price-new">@product.PriceString</div>
 													<div class="mn-price-old">@product.PriceString</div>
 												</div>
-												<div class="mn-pro-option">
-													<div class="mn-pro-color">
-														<ul class="mn-opt-swatch mn-change-img">
-															<li>
-																<a asp-controller="Product" asp-action="List" class="mn-opt-clr-img"
-																   data-src="../../theme/client/img/product/29.jpg"
-																   data-src-hover="../../theme/client/img/product/30.jpg"
-																   data-tooltip="Orange">
-																	<span style="background-color:#de8abc;"></span>
-																</a>
-															</li>
-															<li>
-																<a asp-controller="Product" asp-action="List" class="mn-opt-clr-img"
-																   data-src="../../theme/client/img/product/29.jpg"
-																   data-src-hover="../../theme/client/img/product/30.jpg"
-																   data-tooltip="Orange">
-																	<span style="background-color:#5e68ce;"></span>
-																</a>
-															</li>
-															<li>
-																<a asp-controller="Product" asp-action="List" class="mn-opt-clr-img"
-																   data-src="../../theme/client/img/product/29.jpg"
-																   data-src-hover="../../theme/client/img/product/30.jpg"
-																   data-tooltip="Orange">
-																	<span style="background-color:#eee;"></span>
-																</a>
-															</li>
-														</ul>
-													</div>
-													
-												</div>
+												
 											</div>
 										</div>
 									</div>

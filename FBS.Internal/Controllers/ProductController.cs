@@ -1,4 +1,5 @@
-﻿using FBS.Application.DataTranferObjects.Products;
+﻿using FBS.Application.DataTranferObjects.Cart;
+using FBS.Application.DataTranferObjects.Products;
 using FBS.Application.Services.Interfaces;
 using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories;
@@ -39,15 +40,20 @@ namespace FBS.Internal.Controllers
         public async Task<IActionResult> Detail(Guid id)
         {
             var data = await _productService.FindById(id);
+
+            if (data?.Data == null)
+                return RedirectToAction("List");
+
+            var sizes = data.Data?.Sizes;
+            // Truyền Product vào ViewData
             ViewData["Product"] = data.Data;
-            return View();
+
+            // Truyền CartItemDto cho Form AddToCart (bắt buộc để asp-for hoạt động)
+            return View(new CartItemDto
+            {
+                ProductId = id
+            });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Review(ProductReviewSaveDto request)
-        {
-            var response = await _productService.CreateProductReview(request);
-            return RedirectToAction("Detail", new { id = request.ProductId });
-        }
     }
 }

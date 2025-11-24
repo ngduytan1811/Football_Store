@@ -117,41 +117,34 @@ namespace FBS.Application.Services
             var result = new BaseResponse<ProductDto>();
 
             var queryProduct = await _unitOfWork.GetRepositoryReadOnlyAsync<Product>().QueryAll();
-            var queryProductReview = await _unitOfWork.GetRepositoryReadOnlyAsync<ProductReview>().QueryAll();
+            queryProduct = queryProduct
+                .Include(x => x.ProductSizes)
+                .Include(x => x.ProductColor)
+                .Include(x => x.Category);
 
-            queryProduct = queryProduct.Include(x => x.ProductSizes).Include(x => x.ProductColor);
             var product = queryProduct.FirstOrDefault(i => i.Id == productId);
 
             if (product == null)
-            {
                 return result;
-            }
 
             result.Data = new ProductDto
             {
                 Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
+                Detail = product.Detail,
                 Status = product.Status,
                 Color = product.ProductColor.Color,
-                Sizes = product.ProductSizes.Select(ps => ps.Size).ToList(),
+                Image = product.Image,
+                CategoryId = product.CategoryId,
+                CategoryName = product.Category?.Name,
                 Price = product.Price,
-
-               
-                CategoryId = product.CategoryId
+                Sizes = product.ProductSizes.Select(ps => ps.Size).ToList()
             };
-
-
-            var reivews = queryProductReview.Where(x => x.ProductId == product.Id).ToList();
-
-            result.Data.Reviews = reivews.Select(x => new ProductReivewDto
-            {
-                FullName = x.FullName,
-                Message = x.Message
-            }).ToList();
 
             return result;
         }
+
 
         public async Task<BaseResponse<string>> CreateProductReview(ProductReviewSaveDto dto)
         {

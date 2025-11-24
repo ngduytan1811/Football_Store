@@ -1,0 +1,107 @@
+﻿@using FBS.Application.DataTranferObjects.Products
+@using FBS.Application.DataTranferObjects.Cart
+
+@{
+    var product = (ProductDto)ViewData["Product"] ?? new ProductDto();
+}
+
+@model CartItemDto
+
+<style>
+    .size-item {
+        display: inline-flex;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 2px solid #ccc;
+        align-items: center;
+        justify-content: center;
+        margin-right: 8px;
+        cursor: pointer;
+        transition: .2s;
+        font-weight: 600;
+        user-select: none;
+    }
+
+        .size-item.active {
+            background: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+
+    .size-radio {
+        display: none;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-6">
+        <img src="~/theme/client/img/giay/29.jpg" class="img-fluid" />
+    </div>
+
+    <div class="col-lg-6">
+
+        <h2>@product.Name</h2>
+        <h4 class="text-danger">@product.PriceString</h4>
+        <p>@product.Description</p>
+
+        <form asp-controller="Cart" asp-action="AddToCart" method="post" id="addToCartForm">
+
+            <input type="hidden" asp-for="ProductId" value="@product.Id" />
+            <input type="hidden" asp-for="Size" id="selectedSize" />
+
+            <h5>Chọn Size</h5>
+            <div class="size-list">
+                @foreach (var size in product.Sizes)
+                {
+                    <label class="size-item">
+                        <input type="radio" name="SizeSelect" value="@size" class="size-radio" />
+                        @size
+                    </label>
+                }
+            </div>
+
+            <span id="sizeError" class="text-danger" style="display:none;">
+                Vui lòng chọn size trước khi thêm vào giỏ.
+            </span>
+
+            <div class="mt-3">
+                <label>Số lượng</label>
+                <input asp-for="Quantity" type="number" min="1" value="1"
+                       class="form-control" style="width:100px;" />
+            </div>
+
+            <button class="btn btn-primary mt-3">Thêm vào giỏ</button>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const sizeItems = document.querySelectorAll(".size-item");
+        const hiddenSize = document.getElementById("selectedSize");
+        const sizeError = document.getElementById("sizeError");
+
+        sizeItems.forEach(item => {
+            item.addEventListener("click", () => {
+
+                sizeItems.forEach(i => i.classList.remove("active"));
+                item.classList.add("active");
+
+                const radio = item.querySelector(".size-radio");
+                radio.checked = true;
+
+                hiddenSize.value = radio.value;
+                sizeError.style.display = "none";
+            });
+        });
+
+        document.getElementById("addToCartForm").addEventListener("submit", e => {
+            if (!hiddenSize.value) {
+                e.preventDefault();
+                sizeError.style.display = "block";
+            }
+        });
+    </script>
+}

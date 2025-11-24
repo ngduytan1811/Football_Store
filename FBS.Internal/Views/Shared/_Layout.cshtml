@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="vi" dir="ltr">
 
+
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -28,9 +29,47 @@
 
 	<link id="mainCss" href="~/theme/client/css/style.css" rel="stylesheet">
 
+	<style>
+		.size-list {
+			display: flex;
+			gap: 12px;
+			margin-top: 10px;
+		}
+
+		.size-item {
+			width: 48px;
+			height: 48px;
+			border: 2px solid #b3b3b3;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			font-size: 17px;
+			font-weight: 600;
+			color: #333;
+			transition: 0.25s;
+			user-select: none;
+		}
+
+			.size-item:hover {
+				border-color: #007bff;
+			}
+
+			.size-item.active {
+				border-color: #007bff;
+				background: #007bff;
+				color: #fff;
+			}
+
+		.size-radio {
+			display: none !important;
+		}
+	</style>
 
 	
 </head>
+
 
 <body data-mn-mode="light">
 
@@ -75,6 +114,8 @@
 	<script src="~/theme/client/js/vendor/jquery.zoom.min.js"></script>
 
 	<script src="~/theme/client/js/main.js"></script>
+	@RenderSection("Scripts", required: false)
+
 </body>
 
 </html>

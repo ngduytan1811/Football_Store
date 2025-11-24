@@ -548,6 +548,8 @@
   z-index: 17;
 }
 
+
+
 .mn-side-wishlist {
   width: 350px;
   height: 100%;
@@ -6129,11 +6131,13 @@ button.btn-close.qty_close {
   border-color: #3a4ee5;
   background-color: #3a4ee5;
 }
+/**/
 
+/**/
 /**  Blog Sidebar  **/
 .mn-blogs-sidebar .mn-sb-title {
-  border-bottom: 2px solid #e5e5e5;
-  padding-bottom: 15px;
+    border-bottom: 2px solid #e5e5e5;
+    padding-bottom: 15px;
 }
 .mn-blogs-sidebar .mn-sb-title h3 {
   width: 100%;

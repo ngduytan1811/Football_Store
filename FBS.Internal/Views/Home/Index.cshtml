@@ -80,7 +80,8 @@
                             <div class="cat">
                                 <a href="javascript:void(0)">@product.CategoryName</a>
                                 <ul>
-                                    <li>Size: @product.Sizes</li>
+                                    <li>Size: @string.Join(", ", product.Sizes)</li>
+
                                 </ul>
                             </div>
                             <h5>
@@ -92,47 +93,7 @@
                                 <div class="mn-price-new"> @product.PriceString</div>
                                 <div class="mn-price-old"> @product.PriceString</div>
                             </div>
-                            <div class="mn-pro-option">
-                                <div class="mn-pro-color">
-                                    <ul class="mn-opt-swatch mn-change-img">
-                                        <li class="active">
-                                            <a asp-action="Detail" asp-controller="Product" asp-route-id="@product.Id" class="mn-opt-clr-img active"
-                                               data-src="../../theme/client/img/giay/29.jpg"
-                                               data-src-hover="../../theme/client/img/giay/29.jpg"
-                                               data-tooltip="Gray">
-                                                <span style="background-image:url('../../theme/client/img/giay/29.jpg');"></span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a asp-action="Detail" asp-controller="Product" asp-route-id="@product.Id" class="mn-opt-clr-img"
-                                               data-src="../../theme/client/img/giay/29.jpg"
-                                               data-src-hover="../../theme/client/img/giay/29.jpg"
-                                               data-tooltip="Orange">
-                                                <span style="background-image:url('../../theme/client/img/giay/29.jpg');"></span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a asp-action="Detail" asp-controller="Product" asp-route-id="@product.Id" class="mn-opt-clr-img"
-                                               data-src="../../theme/client/img/giay/29.jpg"
-                                               data-src-hover="../../theme/client/img/giay/29.jpg"
-                                               data-tooltip="Orange">
-                                                <span style="background-color:#e97e70;"></span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a asp-action="Detail" asp-controller="Product" asp-route-id="@product.Id" class="mn-opt-clr-img"
-                                               data-src="../../theme/client/img/giay/29.jpg"
-                                               data-src-hover="../../theme/client/img/giay/29.jpg"
-                                               data-tooltip="Orange">
-                                                <span style="background-color:#70e98a;"></span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <a href="javascript:void(0);" class="mn-wishlist" data-tooltip title="Wishlist">
-                                    <i class="ri-heart-line"></i>
-                                </a>
-                            </div>
+                           
                         </div>
                     </div>
                 }
