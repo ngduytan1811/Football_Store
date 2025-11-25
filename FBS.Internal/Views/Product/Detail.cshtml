@@ -101,7 +101,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                           
+
                                             <div class="w-100 mn-single-qty ">
                                                 <input type="hidden" asp-for="ProductId"
                                                        value="@product.Id">
@@ -253,147 +253,7 @@
                     </section>
                 </div>
                 <!-- Sidebar Area Start -->
-                <div class="mn-shop-sidebar col-lg-3 col-md-12 m-t-991">
-                    <div id="shop_sidebar">
-                        <div class="mn-sidebar-wrap">
-
-                            <div class="mn-sidebar-block">
-                                <div class="mn-sb-title">
-                                    <h3 class="mn-sidebar-title">Thương hiệu</h3>
-                                </div>
-                                <div class="mn-sb-block-content">
-                                    <ul>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" checked>
-                                                <a href="javascript:void(0)">
-                                                    <span>Adidas</span>
-                                                </a>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox">
-                                                <a href="javascript:void(0)">
-                                                    <span>Nike</span>
-                                                </a>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox">
-                                                <a href="javascript:void(0)">
-                                                    <span>Puma</span>
-                                                </a>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox">
-                                                <a href="javascript:void(0)">
-                                                    <span>Mizuno</span>
-                                                </a>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox">
-                                                <a href="javascript:void(0)">
-                                                    <span>Wika</span>
-                                                </a>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Sidebar Weight Block -->
-                            <div class="mn-sidebar-block">
-                                <div class="mn-sb-title">
-                                    <h3 class="mn-sidebar-title">Kích cỡ</h3>
-                                </div>
-                                <div class="mn-sb-block-content">
-                                    <ul>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="" checked>
-                                                <a asp-controller="Product" asp-action="List">36 - Size</a>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <a asp-controller="Product" asp-action="List">37 - Size</a>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <a asp-controller="Product" asp-action="List">38- Size</a>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <a asp-controller="Product" asp-action="List">39- Size</a>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <a asp-controller="Product" asp-action="List">40- Size</a>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <a asp-controller="Product" asp-action="List">41- Size</a>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="mn-sidebar-block-item">
-                                                <input type="checkbox" value="">
-                                                <a asp-controller="Product" asp-action="List">42- Size</a>
-                                                <span class="checked"></span>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- Sidebar Color item -->
-
-                            <div class="mn-sb-title">
-                                <h3 class="mn-sidebar-title">Giá</h3>
-                            </div>
-                            <div class="mn-sb-block-content mn-price-range-slider es-price-slider">
-                                <div class="mn-price-filter">
-                                    <div class="mn-price-input">
-                                        <label class="filter__label">
-                                            Thấp nhất<input type="text" class="filter__input">
-                                        </label>
-                                        <span class="mn-price-divider"></span>
-                                        <label class="filter__label">
-                                            Cao nhất<input type="text" class="filter__input">
-                                        </label>
-                                    </div>
-                                    <div id="mn-sliderPrice" class="filter__slider-price" data-min="0"
-                                         data-max="3000" data-step="10"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
+               @Html.Partial("_SidebarProduct")
             </div>
         </section>
     </div>

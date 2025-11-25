@@ -1,317 +1,159 @@
 ﻿@using FBS.API.Responses.Base
 @using FBS.Application.DataTranferObjects.Products
 
+
 @{
-	ViewData["Title"] = "List";
-	Layout = "~/Views/Shared/_Layout.cshtml";
-	var products = (BaseTableResponse<ProductDto>)ViewData["Products"];
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var products = (BaseTableResponse<ProductDto>)ViewData["Products"];
+    var searchData = (ProductSearchDto)ViewData["SearchData"];
 }
 
 <div class="mn-breadcrumb m-b-30">
-	<div class="row">
-		<div class="col-12">
-			<div class="row gi_breadcrumb_inner">
-				<div class="col-md-6 col-sm-12">
-					<h2 class="mn-breadcrumb-title">Sản phẩm</h2>
-				</div>
-				<div class="col-md-6 col-sm-12">
-					<ul class="mn-breadcrumb-list">
-						<li class="mn-breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
-						<li class="mn-breadcrumb-item active">Sản phẩm</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="row">
+        <div class="col-12">
+            <div class="row gi_breadcrumb_inner">
+                <div class="col-md-6 col-sm-12">
+                    <h2 class="mn-breadcrumb-title">Sản phẩm</h2>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <ul class="mn-breadcrumb-list">
+                        <li class="mn-breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
+                        <li class="mn-breadcrumb-item active">Sản phẩm</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row">
-	<div class="col-xxl-12">
-		<!-- Shop section -->
-		<section class="mn-shop padding-tb-30">
-			<div class="row">
-				<div class="mn-shop-rightside col-lg-9 col-md-12">
-					<!-- Shop Top Start -->
-					<div class="mn-pro-list-top d-flex">
-						<div class="col-md-6 mn-grid-list">
-							<div class="mn-gl-btn">
-								<button class="grid-btn btn-grid active">
-									<i class="ri-gallery-view-2"></i>
-								</button>
-								<button class="grid-btn btn-list">
-									<i class="ri-list-check-2"></i>
-								</button>
-							</div>
-						</div>
-						<div class="col-md-6 mn-sort-select">
-							<div class="mn-select-inner">
-								<select name="mn-select" id="mn-select">
-									<option selected disabled>Sắp xếp</option>
-									<option value="3">Giá:tăng dần</option>
-									<option value="4">Giá:giảm dần</option>
-									<option value="5">Tên: A-Z</option>
-									<option value="6">Tên: Z-A</option>
-									<option value="6">Mới nhất</option>
-									<option value="6">Bán chạy nhất</option>
+    <div class="col-xxl-12">
+        <!-- Shop section -->
+        <section class="mn-shop padding-tb-30">
+            <div class="row">
+                <div class="mn-shop-rightside col-lg-9 col-md-12">
+                    <form method="get" asp-controller="Product" asp-action="List">
+                        <div class="mn-pro-list-top d-flex">
+                            <div class="col-md-6 mn-grid-list">
+                                <div class="mn-gl-btn">
+                                    <button class="grid-btn btn-grid active">
+                                        <i class="ri-gallery-view-2"></i>
+                                    </button>
+                                    <button class="grid-btn btn-list">
+                                        <i class="ri-list-check-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mn-sort-select">
+                                <div class="mn-select-inner">
+                                    <select name="Sort" id="mn-select">
+                                        <option  disabled>Sắp xếp</option>
+                                        <option value="Price_Desc" selected="@(searchData.Sort == "Price_Desc")">Giá:tăng dần</option>
+                                        <option value="Price_Asc" selected="@(searchData.Sort == "Price_Asc")">Giá:giảm dần</option>
+                                        <option value="Name_Asc" selected="@(searchData.Sort == "Name_Asc")">Tên: A-Z</option>
+                                        <option value="Name_Desc" selected="@(searchData.Sort == "Name_Desc")">Tên: Z-A</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </form>
 
-									
-								</select>
-							</div>
-						</div>
-					</div>
-					<div class="mn-select-bar d-flex">
-						<span class="mn-select-btn">
-							Nike<a class="mn-select-cancel"
-									  href="javascript:void(0)">×</a>
-						</span>
-						<span class="mn-select-btn">
-							Adidas<a class="mn-select-cancel"
-									 href="javascript:void(0)">×</a>
-						</span>
-						<span class="mn-select-btn">
-							Mizuno<a class="mn-select-cancel"
-									 href="javascript:void(0)">×</a>
-						</span>
-						<span class="mn-select-btn">
-							Kamito<a class="mn-select-cancel"
-									href="javascript:void(0)">×</a>
-						</span>
-						<span class="mn-select-btn">
-							Pan<a class="mn-select-cancel"
-									  href="javascript:void(0)">×</a>
-						</span>
-						
-						<span class="mn-select-btn mn-select-btn-clear">
-							<a class="mn-select-clear"
-							   href="javascript:void(0)">Xóa tất cả</a>
-						</span>
-					</div>
-					<div class="shop-pro-content">
-						<div class="shop-pro-inner">
-							<div class="row">
-								@foreach (var product in products.Items)
-								{
-									<div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
-										<div class="mn-product-card">
-											<div class="mn-product-img">
-												
-												<div class="mn-img">
-													<a asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id" class="image">
-														<img class="main-img" src="~/theme/client/img/product/29.jpg"
-															 alt="product">
-														<img class="hover-img" src="~/theme/client/img/product/30.jpg"
-															 alt="product">
-													</a>
-													<div class="mn-pro-loader"></div>
-													<div class="mn-options">
-														<ul>
-															<li>
-																<a href="javascript:void(0)" data-tooltip
-																   title="Xem nhanh"
-																   data-link-action="quickview"
-																   data-bs-toggle="modal"
-																   data-bs-target="#quickview_modal">
-																	<i class="ri-eye-line"></i>
-																</a>
-															</li>
-															
-															<li>
-																<a href="javascript:void(0)" data-tooltip
-																   title="Thêm giỏ hàng" class="mn-add-cart">
-																	
-																	<form asp-action="AddToCart" asp-controller="Cart" method="post">
-																		<input type="hidden" name="ProductId" value="@product.Id" />
-																		<input type="hidden" name="Quantity" value="1" />
-																		<button style="border:none;background-color:transparent" type="submit">
-																			<i class="ri-shopping-cart-line"></i>
-																		</button>
-																	</form>
-																</a>
-															</li>
-														</ul>
-													</div>
-												</div>
-											</div>
-											<div class="mn-product-detail">
-												<div class="cat">
-													<a href="shop-right-sidebar.html">@product.CategoryName</a>
-														<ul>
-														<li>Size: @string.Join(", ", product.Sizes)</li>
+                    <div class="shop-pro-content">
+                        <div class="shop-pro-inner">
+                            <div class="row">
+                                @foreach (var product in products.Items)
+                                {
+                                    <div class="col-md-4 col-sm-6 col-xs-6 m-b-24 mn-product-box pro-gl-content">
+                                        <div class="mn-product-card">
+                                            <div class="mn-product-img">
 
-														</ul>
-												</div>
-												<h5><a asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id">
-													@product.Name
-												</a></h5>
-												<p class="mn-info">
-													
-												</p>
-												<div class="mn-price">
-													<div class="mn-price-new">@product.PriceString</div>
-													<div class="mn-price-old">@product.PriceString</div>
-												</div>
-												
-											</div>
-										</div>
-									</div>
-								}
-							</div>
-						</div>
-						<div class="mn-pro-pagination m-b-15">
-							<ul class="mn-pro-pagination-inner">
-								@for(var i = 1; i < products.TotalPage; i++)
-								{
-									<li><a class="active" asp-controller="Product" asp-action="List" asp-route-page="@i">@i</a></li>
-								}
-							</ul>
-						</div>
-					</div>
-				</div>
-				<!-- Sidebar Area Start -->
-				<div class="mn-shop-sidebar col-lg-3 col-md-12 m-t-991">
-					<div id="shop_sidebar">
-						<div class="mn-sidebar-wrap">
-							
-							<div class="mn-sidebar-block">
-								<div class="mn-sb-title">
-									<h3 class="mn-sidebar-title">Thương hiệu</h3>
-								</div>
-								<div class="mn-sb-block-content">
-									<ul>
-										<li>
-											<div class="mn-sidebar-block-item">
-												<input type="checkbox" checked>
-												<a href="javascript:void(0)">
-													<span>Adidas</span>
-												</a>
-												<span class="checked"></span>
-											</div>
-										</li>
-										<li>
-											<div class="mn-sidebar-block-item">
-												<input type="checkbox">
-												<a href="javascript:void(0)">
-													<span>Nike</span>
-												</a>
-												<span class="checked"></span>
-											</div>
-										</li>
-										<li>
-											<div class="mn-sidebar-block-item">
-												<input type="checkbox">
-												<a href="javascript:void(0)">
-													<span>Puma</span>
-												</a>
-												<span class="checked"></span>
-											</div>
-										</li>
-										<li>
-											<div class="mn-sidebar-block-item">
-												<input type="checkbox">
-												<a href="javascript:void(0)">
-													<span>Mizuno</span>
-												</a>
-												<span class="checked"></span>
-											</div>
-										</li>
-										<li>
-											<div class="mn-sidebar-block-item">
-												<input type="checkbox">
-												<a href="javascript:void(0)">
-													<span>Wika</span>
-												</a>
-												<span class="checked"></span>
-											</div>
-										</li>
-									</ul>
-								</div>
-							</div>
-							<!-- Sidebar Weight Block -->
-							<div class="mn-sidebar-block">
-								<div class="mn-sb-title">
-									<h3 class="mn-sidebar-title">Kích cỡ</h3>
-								</div>
-								<div class="mn-sb-block-content">
-									<ul>
-										<li>
-											<div class="mn-sidebar-block-item">
-												<input type="checkbox" value="" checked>
-												<a asp-controller="Product" asp-action="List" >36 - Size</a>
-												<span class="checked"></span>
-											</div>
-										</li>
-										<li>
-											<div class="mn-sidebar-block-item">
-												<input type="checkbox" value="">
-												<a asp-controller="Product" asp-action="List" >37 - Size</a>
-												<span class="checked"></span>
-											</div>
-										</li>
-										<li>
-											<div class="mn-sidebar-block-item">
-												<input type="checkbox" value="">
-												<a asp-controller="Product" asp-action="List" >38- Size</a>
-												<span class="checked"></span>
-											</div>
-										</li>
-										<li>
-											<div class="mn-sidebar-block-item">
-												<input type="checkbox" value="">
-												<a asp-controller="Product" asp-action="List" >39- Size</a>
-												<span class="checked"></span>
-											</div>
-										</li>
-										<li>
-											<div class="mn-sidebar-block-item">
-												<input type="checkbox" value="">
-												<a asp-controller="Product" asp-action="List">40- Size</a>
-												<span class="checked"></span>
-											</div>
-										</li>
-										<li>
-											<div class="mn-sidebar-block-item">
-												<input type="checkbox" value="">
-												<a asp-controller="Product" asp-action="List">41- Size</a>
-												<span class="checked"></span>
-											</div>
-										</li>
-										<li>
-											<div class="mn-sidebar-block-item">
-												<input type="checkbox" value="">
-												<a asp-controller="Product" asp-action="List">42- Size</a>
-												<span class="checked"></span>
-											</div>
-										</li>
-									</ul>
-								</div>
-							</div>
-							<!-- Sidebar Color item -->
-							
-								<div class="mn-sb-title">
-									<h3 class="mn-sidebar-title">Giá</h3>
-								</div>
-								<div class="mn-sb-block-content mn-price-range-slider es-price-slider">
-									<div class="mn-price-filter">
-										<div class="mn-price-input">
-											<label class="filter__label">
-												Thấp nhất<input type="text" class="filter__input">
-											</label>
-											<span class="mn-price-divider"></span>
-											<label class="filter__label">
-												Cao nhất<input type="text" class="filter__input">
-											</label>
-										</div>
-										<div id="mn-sliderPrice" class="filter__slider-price" data-min="0"
-											 data-max="3000" data-step="10"></div>
-									</div>
-								</div>
-							</div>
-							
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-	</div>
+                                                <div class="mn-img">
+                                                    <a asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id" class="image">
+                                                        <img class="main-img" src="~/theme/client/img/product/29.jpg"
+                                                             alt="product">
+                                                        <img class="hover-img" src="~/theme/client/img/product/30.jpg"
+                                                             alt="product">
+                                                    </a>
+                                                    <div class="mn-pro-loader"></div>
+                                                    <div class="mn-options">
+                                                        <ul>
+                                                            <li>
+                                                                <a href="javascript:void(0)" data-tooltip
+                                                                   title="Xem nhanh"
+                                                                   data-link-action="quickview"
+                                                                   data-bs-toggle="modal"
+                                                                   data-bs-target="#quickview_modal">
+                                                                    <i class="ri-eye-line"></i>
+                                                                </a>
+                                                            </li>
+
+                                                            <li>
+                                                                <a href="javascript:void(0)" data-tooltip
+                                                                   title="Thêm giỏ hàng" class="mn-add-cart">
+
+                                                                    <form asp-action="AddToCart" asp-controller="Cart" method="post">
+                                                                        <input type="hidden" name="ProductId" value="@product.Id" />
+                                                                        <input type="hidden" name="Quantity" value="1" />
+                                                                        <button style="border:none;background-color:transparent" type="submit">
+                                                                            <i class="ri-shopping-cart-line"></i>
+                                                                        </button>
+                                                                    </form>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mn-product-detail">
+                                                <div class="cat">
+                                                    <a href="shop-right-sidebar.html">@product.CategoryName</a>
+                                                    <ul>
+                                                        <li>Size: @string.Join(", ", product.Sizes)</li>
+
+                                                    </ul>
+                                                </div>
+                                                <h5>
+                                                    <a asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id">
+                                                        @product.Name
+                                                    </a>
+                                                </h5>
+                                                <p class="mn-info">
+
+                                                </p>
+                                                <div class="mn-price">
+                                                    <div class="mn-price-new">@product.PriceString</div>
+                                                    <div class="mn-price-old">@product.PriceString</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="mn-pro-pagination m-b-15">
+                            <ul class="mn-pro-pagination-inner">
+                                @for (var i = 1; i < products.TotalPage; i++)
+                                {
+                                    <li><a class="active" asp-controller="Product" asp-action="List" asp-route-page="@i">@i</a></li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- Sidebar Area Start -->
+                @Html.Partial("_SidebarProduct")
+            </div>
+        </section>
+    </div>
 </div>
+
+<script>
+    document.getElementById("mn-select").addEventListener("change", function () {
+        this.form.submit();
+    });
+
+</script>
+
 

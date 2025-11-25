@@ -27,6 +27,8 @@
                             <div class="mb-3">
                                 <label class="form-label" asp-for="ParentId">Danh mục cha</label>
                                 <select class="form-select digits" asp-for="ParentId">
+                                    <option selected hidden value="">Chọn..</option>
+                                    <option value=""></option>
                                     @if (categoryDropdown != null)
                                     {
                                         @foreach (var item in categoryDropdown)

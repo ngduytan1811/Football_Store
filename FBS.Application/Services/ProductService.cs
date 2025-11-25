@@ -62,12 +62,50 @@ namespace FBS.Application.Services
             queryProduct = queryProduct.Include(x => x.ProductSizes).Include(x => x.ProductColor).Include(x => x.Category);
             var searchData = dto.SearchParams ?? new ProductSearchDto();
 
+            if (!string.IsNullOrEmpty(searchData.SearchName))
+            {
+                var searchValue = searchData.SearchName.ToLower().Trim();
+                queryProduct = queryProduct.Where(x => x.Name.ToLower().Contains(searchValue) || x.Description.ToLower().Contains(searchValue));
+            }
+
+            if (searchData.Sizes != null && searchData.Sizes.Count > 0)
+            {
+                queryProduct = queryProduct.Where(x => x.ProductSizes.Any(i => searchData.Sizes.Contains(i.Size)));
+            }
+
+            if (searchData.Brands != null && searchData.Brands.Count > 0)
+            {
+                queryProduct = queryProduct.Where(x => searchData.Brands.Contains(x.Branch));
+            }
+
+            if (searchData.FromPrice.HasValue)
+            {
+                queryProduct = queryProduct.Where(x => x.Price >= searchData.FromPrice);
+            }
+
+            if (searchData.ToPrice.HasValue)
+            {
+                queryProduct = queryProduct.Where(x => x.Price <= searchData.ToPrice);
+            }
+
+            if (searchData.CategoryId.HasValue)
+            {
+                queryProduct = queryProduct.Where(x => x.CategoryId == searchData.CategoryId);
+            }
+
             if (searchData.CategoryId.HasValue)
             {
                 queryProduct = queryProduct.Where(x => x.CategoryId == searchData.CategoryId);
             }
 
             result.Total = queryProduct.Count();
+
+            if (!string.IsNullOrEmpty(searchData.Sort))
+            {
+                var dataSort = searchData.Sort.Split("_");
+                dto.ColumnSort = dataSort[0];
+                dto.Asc = dataSort[1] == "Asc";
+            }
 
             var query = queryProduct.Select(product => new ProductDto
             {
@@ -78,15 +116,16 @@ namespace FBS.Application.Services
                 Price = product.Price,
                 Name = product.Name,
                 Color = product.ProductColor.Color,
+                Branch = product.Branch,
                 Sizes = product.ProductSizes.Select(ps => ps.Size).ToList(),
-
                 Description = product.Description,
                 CreatedAt = product.CreatedAt,
             });
 
             query = dto.ColumnSort switch
             {
-                ColumnNames.CreatedAt => dto.Asc ? query.OrderBy(i => i.CreatedAt) : query.OrderByDescending(i => i.CreatedAt),
+                "Name" => dto.Asc ? query.OrderBy(i => i.CreatedAt) : query.OrderByDescending(i => i.CreatedAt),
+                "Price" => dto.Asc ? query.OrderBy(i => i.CreatedAt) : query.OrderByDescending(i => i.CreatedAt),
                 _ => query,
             };
 
@@ -136,6 +175,7 @@ namespace FBS.Application.Services
                 Status = product.Status,
                 Color = product.ProductColor.Color,
                 Image = product.Image,
+                Branch = product.Branch,
                 CategoryId = product.CategoryId,
                 CategoryName = product.Category?.Name,
                 Price = product.Price,
@@ -176,6 +216,7 @@ namespace FBS.Application.Services
                 CategoryId = dto.CategoryId,
                 Description = dto.Description?.Trim(),
                 Price = dto.Price,
+                Branch = dto.Branch,
                 Detail = dto.Detail,
                 Status = StatusEnum.Active,
             };
@@ -186,13 +227,13 @@ namespace FBS.Application.Services
                 Color = dto.Color,
             });
 
-            var productSizesinsert = dto.Sizes.Select(x=>new ProductSize
+            var productSizesinsert = dto.Sizes.Select(x => new ProductSize
             {
                 Product = newProduct,
                 Size = x,
             }).ToList();
             await productSizeRep.Add(productSizesinsert);
-           
+
 
             await _unitOfWork.SaveChangesAsync();
 
@@ -226,6 +267,7 @@ namespace FBS.Application.Services
             product.CategoryId = dto.CategoryId;
             product.Status = dto.Status;
             product.Price = dto.Price;
+            product.Branch = dto.Branch;
             product.Description = dto.Description;
 
             // UPDATE COLOR

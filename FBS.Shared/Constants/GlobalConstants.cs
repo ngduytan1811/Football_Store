@@ -27,5 +27,22 @@ namespace FBS.Shared.Constants
             public const string Category = "CATE";
             public const string Project = "PRO";
         }
+
+        public static readonly List<string> Brands = new List<string>
+        {
+            "Adidas",
+            "Nike",
+            "Puma",
+            "Mizuno",
+            "Wika"
+        };
+
+        public static readonly List<string> Color = new List<string>
+        {
+            "Đen",
+            "Đỏ",
+            "Xanh",
+            "Trắng",
+        };
     }
 }

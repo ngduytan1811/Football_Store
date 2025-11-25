@@ -18,26 +18,24 @@ namespace FBS.Internal.Controllers
         {
             _productService = productService;
         }
-        public async Task<IActionResult> List(Guid? categoryId = null, int page = 1)
+
+        public async Task<IActionResult> List(ProductSearchDto request)
         {
             var dataSearch = new BaseSearchDto<ProductSearchDto>()
             {
-                SearchParams = new ProductSearchDto
-                {
-                    CategoryId = categoryId,
-                },
-                Page = page,
+                SearchParams = request,
+                Page = request.Page,
             };
 
             var data = await _productService.GetProducts(dataSearch);
             var startIndex = dataSearch.Start + 1;
             data.Items?.ForEach(i => i.Index = startIndex++);
             ViewData["Products"] = data;
-
+            ViewData["SearchData"] = request ?? new ProductSearchDto();
             return View();
         }
 
-        public async Task<IActionResult> Detail(Guid id)
+        public async Task<IActionResult> Detail(Guid id, ProductSearchDto request)
         {
             var data = await _productService.FindById(id);
 
@@ -47,8 +45,7 @@ namespace FBS.Internal.Controllers
             var sizes = data.Data?.Sizes;
             // Truyền Product vào ViewData
             ViewData["Product"] = data.Data;
-
-            // Truyền CartItemDto cho Form AddToCart (bắt buộc để asp-for hoạt động)
+            ViewData["SearchData"] = request ?? new ProductSearchDto();
             return View(new CartItemDto
             {
                 ProductId = id

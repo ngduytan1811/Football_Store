@@ -19,9 +19,9 @@ namespace FBS.Infrastructure.Entities
         public string? Image { get; set; }
         public decimal? Price { get; set; }
         public int? Discount { get; set; }
+        public string? Branch { get; set; }
 
         public virtual ICollection<ProductReview> ProductReviews { get; set; } = new List<ProductReview>();
-
 
         public virtual ProductColor ProductColor { get; set; }
 

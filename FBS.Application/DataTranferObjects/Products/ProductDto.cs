@@ -15,6 +15,7 @@ namespace FBS.Application.DataTranferObjects.Products
         public string? PriceString => Price.HasValue ? Price.Value.ToString("C", new CultureInfo("vi-VN")) : string.Empty;
         public List<string> Sizes { get; set; } = new();
         public string? Color { get; set; }
+        public string? Branch { get; set; }
         public int? Discount { get; set; }
 
         public List<ProductReivewDto> Reviews { get; set; } = new List<ProductReivewDto>();

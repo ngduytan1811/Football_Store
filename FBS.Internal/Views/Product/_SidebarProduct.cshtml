@@ -1,0 +1,77 @@
+﻿@using FBS.Application.DataTranferObjects.Products
+@using FBS.Shared.Constants
+@{
+    var searchData = (ProductSearchDto)ViewData["SearchData"];
+    var brands = GlobalConstants.Brands;
+}
+<div class="mn-shop-sidebar col-lg-3 col-md-12 m-t-991">
+    <div id="shop_sidebar">
+        <div class="mn-sidebar-wrap">
+            <form method="get" asp-controller="Product" asp-action="List">
+                <div class="mn-sidebar-block">
+                    <div class="mn-sb-title">
+                        <h3 class="mn-sidebar-title">Thương hiệu</h3>
+                    </div>
+                    <div class="mn-sb-block-content">
+                        <ul>
+                            @foreach (var brand in brands)
+                            {
+                                <li>
+                                    <div class="mn-sidebar-block-item">
+                                        <input type="checkbox" name="Brands" value="@brand" checked="@searchData.Brands.Contains(brand.ToString())">
+                                        <a href="javascript:void(0)">
+                                            <span>@brand</span>
+                                        </a>
+                                        <span class="checked"></span>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <!-- Sidebar Weight Block -->
+                <div class="mn-sidebar-block">
+                    <div class="mn-sb-title">
+                        <h3 class="mn-sidebar-title">Kích cỡ</h3>
+                    </div>
+                    <div class="mn-sb-block-content">
+                        <ul>
+                            @for (int i = 36; i <= 43; i++)
+                            {
+                                <li>
+                                    <div class="mn-sidebar-block-item">
+                                        <a href="javascript:void(0)">@i - Size</a>
+                                        <input type="checkbox" name="sizes" value="@i" checked="@searchData.Sizes.Contains(i.ToString())" />
+                                        <span class="checked"></span>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mn-sb-title">
+                    <h3 class="mn-sidebar-title">Giá</h3>
+                </div>
+                <div class="mn-sb-block-content mn-price-range-slider es-price-slider">
+                    <div class="mn-price-filter">
+                        <div class="mn-price-input d-flex w-100">
+                            <label class="filter__label">
+                                Thấp nhất
+                                <input type="text" name="FromPrice" value="@searchData.FromPrice" class="filter__input">
+                            </label>
+                            <span class="mn-price-divider"></span>
+                            <label class="filter__label">
+                                Cao nhất
+                                <input type="text" name="ToPrice" value="@searchData.ToPrice" class="filter__input">
+                            </label>
+                        </div>
+                        <div id="mn-sliderPrice" class="filter__slider-price" data-min="10000"
+                             data-max="99999999" data-step="10"></div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 mt-4">Lọc</button>
+            </form>
+        </div>
+    </div>
+</div>

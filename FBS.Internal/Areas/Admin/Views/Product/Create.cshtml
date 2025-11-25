@@ -1,5 +1,6 @@
 ﻿@using FBS.Application.DataTranferObjects.Categories
 @using FBS.Application.DataTranferObjects.Products
+@using FBS.Shared.Constants
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -56,7 +57,7 @@
                                     <div class="col-sm-12">
                                         <div class="mb-3">
                                             <label class="form-label">Danh mục</label>
-                                            <select class="form-select">
+                                            <select asp-for="CategoryId" class="form-select">
                                                 <option selected hidden value="">Chọn..</option>
                                                 @foreach (var cate in categoryDropdown)
                                                 {
@@ -70,11 +71,11 @@
                                     <div class="col-sm-6">
                                         <div class="mb-3">
                                             <label class="form-label">Thương hiệu</label>
-                                            <select asp-for="CategoryId" class="form-select">
+                                            <select asp-for="Branch" class="form-select">
                                                 <option selected hidden value="">Chọn..</option>
-                                                @foreach (var cate in categoryDropdown)
+                                                @foreach (var brand in GlobalConstants.Brands)
                                                 {
-                                                    <option value="@cate.Id">@cate.Name</option>
+                                                    <option value="@brand">@brand</option>
                                                 }
                                             </select>
 
@@ -85,10 +86,10 @@
                                             <label class="form-label">Màu</label>
                                             <select asp-for="Color" class="form-select">
                                                 <option hidden selected>Chọn..</option>
-                                                <option value="Đen">Đen</option>
-                                                <option value="Đỏ">Đỏ</option>
-                                                <option value="Xanh">Xanh</option>
-                                                <option value="Trắng">Trắng</option>
+                                                @foreach (var color in GlobalConstants.Color)
+                                                {
+                                                    <option value="@color">@color</option>
+                                                }
                                             </select>
                                         </div>
                                     </div>
