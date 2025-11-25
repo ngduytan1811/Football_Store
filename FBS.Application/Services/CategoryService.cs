@@ -98,6 +98,7 @@ namespace FBS.Application.Services
                 Description = category.Description,
                 Logo = category.Logo,
                 Status = category.Status,
+                ParentId = category.ParentId
             };
 
             return result;

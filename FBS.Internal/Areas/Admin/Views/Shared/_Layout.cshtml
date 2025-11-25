@@ -39,6 +39,8 @@
                 @RenderBody()
             </div>
             @Html.Partial("_Footer")
+            @RenderSection("Scripts", required: false)
+
         </div>
     </div>
     <script src="~/theme/admin/js/jquery-3.6.0.min.js"></script>

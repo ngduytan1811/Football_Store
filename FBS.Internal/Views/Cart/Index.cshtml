@@ -6,6 +6,15 @@
     var cart = (List<CartItemDto>)ViewData["Cart"];
 }
 
+<!-- THÔNG BÁO ĐẶT HÀNG THÀNH CÔNG -->
+@if (TempData["OrderSuccess"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert" style="font-size:16px;">
+        <strong>@TempData["OrderSuccess"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
 <div class="mn-breadcrumb m-b-30">
     <div class="row">
         <div class="col-12">
@@ -31,7 +40,9 @@
             <div class="mn-cart-content">
                 <div class="mn-cart-inner cart_list">
                     <div class="row">
-                        <form>
+                        <form method="post">
+                            @Html.AntiForgeryToken()
+
                             <div class="table-content cart-table-content">
                                 <table>
                                     <thead>
@@ -48,27 +59,21 @@
                                     <tbody>
                                         @foreach (var item in cart)
                                         {
-                                            <tr class="mn-cart-product">
+                                            <tr class="mn-cart-product" data-product-id="@item.ProductId">
 
-                                                <!-- Tên SP -->
                                                 <td class="mn-cart-pro-name">
                                                     <a>
-                                                        <img class="mn-cart-pro-img" src="~/theme/client/img/giay/29.jpg" alt="">
+                                                        <img class="mn-cart-pro-img" src="~/theme/client/img/giay/29.jpg">
                                                         @item.ProductName
                                                     </a>
                                                 </td>
 
-                                                <!-- Size -->
-                                                <td>
-                                                    <strong>@item.Size</strong>
-                                                </td>
+                                                <td><strong>@item.Size</strong></td>
 
-                                                <!-- Giá -->
                                                 <td class="mn-cart-pro-price">
                                                     <span class="amount">@item.PriceString</span>
                                                 </td>
 
-                                                <!-- Số lượng -->
                                                 <td class="mn-cart-pro-qty" style="text-align:center;">
                                                     <div class="quantity-box">
                                                         <button type="button" class="qty-btn minus">−</button>
@@ -77,14 +82,13 @@
                                                     </div>
                                                 </td>
 
-                                                <!-- Thành tiền -->
                                                 <td class="mn-cart-pro-subtotal">
                                                     @item.SubPriceString
                                                 </td>
 
-                                                <!-- Xóa -->
                                                 <td>
-                                                    <a asp-action="RemoveFromCart" asp-controller="Cart"
+                                                    <a asp-action="RemoveFromCart"
+                                                       asp-controller="Cart"
                                                        asp-route-productId="@item.ProductId">
                                                         <i class="ri-delete-bin-line"></i>
                                                     </a>
@@ -145,61 +149,51 @@
     }
 </style>
 
-<script>
-    // Format tiền VNĐ
-    function formatMoney(n) {
-        return n.toLocaleString("vi-VN") + " đ";
-    }
+@section Scripts {
+    <script>
+        function formatMoney(n) {
+            return n.toLocaleString("vi-VN") + " đ";
+        }
 
-    // Gửi AJAX cập nhật số lượng vào CartController
-    function updateServerQuantity(productId, size, quantity) {
-        fetch("/Cart/UpdateQuantity", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "RequestVerificationToken": document.querySelector("input[name='__RequestVerificationToken']").value
-            },
-            body: JSON.stringify({
-                productId: productId,
-                size: size,
-                quantity: quantity
-            })
+        function updateServerQuantity(productId, quantity) {
+            const token = document.querySelector("input[name='__RequestVerificationToken']").value;
+
+            fetch("/Cart/UpdateQuantity", {
+                method: "POST",
+                headers: { "RequestVerificationToken": token },
+                body: new URLSearchParams({
+                    productId: productId,
+                    quantity: quantity
+                })
+            });
+        }
+
+        document.querySelectorAll("tr.mn-cart-product").forEach(row => {
+            const btnPlus = row.querySelector(".qty-btn.plus");
+            const btnMinus = row.querySelector(".qty-btn.minus");
+            const input = row.querySelector(".qty-input");
+            const subtotalCell = row.querySelector(".mn-cart-pro-subtotal");
+            const priceText = row.querySelector(".mn-cart-pro-price .amount").innerText;
+
+            const productId = row.dataset.productId;
+            const price = parseInt(priceText.replace(/\D/g, ""));
+
+            btnPlus.addEventListener("click", function () {
+                let qty = parseInt(input.value) + 1;
+                input.value = qty;
+                subtotalCell.innerText = formatMoney(price * qty);
+                updateServerQuantity(productId, qty);
+            });
+
+            btnMinus.addEventListener("click", function () {
+                let qty = parseInt(input.value);
+                if (qty > 1) {
+                    qty -= 1;
+                    input.value = qty;
+                    subtotalCell.innerText = formatMoney(price * qty);
+                    updateServerQuantity(productId, qty);
+                }
+            });
         });
-    }
-
-    // XỬ LÝ TĂNG / GIẢM SỐ LƯỢNG
-    document.querySelectorAll("tr.mn-cart-product").forEach(row => {
-
-        const btnPlus = row.querySelector(".qty-btn.plus");
-        const btnMinus = row.querySelector(".qty-btn.minus");
-        const input = row.querySelector(".qty-input");
-        const subtotalCell = row.querySelector(".mn-cart-pro-subtotal");
-        const priceText = row.querySelector(".mn-cart-pro-price .amount").innerText;
-
-        const productId = row.querySelector("a").getAttribute("href")?.split("=")[1];
-        const size = row.querySelector("td:nth-child(2)").innerText.trim();
-        const price = parseInt(priceText.replace(/\D/g, ""));
-
-        // NÚT TĂNG
-        btnPlus.addEventListener("click", function () {
-            input.value = parseInt(input.value) + 1;
-
-            const total = price * parseInt(input.value);
-            subtotalCell.innerText = formatMoney(total);
-
-            updateServerQuantity(productId, size, parseInt(input.value));
-        });
-
-        // NÚT GIẢM
-        btnMinus.addEventListener("click", function () {
-            if (parseInt(input.value) > 1) {
-                input.value = parseInt(input.value) - 1;
-                const total = price * parseInt(input.value);
-                subtotalCell.innerText = formatMoney(total);
-
-                updateServerQuantity(productId, size, parseInt(input.value));
-            }
-        });
-    });
-</script>
-
+    </script>
+}

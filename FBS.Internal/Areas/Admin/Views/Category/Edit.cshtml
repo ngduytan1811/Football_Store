@@ -1,71 +1,68 @@
 ﻿@using FBS.Application.DataTranferObjects.Categories
-@{
-    ViewData["Title"] = "Edit";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-    var categoryDropdown = (List<CategoryDto>)ViewData["Categogries"];
-}
 @model CategorySaveDto
 
-<div class="row">
-    <div class="col-sm-12">
-        <div class="card">
-            <div class="card-header pb-0">
-                <h4>Cập nhật danh mục</h4>
+@{
+    ViewData["Title"] = "Cập nhật danh mục";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    var categoryDropdown = (List<CategoryDto>)ViewData["Categories"];
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-8 col-md-10">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"> Cập nhật danh mục</h5>
             </div>
-            <form class="form theme-form" asp-action="Update" asp-route-id="@Model.Id" enctype="multipart/form-data" asp-controller="Category" method="post" novalidate>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                            <div class="mb-3">
-                                <label class="form-label" asp-for="Name">Tên danh mục <span class="text-danger">*</span></label>
-                                <input class="form-control" type="text" asp-for="Name" placeholder="Nhập tên danh mục">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <div class="mb-3">
-                                <label class="form-label" asp-for="ParentId">Danh mục cha</label>
-                                <select class="form-select digits" asp-for="ParentId">
-                                    <option selected hidden value="">Chọn..</option>
-                                    <option value=""></option>
-                                    @if (categoryDropdown != null)
-                                    {
-                                        @foreach (var item in categoryDropdown)
-                                        {
-                                            <option selected="@(Model.ParentId == item.Id)" value="@item.Id">@item.Name</option>
-                                        }
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col">
-                            <div class="mb-3">
-                                <label class="form-label" asp-for="Description">Tóm tắt</label>
-                                <input class="form-control" type="text" asp-for="Description" placeholder="Nhập nội dung">
-                            </div>
-                        </div>
-                    </div>
+            <form asp-action="Update"
+                  asp-route-id="@Model.Id"
+                  asp-controller="Category"
+                  method="post"
+                  class="p-4">
 
-                    <div class="row">
-                        <div class="col">
-                            <div class="mb-3">
-                                <label class="form-label" asp-for="Logo">Hình ảnh</label>
-                                <input class="form-control" type="file" asp-for="Logo" placeholder="Nhập tên danh mục">
-                            </div>
-                        </div>
-                    </div>
-
+                <!-- Tên -->
+                <div class="mb-4">
+                    <label asp-for="Name" class="form-label fw-bold">Tên danh mục <span class="text-danger">*</span></label>
+                    <input asp-for="Name" class="form-control form-control-lg" placeholder="Nhập tên danh mục..." />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
                 </div>
-                <div class="card-footer text-end">
-                    <button class="btn btn-primary" type="submit">Lưu</button>
-                    <a class="btn btn-light" asp-action="Index" asp-controller="Category">Quay lại </a>
+
+                <!-- Danh mục cha -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Danh mục cha</label>
+                    <select asp-for="ParentId"
+                            class="form-select form-select-lg"
+                            asp-items="@(new SelectList(categoryDropdown, "Id", "Name", Model.ParentId))">
+                        <option value="">-- Không chọn (Danh mục gốc) --</option>
+                    </select>
+                    <span asp-validation-for="ParentId" class="text-danger small"></span>
                 </div>
+
+                <!-- Mô tả -->
+                <div class="mb-4">
+                    <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Nhập mô tả ngắn..."></textarea>
+                </div>
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index"
+                       asp-controller="Category"
+                       class="btn btn-light px-4">
+                         Quay lại
+                    </a>
+
+                    <button type="submit" class="btn btn-primary px-5">
+                         Lưu thay đổi
+                    </button>
+                </div>
+
             </form>
         </div>
     </div>
 </div>
 
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

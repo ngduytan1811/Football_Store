@@ -1,17 +1,15 @@
-﻿using AngleSharp.Io;
-using FBS.Application.DataTranferObjects.Categories;
+﻿using FBS.Application.DataTranferObjects.Categories;
 using FBS.Application.DataTranferObjects.Users;
-using FBS.Application.Services;
 using FBS.Application.Services.Interfaces;
 using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
 using FBS.Shared.Constants;
 using FBS.Shared.DataTranferObjects.Base;
-using FootballShop.Areas.Admin.Controllers;
-using Humanizer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using System.Linq;
+using FootballShop.Areas.Admin.Controllers;
 
 namespace FBS.Internal.Areas.Admin.Controllers
 {
@@ -19,11 +17,18 @@ namespace FBS.Internal.Areas.Admin.Controllers
     {
         private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService categoryService, UserManager<User> userManager, IUnitOfWork unitOfWork) : base(userManager, unitOfWork)
+        public CategoryController(
+            ICategoryService categoryService,
+            UserManager<User> userManager,
+            IUnitOfWork unitOfWork
+        ) : base(userManager, unitOfWork)
         {
             _categoryService = categoryService;
         }
 
+        // ============================
+        // LIST
+        // ============================
         public async Task<IActionResult> Index(int page = 1)
         {
             var dataSearch = new BaseSearchDto<CategorySearchDto>()
@@ -32,101 +37,106 @@ namespace FBS.Internal.Areas.Admin.Controllers
             };
 
             var data = await _categoryService.GetCategories(dataSearch);
+
+            // Tính STT
             var startIndex = dataSearch.Start + 1;
             data.Items?.ForEach(i => i.Index = startIndex++);
+
             ViewData["Categories"] = data;
             return View();
         }
 
+        // ============================
+        // CREATE GET
+        // ============================
         public async Task<IActionResult> Create()
         {
-            var data = await _categoryService.GetCategoryDropdown();
-            ViewData["Categogries"] = data?.Data;
+            var dropdown = await _categoryService.GetCategoryDropdown(null);
+            ViewData["Categories"] = dropdown?.Data;   // sử dụng key chuẩn
+
             return View();
         }
 
+        // ============================
+        // CREATE POST
+        // ============================
         [HttpPost]
-        public async Task<IActionResult> Create(CategorySaveDto request)
+        public async Task<IActionResult> Create(CategorySaveDto model)
         {
             if (!ModelState.IsValid)
             {
-                return View(request);
+                var dropdown = await _categoryService.GetCategoryDropdown(null);
+                ViewData["Categories"] = dropdown?.Data;
+                return View(model);
             }
 
-            try
-            {
-                var result = await _categoryService.CreateCategory(request);
-                if (result.Type != GlobalConstants.ResponseType.Success)
-                {
-                    return View();
-                }
+            var result = await _categoryService.CreateCategory(model);
 
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                return View();
-            }
+            if (result.Type != GlobalConstants.ResponseType.Success)
+                return View(model);
+
+            return RedirectToAction("Index");
         }
 
+        // ============================
+        // EDIT GET
+        // ============================
+        [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var dataDrop = await _categoryService.GetCategoryDropdown(id);
-            ViewData["Categogries"] = dataDrop?.Data;
+            // Dropdown tất cả category
+            var dropdown = await _categoryService.GetCategoryDropdown(null);
+            var list = dropdown?.Data ?? new List<CategoryDto>();
 
+            // Lấy dữ liệu category đang sửa
             var data = await _categoryService.FindById(id);
             if (data.Data == null)
-            {
-                return RedirectToAction("Create");
-            }
+                return RedirectToAction("Index");
 
             var model = new CategorySaveDto
             {
                 Id = data.Data.Id,
                 Name = data.Data.Name,
                 Description = data.Data.Description,
-                ParentId = data.Data.ParentId,
-                Status = data.Data.Status,
+                ParentId = data.Data.ParentId
             };
+
+            // Loại chính nó khỏi dropdown
+            ViewData["Categories"] = list.Where(x => x.Id != id).ToList();
 
             return View(model);
         }
 
-
+        // ============================
+        // EDIT POST
+        // ============================
         [HttpPost]
-        public async Task<IActionResult> Update(Guid id, CategorySaveDto request)
+        public async Task<IActionResult> Update(Guid id, CategorySaveDto model)
         {
-            var user = await _categoryService.FindById(id);
-            if (user.Data == null)
+            if (!ModelState.IsValid)
             {
-                return View();
+                var dropdown = await _categoryService.GetCategoryDropdown(null);
+                var list = dropdown?.Data ?? new List<CategoryDto>();
+                ViewData["Categories"] = list.Where(x => x.Id != id).ToList();
+
+                return View("Edit", model);
             }
 
-            var result = await _categoryService.UpdateCategory(id, request);
-            if (result.Type == GlobalConstants.ResponseType.Success)
-            {
-                return RedirectToAction("Index");
-            }
-
-            return RedirectToAction("Edit", "Category", new { id = id });
+            await _categoryService.UpdateCategory(id, model);
+            return RedirectToAction("Index");
         }
 
-
+        // ============================
+        // DELETE
+        // ============================
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {
             var category = await _categoryService.FindById(id);
             if (category.Data == null)
-            {
                 return RedirectToAction("Index");
-            }
 
-            var result = await _categoryService.DeleteCategory(id);
-            if (result.Type == GlobalConstants.ResponseType.Success)
-            {
-                return RedirectToAction("Index");
-            }
-
+            await _categoryService.DeleteCategory(id);
             return RedirectToAction("Index");
         }
     }

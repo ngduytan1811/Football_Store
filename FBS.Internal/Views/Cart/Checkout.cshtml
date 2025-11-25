@@ -1,182 +1,298 @@
 ﻿@using FBS.Application.DataTranferObjects.Cart
+@model CheckoutDto
 
 @{
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var cart = (List<CartItemDto>)ViewData["Cart"];
-    
-    decimal shipping = 80000;
 
+    decimal shipping = 30000;
     decimal subtotal = cart.Sum(x => (x.Price ?? 0) * x.Quantity);
-
-
     decimal total = subtotal + shipping;
-
-
-
 }
-@model CheckoutDto
 
-<div class="mn-breadcrumb m-b-30">
-    <div class="row">
-        <div class="col-12">
-            <div class="row gi_breadcrumb_inner">
-                <div class="col-md-6 col-sm-12">
-                    <h2 class="mn-breadcrumb-title">Thanh toán</h2>
+<div class="container py-4">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-white p-3 shadow-sm rounded">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+            <li class="breadcrumb-item active">Thanh toán</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+
+        <!-- LEFT SIDE: FORM -->
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0"> Thông tin giao hàng</h5>
                 </div>
-                <div class="col-md-6 col-sm-12">
-                    <ul class="mn-breadcrumb-list">
-                        <li class="mn-breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
-                        <li class="mn-breadcrumb-item active">Thanh toán</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
+                <div class="card-body p-4">
 
-<section class="mn-checkout-section p-b-15">
-    <h2 class="d-none">Checkout Page</h2>
-    <div class="row">
-        <div class="mn-checkout-leftside col-lg-8 col-md-12">
-            <!-- checkout content Start -->
-            <div class="mn-checkout-content">
-                <div class="mn-checkout-inner">
-                    <form asp-action="Checkout" asp-controller="Cart" method="post">
-                        <div class="mn-checkout-wrap m-b-30 padding-bottom-3">
-                            <div class="mn-checkout-block mn-check-bill">
-                                <h3 class="mn-checkout-title">Thông tin giao hàng</h3>
-                                <div class="mn-bl-block-content">
-                                    <div class="mn-check-bill-form">
-                                        <span class="mn-bill-wrap mn-bill-half">
-                                            <label>Họ tên*</label>
-                                            <input type="text" 
-                                                   placeholder="Họ tên" asp-for="FullName">
-                                        </span>
-                                        <span class="mn-bill-wrap mn-bill-half">
-                                            <label>Số điện thoại*</label>
-                                            <input type="text" 
-                                                   placeholder="Số điện thoại" asp-for="PhoneNumber">
-                                        </span>
-                                        <span class="mn-bill-wrap">
-                                            <label>Địa chỉ</label>
-                                            <input type="text"  asp-for="Address" placeholder="Địa chỉ">
-                                        </span>
-                                        <span class="mn-bill-wrap">
-                                            <label>Ghi chú</label>
-                                            <input type="text" asp-for="Note" placeholder="Địa chỉ">
-                                        </span>
+                    <form asp-action="Checkout" asp-controller="Cart" method="post" class="row gy-3">
 
-                                    </div>
-
-                                </div>
-                            </div>
+                        <!-- Họ tên -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Họ tên *</label>
+                            <input asp-for="FullName" class="form-control form-control-lg" placeholder="Nhập họ tên của bạn">
                         </div>
-                        <span class="mn-check-order-btn m-t-30">
-                            <button type="submit" class="mn-btn-2"><span>Đặt hàng</span></button>
-                        </span>
+
+                        <!-- Số điện thoại -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Số điện thoại *</label>
+                            <input asp-for="PhoneNumber" class="form-control form-control-lg" placeholder="Nhập số điện thoại">
+                        </div>
+
+                        <!-- Địa chỉ -->
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Địa chỉ *</label>
+                            <input asp-for="Address" class="form-control form-control-lg" placeholder="Nhập địa chỉ nhận hàng">
+                        </div>
+
+                        <!-- Ghi chú -->
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Ghi chú</label>
+                            <textarea asp-for="Note" class="form-control" rows="3" placeholder="Lưu ý khi giao hàng"></textarea>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold fs-5">
+                                 ĐẶT HÀNG NGAY
+                            </button>
+                        </div>
+
                     </form>
 
                 </div>
             </div>
-            <!--cart content End -->
-        </div>
-        <!-- Sidebar Area Start -->
-        <div class="mn-checkout-rightside col-lg-4 col-md-12 m-t-991">
-            <div class="mn-sidebar-wrap">
-                <!-- Sidebar Summary Block -->
-                <div class="mn-sidebar-block">
-                    <div class="mn-sb-title">
-                        <h3 class="mn-sidebar-title">Tóm tắt</h3>
-                    </div>
-                    <div class="mn-sb-block-content">
-                        <div class="mn-checkout-summary">
-                            <div>
-                                <span class="text-left">Tạm tính</span>
-                                <span class="text-right">@subtotal.ToString("N0") đ</span>
-                            </div>
-                            <div>
-                                <span class="text-left">Phí vận chuyển</span>
-                                <span class="text-right">@shipping.ToString("N0") đ</span>
-                            </div>
 
-                            <div class="mn-checkout-summary-total">
-                                <span class="text-left">Tổng tiền</span>
-                                <span class="text-right">@total.ToString("N0") đ</span>
-                            </div>
-                        </div>
-                        <div class="mn-checkout-pro">
-                            @foreach (var item in cart)
-                            {
-                                <div class="col-sm-12 mb-6">
-                                    <div class="mn-product-inner">
-                                        <div class="mn-pro-image-outer">
-                                            <div class="mn-pro-image">
-                                                <a href="product-detail.html" class="image">
-                                                    <img class="main-image" src="~/theme/client/img/giay/29.jpg"
-                                                         alt="Product">
-                                                    <img class="hover-image" src="~/theme/client/img/giay/30.jpg"
-                                                         alt="Product">
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="mn-pro-content">
-                                            <h5 class="mn-pro-title">
-                                                <a target="_blank" asp-controller="Product" asp-action="Detail" asp-route-id="@item.ProductId">@item.ProductName</a>
-                                            </h5>
-                                            <span>Size: @item.Size - Màu: @item.Color</span>
-                                            <span class="mn-price">
-                                                <span class="price">
-                                                    <span class="text-sm">Số lượng: @(item.Quantity)</span>
-                                                </span>
-                                                <span class="new-price">@item.SubPriceString</span>
-                                            </span>
-                                        </div>
-                                    </div>
+        </div>
+
+        <!-- RIGHT SIDE: SUMMARY -->
+        <div class="col-lg-4">
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"> Tóm tắt đơn hàng</h5>
+                </div>
+
+                <div class="card-body p-4">
+
+                   
+
+                    <!-- Danh sách sản phẩm -->
+                    @foreach (var item in cart)
+                    {
+                        <div class="d-flex mb-3 pb-3 border-bottom">
+                            <img src="~/theme/client/img/giay/29.jpg" class="rounded me-3" width="70" height="70">
+
+                            <div class="flex-grow-1">
+                                <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.ProductId"
+                                   class="fw-bold text-dark d-block mb-1">
+                                    @item.ProductName
+                                </a>
+
+                                <div class="text-muted small">
+                                    Size: @item.Size – Màu: @item.Color
                                 </div>
-                            }
+
+                                <div class="small">
+                                    Số lượng: <strong>@item.Quantity</strong>
+                                </div>
+
+                                <div class="text-primary fw-bold mt-1">
+                                    @item.SubPriceString
+                                </div>
+                            </div>
                         </div>
+                    }
+                    <!-- Tiền -->
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="fw-semibold">Tạm tính</span>
+                        <span>@subtotal.ToString("N0") đ</span>
                     </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="fw-semibold">Phí vận chuyển</span>
+                        <span>@shipping.ToString("N0") đ</span>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between mb-3 fs-5 fw-bold text-primary">
+                        <span>Tổng tiền</span>
+                        <span>@total.ToString("N0") đ</span>
+                    </div>
+
+                    <hr />
+
                 </div>
-                <!-- Sidebar Summary Block -->
+
             </div>
 
-            <div class="mn-sidebar-wrap mn-checkout-del-wrap">
-                <!-- Sidebar Payment Block -->
-                <div class="mn-sidebar-block">
-                    <div class="mn-sb-title">
-                        <h3 class="mn-sidebar-title">Hình thức thành toán</h3>
-                    </div>
-                    <div class="mn-sb-block-content">
-                        <div class="mn-checkout-pay">
-                            <div class="mn-pay-desc">
-                                Please select the preferred payment method to use
-                                on this
-                                order.
+            <!-- PAYMENT METHOD -->
+            <div class="payment-section card shadow-sm border-0 mt-4">
+                <div class="card-header bg-secondary text-white py-3">
+                    <h5 class="mb-0"><i class="ri-wallet-3-line me-1"></i> Hình thức thanh toán</h5>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <!-- COD -->
+                    <label class="payment-option">
+                        <input type="radio" name="PaymentMethod" id="pay_cod" value="COD" checked>
+                        <div class="payment-box">
+                            <div class="payment-icon cod"><i class="ri-truck-line"></i></div>
+                            <div>
+                                <div class="payment-title">Thanh toán khi nhận hàng (COD)</div>
+                                <div class="payment-desc">Nhận hàng xong mới thanh toán</div>
                             </div>
-                            <form action="checkout.html#">
-                                <span class="mn-pay-option m-b-15">
-                                    <span>
-                                        <input type="radio" id="pay1" name="radio-group" checked>
-                                        <label for="pay1">Thanh toán khi nhận hàng</label>
-                                    </span>
-                                </span>
-                                <span class="mn-pay-commemt">
-                                    <span class="mn-pay-opt-head">Ghi chú</span>
-                                    <textarea name="your-commemt" placeholder="Comments"></textarea>
-                                </span>
-                                <span class="mn-pay-agree">
-                                    <input type="checkbox" value="">
-                                    Đồng ý với <a href="checkout.html#">chính sách và bảo mật.</a>
-                                    <span class="checked"></span>
-                                </span>
-                            </form>
+                        </div>
+                    </label>
+
+                    <!-- VISA / CARD -->
+                    <label class="payment-option">
+                        <input type="radio" name="PaymentMethod" id="pay_card" value="CARD">
+                        <div class="payment-box">
+                            <div class="payment-icon card"><i class="ri-bank-card-line"></i></div>
+                            <div>
+                                <div class="payment-title">Thanh toán qua thẻ (Visa / MasterCard)</div>
+                                <div class="payment-desc">Thanh toán an toàn – bảo mật cao</div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- FORM NHẬP THẺ -->
+                    <div id="card-form" class="payment-card-form">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label class="fw-bold">Số thẻ</label>
+                                <input type="text" class="form-control form-control-lg" placeholder="•••• •••• •••• ••••">
+                            </div>
+
+                            <div class="col-12 mb-3">
+                                <label class="fw-bold">Tên chủ thẻ</label>
+                                <input type="text" class="form-control form-control-lg" placeholder="NGUYEN VAN A">
+                            </div>
+
+                            <div class="col-6 mb-3">
+                                <label class="fw-bold">Ngày hết hạn</label>
+                                <input type="text" class="form-control form-control-lg" placeholder="MM/YY">
+                            </div>
+
+                            <div class="col-6 mb-3">
+                                <label class="fw-bold">CVV</label>
+                                <input type="text" class="form-control form-control-lg" placeholder="123">
+                            </div>
                         </div>
                     </div>
+
                 </div>
             </div>
+
+
+
         </div>
+
     </div>
-</section>
+
+</div>
+<style>
+    /* Bố cục từng lựa chọn */
+    .payment-option {
+        display: block;
+        cursor: pointer;
+        margin-bottom: 15px;
+    }
+
+        .payment-option input {
+            display: none;
+        }
+
+    /* Khung mỗi lựa chọn */
+    .payment-box {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 16px;
+        border: 2px solid #e3e3e3;
+        border-radius: 12px;
+        background: #fff;
+        transition: all 0.25s ease;
+    }
+
+    .payment-option:hover .payment-box {
+        border-color: #2f6bff;
+        background: #f5f9ff;
+    }
+
+    .payment-option input:checked + .payment-box {
+        border-color: #2f6bff;
+        background: #eef4ff;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    /* Icon */
+    .payment-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+    }
+
+        .payment-icon.cod {
+            background: #e3f2fd;
+            color: #0d6efd;
+        }
+
+        .payment-icon.card {
+            background: #fff4e5;
+            color: #ff8b2c;
+        }
+
+    /* Font title/desc */
+    .payment-title {
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .payment-desc {
+        font-size: 13px;
+        color: #555;
+        margin-top: 2px;
+    }
+
+    /* Form thanh toán thẻ */
+    .payment-card-form {
+        display: none;
+        border: 1px solid #d9e7ff;
+        background: #f7faff;
+        padding: 18px;
+        border-radius: 12px;
+        margin-top: 10px;
+    }
+
+</style>
+<script>
+    const codRadio = document.getElementById("pay_cod");
+    const cardRadio = document.getElementById("pay_card");
+    const cardForm = document.getElementById("card-form");
+
+    codRadio.addEventListener("change", () => {
+        cardForm.style.display = "none";
+    });
+
+    cardRadio.addEventListener("change", () => {
+        cardForm.style.display = "block";
+    });
+</script>
+
 

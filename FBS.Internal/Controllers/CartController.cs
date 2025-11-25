@@ -1,8 +1,6 @@
 ﻿using FBS.Application.DataTranferObjects.Cart;
-using FBS.Application.Services;
 using FBS.Application.Services.Interfaces;
 using FBS.Infrastructure.Entities;
-using FBS.Infrastructure.Repositories;
 using FBS.Infrastructure.Repositories.Interfaces;
 using FBS.Internal.Utils;
 using FBS.Shared.Constants;
@@ -28,19 +26,30 @@ namespace FBS.Internal.Controllers
             _orderService = orderService;
         }
 
+        // ============================================
+        // 🛒 TRANG GIỎ HÀNG
+        // ============================================
         public IActionResult Index()
         {
+            var cart = GetCart();
+            ViewData["Cart"] = cart;
             return View();
         }
 
+        // ============================================
+        // 🟦 TRANG CHECKOUT
+        // ============================================
+        [HttpGet]
         public IActionResult Checkout()
         {
-            return View();
+            var cart = GetCart();
+            ViewData["Cart"] = cart;
+            return View(new CheckoutDto());
         }
 
-        // =============================
-        // 🟦 Thêm vào giỏ hàng
-        // =============================
+        // ============================================
+        // ➕ THÊM VÀO GIỎ HÀNG
+        // ============================================
         [HttpPost]
         public async Task<IActionResult> AddToCart(CartItemDto request)
         {
@@ -48,16 +57,19 @@ namespace FBS.Internal.Controllers
 
             var productData = await _productService.FindById(request.ProductId);
 
-            var product = new CartItemDto
+            var newItem = new CartItemDto
             {
                 ProductId = request.ProductId,
                 ProductName = productData?.Data?.Name,
                 Price = productData?.Data?.Price,
                 Color = productData?.Data?.Color,
-                Size = request.Size
+                Size = request.Size,
+                Quantity = request.Quantity
             };
 
-            var existingItem = cart.FirstOrDefault(i => i.ProductId == request.ProductId && i.Size == request.Size);
+            // Tìm item theo product + size
+            var existingItem = cart.FirstOrDefault(i =>
+                i.ProductId == request.ProductId && i.Size == request.Size);
 
             if (existingItem != null)
             {
@@ -65,81 +77,81 @@ namespace FBS.Internal.Controllers
             }
             else
             {
-                product.Quantity = request.Quantity;
-                cart.Add(product);
+                cart.Add(newItem);
             }
 
             SaveCart(cart);
-            return RedirectToAction("Index", "Cart");
+            return RedirectToAction("Index");
         }
 
-        // =============================
-        // 🟥 Xóa sản phẩm khỏi giỏ hàng
-        // =============================
+        // ============================================
+        // ❌ XÓA SP KHỎI GIỎ
+        // ============================================
         public IActionResult RemoveFromCart(Guid productId)
         {
             var cart = GetCart();
 
-            var itemToRemove = cart.FirstOrDefault(i => i.ProductId == productId);
-            if (itemToRemove != null)
+            var item = cart.FirstOrDefault(i => i.ProductId == productId);
+            if (item != null)
             {
-                cart.Remove(itemToRemove);
+                cart.Remove(item);
                 SaveCart(cart);
             }
 
             return RedirectToAction("Index");
         }
 
-        // =============================
-        // 🟩 Cập nhật số lượng — thêm hàm này !!!
-        // =============================
+        // ============================================
+        // 🔄 CẬP NHẬT SỐ LƯỢNG (ĐÃ FIX CHUẨN)
+        // ============================================
         [HttpPost]
-        public IActionResult UpdateQuantity(Guid productId, string size, int quantity)
+        public IActionResult UpdateQuantity(Guid productId, int quantity)
         {
             var cart = GetCart();
 
-            var item = cart.FirstOrDefault(x => x.ProductId == productId && x.Size == size);
-            if (item != null)
+            var item = cart.FirstOrDefault(x => x.ProductId == productId);
+            if (item != null && quantity > 0)
             {
-                if (quantity > 0)
-                    item.Quantity = quantity;
-
+                item.Quantity = quantity;
                 SaveCart(cart);
             }
 
             return Json(new { success = true });
         }
 
-        // =============================
-        // 🟦 Đặt hàng
-        // =============================
+        // ============================================
+        // ✔ HOÀN TẤT ĐẶT HÀNG
+        // ============================================
         [HttpPost]
         public async Task<IActionResult> Checkout(CheckoutDto request)
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Checkout");
+                ViewData["Cart"] = GetCart();
+                return View(request);
             }
 
             var cart = GetCart();
+
             request.CartItems = cart.Select(x => new CartItemDto
             {
                 ProductId = x.ProductId,
-                Color = x.Color,
                 Quantity = x.Quantity,
                 Price = x.Price,
                 Size = x.Size,
+                Color = x.Color,
             }).ToList();
 
             var result = await _orderService.CreateOrder(request);
+
             if (result.Type == GlobalConstants.ResponseType.Success)
             {
                 ClearCart();
-                return RedirectToAction("Index");
+                TempData["SuccessMessage"]= "Bạn đã đặt hàng thành công!";
+                return RedirectToAction("Index", "Home");
             }
 
             return RedirectToAction("Index");
         }
-
     }
 }
