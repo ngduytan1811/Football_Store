@@ -1,4 +1,4 @@
-﻿using AngleSharp.Io;
+﻿
 using FBS.Application.DataTranferObjects.Categories;
 using FBS.Application.DataTranferObjects.Products;
 using FBS.Application.DataTranferObjects.Users;
@@ -92,6 +92,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             var model = new ProductSaveDto
             {
                 Id = data.Data.Id,
+                Image = data.Data.Image,
                 Name = data.Data.Name,
                 Description = data.Data.Description,
                 Price = data.Data.Price,
@@ -99,6 +100,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 Color = data.Data.Color,
                 Status = data.Data.Status,
                 CategoryId = data.Data.CategoryId,
+                Brand = data.Data.Brand
             };
 
             return View(model);
@@ -108,20 +110,60 @@ namespace FBS.Internal.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(Guid id, ProductSaveDto request)
         {
-            var user = await _productService.FindById(id);
-            if (user.Data == null)
+            // Lấy sản phẩm hiện tại
+            var current = await _productService.FindById(id);
+            if (current.Data == null)
+                return RedirectToAction("Index");
+
+            // Nếu có upload ảnh mới
+            if (request.ImageFile != null)
             {
-                return View();
+                // Tạo tên file mới
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(request.ImageFile.FileName);
+
+                // Đường dẫn thư mục lưu ảnh (bạn đang dùng theme/client/img/product)
+                var folderPath = Path.Combine(
+     Directory.GetCurrentDirectory(),
+     "wwwroot",
+     "theme",
+     "client",
+     "img",
+     "product"
+ );
+
+
+                // Nếu thư mục chưa tồn tại → tạo
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                var fullPath = Path.Combine(folderPath, fileName);
+
+                // Lưu file vào thư mục
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await request.ImageFile.CopyToAsync(stream);
+                }
+
+                // Gán tên file ảnh mới vào DTO
+                request.Image = fileName;
+            }
+            else
+            {
+                // Nếu không upload ảnh mới → giữ ảnh cũ
+                request.Image = current.Data.Image;
             }
 
+            // Cập nhật sản phẩm
             var result = await _productService.UpdateProduct(id, request);
+
             if (result.Type == GlobalConstants.ResponseType.Success)
             {
                 return RedirectToAction("Index");
             }
 
-            return RedirectToAction("Edit", "Product", new { id = id });
+            return RedirectToAction("Edit", new { id = id });
         }
+
 
 
         [HttpPost]

@@ -343,7 +343,7 @@ namespace FBS.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("Branch")
+                    b.Property<string>("Brand")
                         .HasColumnType("longtext");
 
                     b.Property<Guid?>("CategoryId")

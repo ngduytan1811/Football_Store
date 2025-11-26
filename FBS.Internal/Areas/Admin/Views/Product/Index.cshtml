@@ -19,6 +19,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
+                                <th scope="col">Ảnh</th>
                                 <th scope="col">Tên sản phẩm</th>
                                 <th scope="col">Danh mục</th>
                                 <th scope="col">Đơn giá</th>
@@ -33,6 +34,17 @@
                             {
                                 <tr>
                                     <th scope="row">@product.Index</th>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(product.Image))
+                                        {
+                                            <img src="@Url.Content("\\"+product.Image)"
+                                                 style="width:60px;height:60px;object-fit:cover;border-radius:6px" />
+                                        }
+                                        else
+                                        {
+                                            <span>Không có ảnh</span>
+                                        }
+                                    </td>
                                     <td>@product.Name</td>
                                     <td>@(product.CategoryName ?? "--")</td>
                                     <td>@(product.Price.HasValue? product.PriceString: "--")</td>

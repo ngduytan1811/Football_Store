@@ -71,10 +71,8 @@
 
                                                 <div class="mn-img">
                                                     <a asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id" class="image">
-                                                        <img class="main-img" src="~/theme/client/img/product/29.jpg"
-                                                             alt="product">
-                                                        <img class="hover-img" src="~/theme/client/img/product/30.jpg"
-                                                             alt="product">
+                                                        <img class="main-img" src="@product.Image" alt="@product.Name">
+                                                        <img class="hover-img" src="@product.Image" alt="@product.Name">
                                                     </a>
                                                     <div class="mn-pro-loader"></div>
                                                     <div class="mn-options">
@@ -134,10 +132,18 @@
                         </div>
                         <div class="mn-pro-pagination m-b-15">
                             <ul class="mn-pro-pagination-inner">
-                                @for (var i = 1; i < products.TotalPage; i++)
+                                @for (var i = 1; i <= products.TotalPage; i++)
                                 {
-                                    <li><a class="active" asp-controller="Product" asp-action="List" asp-route-page="@i">@i</a></li>
+                                    <li>
+                                        <a class="@(searchData.Page == i ? "active" : "")"
+                                           asp-controller="Product"
+                                           asp-action="List"
+                                           asp-route-page="@i">
+                                            @i
+                                        </a>
+                                    </li>
                                 }
+
                             </ul>
                         </div>
                     </div>

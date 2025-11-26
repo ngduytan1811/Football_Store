@@ -34,7 +34,12 @@ namespace FBS.Application.Services
         {
             var queryProduct = await _unitOfWork.GetRepositoryReadOnlyAsync<Product>().QueryAll();
             queryProduct = queryProduct.Include(x => x.ProductSizes).Include(x => x.ProductColor).Include(x => x.Category);
-
+            var folderPath = Path.Combine(
+    "theme",
+    "client",
+    "img",
+    "product"
+);
             var query = queryProduct.OrderBy(x => Guid.NewGuid())
                 .Take(6).Select(product => new ProductDto
                 {
@@ -46,7 +51,7 @@ namespace FBS.Application.Services
                     Name = product.Name,
                     Color = product.ProductColor.Color,
                     Sizes = product.ProductSizes.Select(ps => ps.Size).ToList(),
-
+                    Image = !string.IsNullOrEmpty(product.Image) ? Path.Combine(folderPath, product.Image) : string.Empty,
                     Description = product.Description,
                     CreatedAt = product.CreatedAt,
                 });
@@ -62,6 +67,12 @@ namespace FBS.Application.Services
             queryProduct = queryProduct.Include(x => x.ProductSizes).Include(x => x.ProductColor).Include(x => x.Category);
             var searchData = dto.SearchParams ?? new ProductSearchDto();
 
+            var folderPath = Path.Combine(
+                "theme",
+                "client",
+                "img",
+                "product"
+             );
             if (!string.IsNullOrEmpty(searchData.SearchName))
             {
                 var searchValue = searchData.SearchName.ToLower().Trim();
@@ -75,7 +86,7 @@ namespace FBS.Application.Services
 
             if (searchData.Brands != null && searchData.Brands.Count > 0)
             {
-                queryProduct = queryProduct.Where(x => searchData.Brands.Contains(x.Branch));
+                queryProduct = queryProduct.Where(x => searchData.Brands.Contains(x.Brand));
             }
 
             if (searchData.FromPrice.HasValue)
@@ -116,10 +127,13 @@ namespace FBS.Application.Services
                 Price = product.Price,
                 Name = product.Name,
                 Color = product.ProductColor.Color,
-                Branch = product.Branch,
+                Brand = product.Brand,
+                
+                Image = !string.IsNullOrEmpty(product.Image) ? Path.Combine(folderPath, product.Image) : string.Empty,
                 Sizes = product.ProductSizes.Select(ps => ps.Size).ToList(),
                 Description = product.Description,
                 CreatedAt = product.CreatedAt,
+                
             });
 
             query = dto.ColumnSort switch
@@ -173,9 +187,9 @@ namespace FBS.Application.Services
                 Description = product.Description,
                 Detail = product.Detail,
                 Status = product.Status,
-                Color = product.ProductColor.Color,
+                Color = product.ProductColor?.Color,
                 Image = product.Image,
-                Branch = product.Branch,
+                Brand = product.Brand,
                 CategoryId = product.CategoryId,
                 CategoryName = product.Category?.Name,
                 Price = product.Price,
@@ -216,7 +230,7 @@ namespace FBS.Application.Services
                 CategoryId = dto.CategoryId,
                 Description = dto.Description?.Trim(),
                 Price = dto.Price,
-                Branch = dto.Branch,
+                Brand = dto.Brand,
                 Detail = dto.Detail,
                 Status = StatusEnum.Active,
             };
@@ -267,8 +281,9 @@ namespace FBS.Application.Services
             product.CategoryId = dto.CategoryId;
             product.Status = dto.Status;
             product.Price = dto.Price;
-            product.Branch = dto.Branch;
+            product.Brand = dto.Brand;
             product.Description = dto.Description;
+            product.Image = dto.Image;
 
             // UPDATE COLOR
             productColor.Color = dto.Color;

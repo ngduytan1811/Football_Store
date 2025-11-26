@@ -616,7 +616,7 @@ if (!document.createElement('canvas').getContext) {
   };
 
   contextPrototype.beginPath = function() {
-    // TODO: Branch current matrix so that save/restore has no effect
+    // TODO: Brand current matrix so that save/restore has no effect
     //       as per safari docs.
     this.currentPath_ = [];
   };

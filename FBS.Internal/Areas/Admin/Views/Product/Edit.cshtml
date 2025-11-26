@@ -6,7 +6,8 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var categoryDropdown = (List<CategoryDto>)ViewData["Categogries"];
 }
-@model ProductSaveDto
+@model FBS.Application.DataTranferObjects.Products.ProductSaveDto
+
 
 <div class="container-fluid">
     <div class="page-title">
@@ -25,7 +26,7 @@
 </div>
 
 <div class="container-fluid add-product">
-    <form asp-action="Update" asp-route-id="@Model.Id" asp-controller="Product" method="post">
+    <form asp-action="Update" asp-route-id="@Model.Id" asp-controller="Product" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-xl-6">
                 <div class="card">
@@ -71,11 +72,11 @@
                                     <div class="col-sm-6">
                                         <div class="mb-3">
                                             <label class="form-label">Thương hiệu</label>
-                                            <select asp-for="Branch" class="form-select">
+                                            <select asp-for="Brand" class="form-select">
                                                 <option  hidden value="">Chọn..</option>
                                                 @foreach (var brand in GlobalConstants.Brands)
                                                 {
-                                                    <option value="@brand" selected="@(Model.Branch == brand)">@brand</option>
+                                                    <option value="@brand" selected="@(Model.Brand == brand)">@brand</option>
                                                 }
                                             </select>
                                         </div>
@@ -103,9 +104,18 @@
                     <div class="card-body ">
                         <div class="product-info">
                             <h5>Ảnh sản phẩm</h5>
-                            <div class="mb-3">
-                                <input class="form-control" type="file">
-                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.Image))
+                            {
+                                <img src="/theme/client/img/product/@Model.Image"
+                                     style="width:150px;height:150px;object-fit:cover;border-radius:8px" />
+                            }
+
+                            <input class="form-control" asp-for="ImageFile" type="file" />
+                            <input type="hidden" asp-for="Image" />
+
+
+
                             <h5 class="mt-4">Kích thước</h5>
                             <div class="product-group">
                                 <div class="row">
