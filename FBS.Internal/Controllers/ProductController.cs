@@ -42,15 +42,20 @@ namespace FBS.Internal.Controllers
             if (data?.Data == null)
                 return RedirectToAction("List");
 
-            var sizes = data.Data?.Sizes;
-            // Truyền Product vào ViewData
+            
+            var randomProducts = await _productService.GetRandomProducts();
+
+          
             ViewData["Product"] = data.Data;
+            ViewData["RandomProducts"] = randomProducts;   
             ViewData["SearchData"] = request ?? new ProductSearchDto();
+
             return View(new CartItemDto
             {
                 ProductId = id
             });
         }
+
 
     }
 }

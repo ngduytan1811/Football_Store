@@ -1,20 +1,22 @@
 ﻿@model FBS.Application.DataTranferObjects.Blog.BlogSaveDto
 
 @{
-    ViewData["Title"] = "Thêm bài viết";
+    ViewData["Title"] = "Chỉnh sửa bài viết";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+    var blog = Model; // dữ liệu load từ controller
 }
 
 <div class="container-fluid">
     <div class="page-title">
         <div class="row">
             <div class="col-sm-6">
-                <h3>Thêm bài viết</h3>
+                <h3>Chỉnh sửa bài viết</h3>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Dashboard"><i data-feather="home"></i></a></li>
-                    <li class="breadcrumb-item active">Thêm bài viết</li>
+                    <li class="breadcrumb-item active">Edit Blog</li>
                 </ol>
             </div>
         </div>
@@ -22,7 +24,9 @@
 </div>
 
 <div class="container-fluid add-product">
-    <form asp-action="Create" method="post" enctype="multipart/form-data">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Id" />
+
         <div class="row">
 
             <!-- LEFT -->
@@ -33,19 +37,19 @@
                         <!-- Title -->
                         <div class="mb-3">
                             <label class="form-label">Tiêu đề</label>
-                            <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề bài viết" />
+                            <input asp-for="Title" class="form-control" />
                         </div>
 
                         <!-- Author -->
                         <div class="mb-3">
                             <label class="form-label">Tác giả</label>
-                            <input asp-for="Author" class="form-control" placeholder="Tên tác giả" />
+                            <input asp-for="Author" class="form-control" />
                         </div>
 
                         <!-- Content -->
                         <div class="mb-3">
                             <label class="form-label">Nội dung</label>
-                            <textarea asp-for="Content" class="form-control" rows="10" placeholder="Nhập nội dung bài viết..."></textarea>
+                            <textarea asp-for="Content" class="form-control" rows="10"></textarea>
                         </div>
 
                     </div>
@@ -59,16 +63,26 @@
 
                         <!-- Thumbnail -->
                         <h5>Ảnh thumbnail</h5>
+
+                        <!-- Ảnh cũ -->
+                        @if (!string.IsNullOrEmpty(blog.Thumbnail))
+                        {
+                            <img src="~/@blog.Thumbnail" id="oldImg"
+                                 style="width:100%;border-radius:8px;margin-bottom:10px" />
+                        }
+
+                        <!-- Chọn ảnh mới -->
                         <div class="mb-3">
                             <input asp-for="ThumbnailFile" class="form-control" type="file" accept="image/*" onchange="previewImage(event)" />
 
+                            <!-- Preview ảnh mới -->
                             <img id="previewImg"
                                  src=""
                                  style="width:100%;margin-top:10px;display:none;border-radius:8px;object-fit:cover" />
                         </div>
 
                         <div class="text-end">
-                            <button type="submit" class="btn btn-primary me-3">Lưu</button>
+                            <button type="submit" class="btn btn-primary me-3">Lưu thay đổi</button>
                             <a asp-action="Index" class="btn btn-secondary">Hủy</a>
                         </div>
 
@@ -83,14 +97,19 @@
 <script>
     feather.replace();
 
-    // Preview ảnh trước khi upload
     function previewImage(event) {
         const reader = new FileReader();
+
         reader.onload = function () {
-            const output = document.getElementById('previewImg');
-            output.src = reader.result;
-            output.style.display = 'block';
+            const newImg = document.getElementById('previewImg');
+            newImg.src = reader.result;
+            newImg.style.display = 'block';
+
+            // Ẩn ảnh cũ
+            const oldImg = document.getElementById('oldImg');
+            if (oldImg) oldImg.style.display = 'none';
         };
+
         reader.readAsDataURL(event.target.files[0]);
     }
 </script>

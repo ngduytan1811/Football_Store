@@ -10,6 +10,8 @@
     <Folder Include="DataAccess\Migrations\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
+ 
+
 
   <ItemGroup>
     <PackageReference Include="HtmlSanitizer" Version="9.0.886" />

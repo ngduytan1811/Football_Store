@@ -23,6 +23,7 @@ namespace FBS.Application.Services
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private object data;
 
         public ProductService(
             IUnitOfWork unitOfWork)
@@ -32,32 +33,41 @@ namespace FBS.Application.Services
 
         public async Task<List<ProductDto>> GetRandomProducts()
         {
-            var queryProduct = await _unitOfWork.GetRepositoryReadOnlyAsync<Product>().QueryAll();
-            queryProduct = queryProduct.Include(x => x.ProductSizes).Include(x => x.ProductColor).Include(x => x.Category);
-            var folderPath = Path.Combine(
-    "theme",
-    "client",
-    "img",
-    "product"
-);
-            var query = queryProduct.OrderBy(x => Guid.NewGuid())
-                .Take(6).Select(product => new ProductDto
-                {
-                    Id = product.Id,
-                    Status = product.Status,
-                    CategoryName = product.CategoryId.HasValue ? product.Category.Name : string.Empty,
-                    CategoryId = product.CategoryId,
-                    Price = product.Price,
-                    Name = product.Name,
-                    Color = product.ProductColor.Color,
-                    Sizes = product.ProductSizes.Select(ps => ps.Size).ToList(),
-                    Image = !string.IsNullOrEmpty(product.Image) ? Path.Combine(folderPath, product.Image) : string.Empty,
-                    Description = product.Description,
-                    CreatedAt = product.CreatedAt,
-                });
+            var repo = _unitOfWork.GetRepositoryReadOnlyAsync<Product>();
+            var data = await repo.QueryAll();
 
-            return query.ToList();
+            data = data
+                .Include(x => x.ProductSizes)
+                .Include(x => x.ProductColor)
+                .Include(x => x.Category);
+
+            // ⭐ LẤY TOÀN BỘ RA RAM
+            var list = await data.ToListAsync();
+
+            // ⭐ RANDOM TRÊN LIST (đúng 100%, không phụ thuộc EF)
+            list = list.OrderBy(x => Guid.NewGuid()).Take(6).ToList();
+
+            var folderPath = Path.Combine("theme", "client", "img", "product");
+
+            return list.Select(product => new ProductDto
+            {
+                Id = product.Id,
+                Status = product.Status,
+                CategoryName = product.Category?.Name,
+                CategoryId = product.CategoryId,
+                Price = product.Price,
+                Name = product.Name,
+                Color = product.ProductColor?.Color,
+                Sizes = product.ProductSizes.Select(ps => ps.Size).ToList(),
+                Image = !string.IsNullOrEmpty(product.Image)
+        ? "/theme/client/img/product/" + product.Image
+        : string.Empty,
+
+                Description = product.Description,
+                CreatedAt = product.CreatedAt
+            }).ToList();
         }
+
 
         public async Task<BaseTableResponse<ProductDto>> GetProducts(BaseSearchDto<ProductSearchDto> dto)
         {
@@ -128,8 +138,11 @@ namespace FBS.Application.Services
                 Name = product.Name,
                 Color = product.ProductColor.Color,
                 Brand = product.Brand,
-                
-                Image = !string.IsNullOrEmpty(product.Image) ? Path.Combine(folderPath, product.Image) : string.Empty,
+
+                Image = !string.IsNullOrEmpty(product.Image)
+        ? "/theme/client/img/product/" + product.Image
+        : string.Empty,
+
                 Sizes = product.ProductSizes.Select(ps => ps.Size).ToList(),
                 Description = product.Description,
                 CreatedAt = product.CreatedAt,
@@ -210,6 +223,7 @@ namespace FBS.Application.Services
                 ProductId = dto.ProductId,
                 Message = dto.Message,
                 FullName = dto.FullName,
+               
                 Status = StatusEnum.Active,
             });
 
@@ -223,6 +237,7 @@ namespace FBS.Application.Services
             var result = new BaseResponse<string>();
             var productColorRep = _unitOfWork.GetRepositoryAsync<ProductColor>();
             var productSizeRep = _unitOfWork.GetRepositoryAsync<ProductSize>();
+        
 
             var newProduct = new Product
             {
@@ -233,6 +248,7 @@ namespace FBS.Application.Services
                 Brand = dto.Brand,
                 Detail = dto.Detail,
                 Status = StatusEnum.Active,
+                Image = dto.Image,
             };
 
             await productColorRep.Add(new ProductColor
@@ -331,5 +347,6 @@ namespace FBS.Application.Services
 
             return result;
         }
+
     }
 }

@@ -62,6 +62,7 @@ namespace FBS.DataAccess.Contexts
             builder.ApplyConfiguration(new ProductSizeConfiguration());
             builder.ApplyConfiguration(new ProductColorConfiguration());
             builder.ApplyConfiguration(new ProductReviewConfiguration());
+            builder.ApplyConfiguration(new BlogConfiguration());
         }
     }
 }

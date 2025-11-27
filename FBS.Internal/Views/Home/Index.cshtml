@@ -81,7 +81,7 @@
                         </div>
                         <div class="mn-product-detail">
                             <div class="cat">
-                                <a href="javascript:void(0)">@product.CategoryName</a>
+                                <a asp-controller="Product" asp-action="List" asp-route-categoryId="@product.CategoryId">@product.CategoryName</a>
                                 <ul>
                                     <li>Size: @string.Join(", ", product.Sizes)</li>
 

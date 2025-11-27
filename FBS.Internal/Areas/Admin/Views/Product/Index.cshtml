@@ -37,13 +37,14 @@
                                     <td>
                                         @if (!string.IsNullOrEmpty(product.Image))
                                         {
-                                            <img src="@Url.Content("\\"+product.Image)"
+                                            <img src="@product.Image"
                                                  style="width:60px;height:60px;object-fit:cover;border-radius:6px" />
                                         }
                                         else
                                         {
                                             <span>Không có ảnh</span>
                                         }
+
                                     </td>
                                     <td>@product.Name</td>
                                     <td>@(product.CategoryName ?? "--")</td>
@@ -52,11 +53,31 @@
 
                                     <td>@product.Color</td>
                                     <td>@product.StatusName</td>
-                                    <td>
-                                        <a class="text-primary" asp-action="Edit" asp-controller="Product" asp-route-id="@product.Id">
+                                    <td style="white-space:nowrap">
+
+                                        <!-- Nút sửa -->
+                                        <a class="text-primary me-2"
+                                           asp-action="Edit" asp-controller="Product" asp-route-id="@product.Id">
                                             <i data-feather="edit-2"></i>
                                         </a>
+
+                                        <!-- Nút xóa -->
+                                        <form asp-action="Delete"
+                                              asp-controller="Product"
+                                              asp-route-id="@product.Id"
+                                              method="post"
+                                              style="display:inline">
+
+                                            <button type="submit"
+                                                    class="btn btn-link text-danger p-0"
+                                                    onclick="return confirm('Bạn chắc chắn muốn xóa sản phẩm này?');">
+                                                <i data-feather="trash-2"></i>
+                                            </button>
+
+                                        </form>
+
                                     </td>
+
                                 </tr>
                             }
                         </tbody>

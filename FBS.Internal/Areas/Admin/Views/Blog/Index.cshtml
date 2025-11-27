@@ -1,89 +1,65 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-}
-
+﻿@using FBS.API.Responses.Base
+@using FBS.Application.DataTranferObjects.Blog
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh sách bài viết";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-}
 
+    var blogs = (BaseTableResponse<BlogDto>)ViewData["Blogs"];
+}
 
 <div class="container-fluid basic_table">
     <div class="text-end mb-3">
-        <a asp-action="Create" asp-controller="Category" class="btn btn-primary">Thêm mới bài viết</a>
+        <a asp-action="Create" asp-controller="Blog" class="btn btn-primary">Thêm bài viết</a>
     </div>
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="card px-4 ">
-                <div class="table-responsive theme-scrollbar py-4">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col">Id</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Signal Name	</th>
-                                <th scope="col">Security</th>
-                                <th scope="col">Stage</th>
-                                <th scope="col">Schedule</th>
-                                <th scope="col">Team Lead</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td class="d-flex align-items-center"><i class="bg-light-success font-success" data-feather="alert-triangle"></i><span class="font-success">No Signal</span></td>
-                                <td>Astrid: NE Shared managed</td>
-                                <td>Medium</td>
-                                <td>Triaged</td>
-                                <td>0.33	</td>
-                                <td>Chase Nguyen	</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td class="d-flex align-items-center"><i class="bg-light-danger font-danger" data-feather="alert-triangle"></i><span class="font-danger">Offline</span></td>
-                                <td>Cosmo: prod shared ares	</td>
-                                <td>Huge</td>
-                                <td>Triaged</td>
-                                <td>0.39</td>
-                                <td>Brie Furman</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td class="d-flex align-items-center"> <i class="bg-light-primary font-primary" data-feather="alert-circle"></i><span class="font-primary">Online</span></td>
-                                <td>Phoenix: prod shared lyra-lists	</td>
-                                <td>Minor</td>
-                                <td>No Triaged</td>
-                                <td>3.12	</td>
-                                <td>Jeremy Lake</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">4</th>
-                                <td class="d-flex align-items-center"> <i class="bg-light-success font-success" data-feather="check-circle"></i><span class="font-success">No Signal</span></td>
-                                <td>Astrid: NE Shared managed</td>
-                                <td>Negligible</td>
-                                <td>Triaged</td>
-                                <td>13.18</td>
-                                <td>Angelica Howards</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">5</th>
-                                <td class="d-flex align-items-center"> <i class="bg-light-danger font-danger" data-feather="check-circle"></i><span class="font-danger">Online</span></td>
-                                <td>Astrid: NE Shared managed</td>
-                                <td>Medium</td>
-                                <td>No Triaged</td>
-                                <td>5.33		</td>
-                                <td>Diane Okuma</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+
+    <div class="card px-4">
+        <div class="table-responsive py-4">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Ảnh</th>
+                        <th>Tiêu đề</th>
+                        <th>Tác giả</th>
+                        <th>Ngày tạo</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int index = 0;
+                    }
+                    @foreach (var blog in blogs.Items)
+                    {
+                        <tr>
+                            <td>@(++index)</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(blog.Thumbnail))
+                                {
+                                    <img src="@Url.Content("~/" + blog.Thumbnail)" style="width:60px;height:60px;object-fit:cover" />
+                                }
+                            </td>
+                            <td>@blog.Title</td>
+                            <td>@blog.Author</td>
+                            <td>@blog.CreatedAt?.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@blog.Id" class="text-primary me-2">
+                                    <i data-feather="edit-2"></i>
+                                </a>
+
+                                <form asp-action="Delete" asp-route-id="@blog.Id" method="post" style="display:inline">
+                                    <button type="submit"
+                                            class="btn btn-link text-danger p-0"
+                                            onclick="return confirm('Xóa bài viết này?');">
+                                        <i data-feather="trash-2"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-
-
-

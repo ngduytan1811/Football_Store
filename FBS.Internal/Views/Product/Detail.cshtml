@@ -4,10 +4,15 @@
 @{
     ViewData["Title"] = "Detail";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
     var product = (ProductDto)ViewData["Product"] ?? new ProductDto();
+
+    
+    var randomProducts = (List<ProductDto>)ViewData["RandomProducts"] ?? new List<ProductDto>();
 }
 
 @model CartItemDto
+
 
 <div class="mn-breadcrumb m-b-30">
     <div class="row">
@@ -206,51 +211,47 @@
                             </div>
                         </div>
                     </div>
-                    <section class="mn-related-product m-t-30">
+                    <section class="mn-new-product p-tb-15">
                         <div class="mn-title">
-                            <h2><span>Sản phẩm</span> xem gần đây</h2>
+                            <h2>Sản Phẩm Mới</h2>
                         </div>
-                        <div class="mn-related owl-carousel">
-                            <div class="mn-product-card">
-                                <div class="mn-product-img">
-                                    <div class="lbl">
-                                        <span class="trending">trending</span>
+                        <div class="mn-product owl-carousel">
+                            @foreach (var item in randomProducts)
+                            {
+                                <div class="mn-product-card">
+                                    <div class="mn-product-img">
+                                        <div class="lbl">
+                                            <span class="trending">Mới</span>
+                                        </div>
+                                        <div class="mn-img">
+                                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id" class="image">
+                                                <img class="main-img" src="@item.Image" alt="@item.Name">
+                                                <img class="hover-img" src="@item.Image" alt="@item.Name">
+                                            </a>
+                                        </div>
                                     </div>
-                                    <div class="mn-img">
-                                        <a asp-controller="Product" asp-action="Detail" asp-router-productId="124" class="image">
-                                            <img class="main-img" src="~/theme/client/img/giay/30.jpg"
-                                                 alt="product">
-                                            <img class="hover-img" src="~/theme/client/img/giay/29.jpg"
-                                                 alt="product">
-                                        </a>
-
-                                    </div>
-                                </div>
-                                <div class="mn-product-detail">
-                                    <div class="cat">
-                                        <a asp-controller="Product" asp-action="List">@product.CategoryName</a>
-                                        <ul>
-                                            <li>Size: @string.Join(", ", product.Sizes)</li>
-                                        </ul>
-                                    </div>
-                                    <h5><a asp-controller="Product" asp-action="Detail" asp-router-productId="124">@product.Name</a></h5>
-                                    <div class="mn-price">
-                                        <div class="mn-price-new">@product.PriceString</div>
-                                        <div class="mn-price-old">@product.PriceString</div>
-                                    </div>
-                                    <div class="mn-pro-option">
-
-                                        <a href="javascript:void(0);" class="mn-wishlist" data-tooltip
-                                           title="Wishlist">
-                                            <i class="ri-heart-line"></i>
-                                        </a>
+                                    <div class="mn-product-detail">
+                                        <div class="cat">
+                                            <a asp-controller="Product" asp-action="List" asp-route-categoryId="@product.CategoryId">@product.CategoryName</a>
+                                            <ul>
+                                                <li>Size: @string.Join(", ", item.Sizes)</li>
+                                            </ul>
+                                        </div>
+                                        <h5>
+                                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id">
+                                                @item.Name
+                                            </a>
+                                        </h5>
+                                        <div class="mn-price">
+                                            <div class="mn-price-new">@item.PriceString</div>
+                                            <div class="mn-price-old">@item.PriceString</div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-
-
+                            }
                         </div>
                     </section>
+
                 </div>
                 <!-- Sidebar Area Start -->
                @Html.Partial("_SidebarProduct")

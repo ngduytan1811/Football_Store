@@ -44,11 +44,10 @@ namespace FBS.Internal.Areas.Admin.Controllers
         public async Task<IActionResult> Create()
         {
             var dataDrop = await _categoryService.GetCategoryDropdown();
-            ViewData["Categogries"] = dataDrop?.Data;
+            ViewData["Categories"] = dataDrop?.Data;
 
             return View();
         }
-
         [HttpPost]
         public async Task<IActionResult> Create(ProductSaveDto request)
         {
@@ -56,9 +55,36 @@ namespace FBS.Internal.Areas.Admin.Controllers
             {
                 var dataDrop = await _categoryService.GetCategoryDropdown();
                 ViewData["Categories"] = dataDrop?.Data;
-                
                 return View(request);
             }
+
+           
+
+            if (request.ImageFile != null)
+            {
+                var fileName = Guid.NewGuid() + Path.GetExtension(request.ImageFile.FileName);
+
+                var folderPath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "theme", "client", "img", "product"
+                );
+
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                var fullPath = Path.Combine(folderPath, fileName);
+
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await request.ImageFile.CopyToAsync(stream);
+                }
+
+               
+                request.Image = fileName;
+            }
+
+          
 
             try
             {
@@ -81,7 +107,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             var dataDrop = await _categoryService.GetCategoryDropdown();
-            ViewData["Categogries"] = dataDrop?.Data;
+            ViewData["Categories"] = dataDrop?.Data;
 
             var data = await _productService.FindById(id);
             if (data.Data == null)
@@ -118,35 +144,28 @@ namespace FBS.Internal.Areas.Admin.Controllers
             // Nếu có upload ảnh mới
             if (request.ImageFile != null)
             {
-                // Tạo tên file mới
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(request.ImageFile.FileName);
+                var fileName = Guid.NewGuid() + Path.GetExtension(request.ImageFile.FileName);
 
-                // Đường dẫn thư mục lưu ảnh (bạn đang dùng theme/client/img/product)
                 var folderPath = Path.Combine(
-     Directory.GetCurrentDirectory(),
-     "wwwroot",
-     "theme",
-     "client",
-     "img",
-     "product"
- );
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot",
+                    "theme", "client", "img", "product"
+                );
 
-
-                // Nếu thư mục chưa tồn tại → tạo
                 if (!Directory.Exists(folderPath))
                     Directory.CreateDirectory(folderPath);
 
                 var fullPath = Path.Combine(folderPath, fileName);
 
-                // Lưu file vào thư mục
                 using (var stream = new FileStream(fullPath, FileMode.Create))
                 {
                     await request.ImageFile.CopyToAsync(stream);
                 }
 
-                // Gán tên file ảnh mới vào DTO
+                // 💥 Ở ĐÂY – GÁN GIÁ TRỊ CHO DTO
                 request.Image = fileName;
             }
+
             else
             {
                 // Nếu không upload ảnh mới → giữ ảnh cũ

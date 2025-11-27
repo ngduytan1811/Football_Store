@@ -4,7 +4,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    
   </PropertyGroup>
+
+
 
   <ItemGroup>
     <Content Include="wwwroot\theme\admin\.idea\modules.xml" />
@@ -42,5 +45,8 @@
     <ProjectReference Include="..\FBS.DataAccess\FBS.Infrastructure.csproj" />
     <ProjectReference Include="..\FBS.Shared\FBS.Shared.csproj" />
   </ItemGroup>
+  
+ 
+
 
 </Project>
