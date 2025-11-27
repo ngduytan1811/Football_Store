@@ -24,21 +24,38 @@ namespace FBS.Application.Services
 
         public async Task<BaseTableResponse<BlogDto>> GetBlogs(BaseSearchDto<BlogSearchDto> dto)
         {
+            // Nếu dto null => khởi tạo mặc định
+            dto ??= new BaseSearchDto<BlogSearchDto>();
+
+            // Nếu PageSize truyền vào <= 0 => set mặc định
+            if (dto.PageSize <= 0)
+                dto.PageSize = 20;
+
+            // Nếu Page truyền vào <= 0 => set mặc định
+            if (dto.Page <= 0)
+                dto.Page = 1;
+
+            // Start = (Page - 1) * PageSize => đã có sẵn trong BaseSearchDto
+            int start = dto.Start;
+
             var repo = _unitOfWork.GetRepositoryReadOnlyAsync<Blog>();
             var query = await repo.QueryAll();
 
+            // SEARCH
             if (!string.IsNullOrEmpty(dto.SearchParams?.Search))
             {
                 var key = dto.SearchParams.Search.ToLower();
                 query = query.Where(x => x.Title.ToLower().Contains(key));
             }
 
+            // Chuẩn bị response
             var result = new BaseTableResponse<BlogDto>();
             result.Total = query.Count();
 
+            // Lấy danh sách blog
             var items = query
                 .OrderByDescending(x => x.CreatedAt)
-                .Skip(dto.Start)
+                .Skip(start)
                 .Take(dto.PageSize)
                 .Select(x => new BlogDto
                 {
@@ -55,6 +72,8 @@ namespace FBS.Application.Services
 
             return result;
         }
+
+
 
         public async Task<BaseResponse<BlogDto>> FindById(Guid id)
         {

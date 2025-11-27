@@ -6,7 +6,7 @@ namespace FBS.Shared.Constants
 {
     public static class GlobalConstants
     {
-        public const string PasswordDefault = "Duy123@";
+        public const string PasswordDefault = "123";
         public const int DefaultPageSize = 20;
 
         public static class ResponseType
@@ -34,7 +34,9 @@ namespace FBS.Shared.Constants
             "Nike",
             "Puma",
             "Mizuno",
-            "Wika"
+            "Wika",
+            "Kamito",
+            "Joma"
         };
 
         public static readonly List<string> Color = new List<string>
@@ -43,6 +45,10 @@ namespace FBS.Shared.Constants
             "Đỏ",
             "Xanh",
             "Trắng",
+            "Tím",
+            "Vàng",
+            
+
         };
     }
 }

@@ -1,81 +1,84 @@
-﻿
+﻿@model List<FBS.Application.DataTranferObjects.Blog.BlogDto>
+
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Bài viết mới nhất";
 }
 
-<div class="mn-breadcrumb m-b-30">
-	<div class="row">
-		<div class="col-12">
-			<div class="row gi_breadcrumb_inner">
-				<div class="col-md-6 col-sm-12">
-					<h2 class="mn-breadcrumb-title">Bài viết</h2>
-				</div>
-				<div class="col-md-6 col-sm-12">
-					<!-- mn-breadcrumb-list start -->
-					<ul class="mn-breadcrumb-list">
-						<li class="mn-breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-						<li class="mn-breadcrumb-item active">Bài viết</li>
-					</ul>
-					<!-- mn-breadcrumb-list end -->
-				</div>
-			</div>
-		</div>
-	</div>
+<style>
+    .blog-card img {
+        height: 220px;
+        object-fit: cover;
+        border-top-left-radius: .5rem;
+        border-top-right-radius: .5rem;
+    }
+
+    .blog-card:hover {
+        transform: translateY(-4px);
+        transition: .2s;
+        box-shadow: 0 10px 25px rgba(0,0,0,.1);
+    }
+
+    .blog-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        line-height: 1.4;
+        color: #222;
+    }
+
+        .blog-title:hover {
+            color: #0d6efd;
+        }
+
+    .blog-author {
+        font-size: .9rem;
+        color: #777;
+    }
+</style>
+
+<div class="container py-4">
+
+    <h2 class="fw-bold mb-4 text-center">
+        Tin tức & Bài viết nổi bật
+    </h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            Hiện chưa có bài viết nào.
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var blog in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card blog-card shadow-sm h-100">
+
+                        <a href="/blog/detail/@blog.Id">
+                            <img src="/@blog.Thumbnail" class="card-img-top" />
+                        </a>
+
+                        <div class="card-body">
+                            <a href="/blog/detail/@blog.Id" class="text-decoration-none">
+                                <h5 class="blog-title">@blog.Title</h5>
+                            </a>
+
+                            <p class="blog-author mt-2">
+                                <i class="bi bi-person"></i> @blog.Author
+                                <br />
+                                <i class="bi bi-clock"></i>
+                                @blog.CreatedAt?.ToString("dd/MM/yyyy")
+
+                            </p>
+
+                            <a href="/blogs/detail/@blog.Id">Đọc thêm</a>
+
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>
-<div class="row m-b-30">
-	<div class="mn-blogs-rightside col-lg-8 col-md-12">
-		<!-- Blog content Start -->
-		<div class="mn-blogs-content mn-blog">
-			<div class="mn-blogs-inner">
-				<div class="row">
-					<div class="col-sm-6 col-12 mn-blog-block m-b-24">
-						<div class="mn-blog-card">
-							<div class="blog-info">
-								<figure class="blog-img">
-									<a asp-controller="Blog" asp-action="Detail" asp-router-blogId="12">
-										<img src="~/theme/client/img/blog/adidas.jpg"
-											 alt="news imag">
-									</a>
-								</figure>
-								<div class="detail">
-									<label>03/11/2025 <a asp-controller="Blog" asp-action="Detail" asp-router-blogId="12">adidas Predator The Football Gal</a></label>
-									<h3>
-										<a asp-controller="Blog" asp-action="Detail" asp-router-blogId="12">
-											adidas Predator The Football Gal – Giày đá bóng phiên bản giới hạn
-										</a>
-									</h3>
-									<div class="more-info">
-										<a asp-controller="Blog" asp-action="Detail" asp-router-blogId="12">
-											Đọc tiếp<i class="ri-arrow-right-double-line"></i>
-										</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					
-				</div>
-			</div>
-			<!-- Pagination Start -->
-			<div class="mn-pro-pagination">
-				<span>Showing 1-6 of 20 items</span>
-				<ul class="mn-pro-pagination-inner">
-					<li><a class="active" asp-controller="Blog" asp-action="Detail" asp-router-blogId="12">1</a></li>
-					<li><a asp-controller="Blog" asp-action="Detail" asp-router-blogId="12">2</a></li>
-					<li><a asp-controller="Blog" asp-action="Detail" asp-router-blogId="12">3</a></li>
-					<li><span>...</span></li>
-					<li><a asp-controller="Blog" asp-action="Detail" asp-router-blogId="12">8</a></li>
-					<li>
-						<a class="next" asp-controller="Blog" asp-action="Detail" asp-router-blogId="12">Next <i class="ri-arrow-right-double-line"></i></a>
-					</li>
-				</ul>
-			</div>
-			
-		</div>
-	
-	</div>
-
-
-</div>
-

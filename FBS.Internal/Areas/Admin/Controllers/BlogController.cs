@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FBS.Internal.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class BlogController : BaseAdminController
     {
         private readonly IBlogService _blogService;
@@ -101,11 +102,22 @@ namespace FBS.Internal.Areas.Admin.Controllers
         // EDIT (POST)
         // ============================
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, BlogSaveDto dto)
         {
-            // Nếu upload ảnh mới → xử lý ảnh
-            if (dto.ThumbnailFile != null)
+            // Lấy blog cũ
+            var oldBlog = await _blogService.FindById(id);
+            if (oldBlog.Data == null)
+                return RedirectToAction("Index");
+
+            // Nếu KHÔNG upload ảnh → giữ lại ảnh cũ
+            if (dto.ThumbnailFile == null)
             {
+                dto.Thumbnail = oldBlog.Data.Thumbnail;
+            }
+            else
+            {
+                // Xử lý upload ảnh mới
                 var fileName = Guid.NewGuid() + Path.GetExtension(dto.ThumbnailFile.FileName);
 
                 var folder = Path.Combine(
@@ -128,10 +140,12 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 dto.Thumbnail = $"uploads/blog/{fileName}";
             }
 
+            // Gọi service update
             await _blogService.UpdateBlog(id, dto);
 
             return RedirectToAction("Index");
         }
+
 
         // ============================
         // DELETE

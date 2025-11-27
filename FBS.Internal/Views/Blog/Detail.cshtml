@@ -1,88 +1,73 @@
-﻿
+﻿@model FBS.Application.DataTranferObjects.Blog.BlogDto
+
 @{
-    ViewData["Title"] = "Detail";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = Model?.Title ?? "Chi tiết bài viết";
 }
 
-<div class="mn-breadcrumb m-b-30">
-	<div class="row">
-		<div class="col-12">
-			<div class="row gi_breadcrumb_inner">
-				<div class="col-md-6 col-sm-12">
-					<h2 class="mn-breadcrumb-title">Chi tiết bài viết</h2>
-				</div>
-				<div class="col-md-6 col-sm-12">
-					<!-- mn-breadcrumb-list start -->
-					<ul class="mn-breadcrumb-list">
-						<li class="mn-breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-						<li class="mn-breadcrumb-item active">Chi tiết bài viết</li>
-					</ul>
-					<!-- mn-breadcrumb-list end -->
-				</div>
-			</div>
-		</div>
-	</div>
+<style>
+    .blog-container {
+        max-width: 900px;
+        margin: auto;
+    }
+
+    .blog-content {
+        font-size: 1.15rem;
+        line-height: 1.9;
+        color: #333;
+        background: #fff;
+        padding: 35px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 20px rgba(0,0,0,0.05);
+    }
+
+        .blog-content p {
+            margin-bottom: 18px;
+        }
+
+        .blog-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        /* Typography đẹp */
+        .blog-content h2,
+        .blog-content h3 {
+            margin-top: 32px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        /* First letter style */
+        .blog-content p:first-child:first-letter {
+            float: left;
+            font-size: 3.2rem;
+            line-height: 1;
+            padding-right: 10px;
+            padding-top: 5px;
+            color: #0d6efd;
+            font-weight: bold;
+        }
+</style>
+
+<div class="container py-4 blog-container">
+
+    <a href="/blog" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Quay lại
+    </a>
+
+    <h1 class="fw-bold mb-2">@Model.Title</h1>
+
+    <div class="text-muted mb-4">
+        <i class="bi bi-person"></i> @Model.Author
+        &nbsp; | &nbsp;
+        <i class="bi bi-clock"></i> @Model.CreatedAt?.ToString("dd/MM/yyyy")
+    </div>
+
+    <img src="/@Model.Thumbnail" class="img-fluid rounded shadow-sm mb-4" />
+
+    <div class="blog-content">
+        @Html.Raw(Model.Content)  <!-- Nội dung được styled đẹp -->
+    </div>
+
 </div>
-<div class="row m-b-30">
-	<div class="mn-blogs-rightside col-lg-8 col-md-12">
-		<!-- Blog content Start -->
-		<div class="mn-blogs-content">
-			<div class="mn-blogs-inner">
-				<div class="mn-single-blog-item">
-					<div class="single-blog-info">
-						<figure class="blog-img">
-							<a href="blog-detail-right-sidebar.html#">
-								<img src="~/theme/client/img/blog/adidas.jpg"
-									 alt="news imag">
-							</a>
-						</figure>
-						<div class="single-blog-detail">
-							<label>03/11/2025 <a href="blog-detail-right-sidebar.html#">adidas Predator The Football Gal</a></label>
-							<h3>Giày đá bóng phiên bản giới hạn</h3>
-							<p class="mn-text">
-								adidas đã kết hợp cùng The Football Gal để cho ra mắt đôi giày đá bóng Predator phiên bản giới hạn, 
-								mang đến sự giao thoa giữa nghệ thuật thủ công và hiệu năng thi đấu. Thiết kế được tạo ra với chất liệu cao cấp,
-								phối màu tinh tế và họa tiết thêu hoa lấy cảm hứng từ di sản bóng đá – giúp người chơi không chỉ nổi bật trên sân mà 
-								còn khẳng định cá tính riêng.
-
-								Phiên bản này lấy nền trắng sáng làm chủ đạo, kết hợp cùng các chi tiết màu xanh nhạt,
-								đỏ và hồng - tạo nên vẻ ngoài vừa thanh lịch vừa đầy năng lượng. Họa tiết thêu hoa,
-								đặc biệt là biểu tượng cẩm chướng, và logo The Football Gal được đặt tinh tế trên thân giày, 
-								mang lại cảm giác như một tác phẩm nghệ thuật trên sân. Những đường sọc “Three Stripes” biến hóa bằng
-								gradient đỏ-hồng tăng thêm chiều sâu cho thiết kế.
-
-							</p>
-							<div class="sub-img">
-								<div class="row">
-									<div class="col-md-6">
-										<img src="~/theme/client/img/blog/adidas1.jpg" alt="blog">
-									</div>
-									<div class="col-md-6">
-										<img src="~/theme/client/img/blog/adidas2.jpg" alt="blog">
-									</div>
-								</div>
-							</div>
-							<p>
-								Công nghệ & hiệu năng sân cỏ
-							</p>
-							<p>
-								Upper sử dụng chất liệu tổng hợp cao cấp giúp ôm chân vừa vặn và tạo cảm giác tiếp xúc bóng tốt hơn.
-								
-
-								Phần thân giày được trang bị khung hỗ trợ, giúp ổn định khi xoay người hoặc thay đổi hướng nhanh.
-
-								Đế giày dành cho mặt sân cỏ thật (Firm Ground) đảm bảo độ bám và phản hồi tốt, giúp người chơi tự tin trong các pha xử lý
-							
-								Thiết kế unisex – phù hợp với cả nam, nữ và trẻ em – giúp mở rộng lựa chọn phong cách cho nhiều người chơi.
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-		</div>
-	</div>
-
-	
-</div>
-

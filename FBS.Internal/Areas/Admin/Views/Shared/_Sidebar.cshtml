@@ -44,11 +44,15 @@
                     </li>
                     <li class="sidebar-list">
                         <i class="fa fa-thumb-tack"></i>
-                        <a class="sidebar-link sidebar-title link-nav" asp-action="Index" asp-controller="Blog">
+                        <a class="sidebar-link sidebar-title link-nav"
+                           asp-area="Admin"
+                           asp-controller="Blog"
+                           asp-action="Index">
                             <i data-feather="clipboard"> </i>
                             <span>Bài viết</span>
                         </a>
                     </li>
+
                     <li class="sidebar-list">
                         <i class="fa fa-thumb-tack"></i>
                         <a class="sidebar-link sidebar-title link-nav" asp-action="Index" asp-controller="User">

@@ -1,24 +1,48 @@
-﻿using FBS.Infrastructure.Entities;
+﻿using FBS.Application.DataTranferObjects.Blog;
+using FBS.Application.Services.Interfaces;
+using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
+using FBS.Shared.DataTranferObjects.Base;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FBS.Internal.Controllers
 {
+    [Route("blogs")]   
     public class BlogController : BaseController
     {
-        public BlogController(UserManager<User> userManager, IUnitOfWork unitOfWork) : base(userManager, unitOfWork)
+        private readonly IBlogService _blogService;
+
+        public BlogController(
+            UserManager<User> userManager,
+            IUnitOfWork unitOfWork,
+            IBlogService blogService)
+            : base(userManager, unitOfWork)
         {
-            
-        }
-        public IActionResult Index()
-        {
-            return View();
+            _blogService = blogService;
         }
 
-        public IActionResult Detail(string blogId)
+        // GET: /blog
+        [HttpGet("")]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var search = new BaseSearchDto<BlogSearchDto>
+            {
+                Page = 1,
+                PageSize = 20,
+                SearchParams = new BlogSearchDto()
+            };
+
+            var result = await _blogService.GetBlogs(search);
+            return View(result.Items);
+        }
+
+        
+        [HttpGet("detail/{id}")]     
+        public async Task<IActionResult> Detail(Guid id)
+        {
+            var data = await _blogService.FindById(id);
+            return View(data.Data);
         }
     }
 }

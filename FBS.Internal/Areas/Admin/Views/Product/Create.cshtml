@@ -1,20 +1,24 @@
-﻿@model FBS.Application.DataTranferObjects.Blog.BlogSaveDto
-
+﻿@using FBS.Application.DataTranferObjects.Categories
+@using FBS.Application.DataTranferObjects.Products
+@using FBS.Shared.Constants
+@model ProductSaveDto
 @{
-    ViewData["Title"] = "Thêm bài viết";
+    ViewData["Title"] = "Create";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var categoryDropdown = (List<CategoryDto>)ViewData["Categories"];
 }
+
 
 <div class="container-fluid">
     <div class="page-title">
         <div class="row">
             <div class="col-sm-6">
-                <h3>Thêm bài viết</h3>
+                <h3>Thêm sản phẩm</h3>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Dashboard"><i data-feather="home"></i></a></li>
-                    <li class="breadcrumb-item active">Thêm bài viết</li>
+                    <li class="breadcrumb-item active">Thêm sản phẩm</li>
                 </ol>
             </div>
         </div>
@@ -22,75 +26,127 @@
 </div>
 
 <div class="container-fluid add-product">
-    <form asp-action="Create" method="post" enctype="multipart/form-data">
+    <form asp-action="Create" enctype="multipart/form-data" asp-controller="Product" method="post">
         <div class="row">
-
-            <!-- LEFT -->
-            <div class="col-xl-8">
+            <div class="col-xl-6">
                 <div class="card">
                     <div class="card-body">
+                        <div class="product-info">
+                            <h5>Thông tin</h5>
+                            <div class="product-group">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="mb-3">
+                                            <label class="form-label">Tên sản phẩm</label>
+                                            <input class="form-control" asp-for="Name" placeholder="Tên sản phẩm" type="text"><span class="text-danger"></span>
+                                            <span asp-validation-for="Name" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="mb-3">
+                                            <label class="form-label">Tóm tắt</label>
+                                            <input class="form-control" asp-for="Description" placeholder="Nội dung" type="text"><span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h5 class="mt-4">Danh mục</h5>
+                            <div class="product-group">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="mb-3">
+                                            <label class="form-label">Danh mục</label>
+                                            <select asp-for="CategoryId" class="form-select">
+                                                <option selected hidden value="">Chọn..</option>
+                                                @foreach (var cate in categoryDropdown)
+                                                {
+                                                    <option value="@cate.Id">@cate.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Thương hiệu</label>
+                                            <select asp-for="Brand" class="form-select">
+                                                <option selected hidden value="">Chọn..</option>
+                                                @foreach (var brand in GlobalConstants.Brands)
+                                                {
+                                                    <option value="@brand">@brand</option>
+                                                }
+                                            </select>
 
-                        <!-- Title -->
-                        <div class="mb-3">
-                            <label class="form-label">Tiêu đề</label>
-                            <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề bài viết" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Màu</label>
+                                            <select asp-for="Color" class="form-select">
+                                                <option hidden selected>Chọn..</option>
+                                                @foreach (var color in GlobalConstants.Color)
+                                                {
+                                                    <option value="@color">@color</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-                        <!-- Author -->
-                        <div class="mb-3">
-                            <label class="form-label">Tác giả</label>
-                            <input asp-for="Author" class="form-control" placeholder="Tên tác giả" />
-                        </div>
-
-                        <!-- Content -->
-                        <div class="mb-3">
-                            <label class="form-label">Nội dung</label>
-                            <textarea asp-for="Content" class="form-control" rows="10" placeholder="Nhập nội dung bài viết..."></textarea>
-                        </div>
-
                     </div>
                 </div>
             </div>
-
-            <!-- RIGHT -->
-            <div class="col-xl-4">
+            <div class="col-xl-6">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body ">
+                        <div class="product-info">
+                            <h5>Ảnh sản phẩm</h5>
+                            <div class="mb-3">
 
-                        <!-- Thumbnail -->
-                        <h5>Ảnh thumbnail</h5>
-                        <div class="mb-3">
-                            <input asp-for="ThumbnailFile" class="form-control" type="file" accept="image/*" onchange="previewImage(event)" />
+                                <input asp-for="ImageFile" class="form-control" type="file">
+                                <span asp-validation-for="ImageFile" class="text-danger"></span>
 
-                            <img id="previewImg"
-                                 src=""
-                                 style="width:100%;margin-top:10px;display:none;border-radius:8px;object-fit:cover" />
+                            </div>
+                            <h5 class="mt-4">Kích thước</h5>
+                            <div class="product-group">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label class="form-label">Kích thước</label>
+                                        <div class="form-group">
+                                            @foreach (var s in new[] { "39", "40", "41", "42", "43" })
+                                            {
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="Sizes" id="size_@s" value="@s" />
+                                                    <label class="form-check-label" for="size_@s">@s</label>
+
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Giá</label>
+                                            <input asp-for="Price" class="form-control" type="number">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary me-3">Lưu</button>
-                            <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+                        <div class="mt-4">
+                            <div class="row">
+                                <div class="col-sm-12 text-end"><button type="submit" class="btn btn-primary me-3">Thêm </button><a asp-action="Index" asp-controller="Product" class="btn btn-secondary">Hủy</a></div>
+                            </div>
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </div>
     </form>
+
 </div>
 
-<script>
-    feather.replace();
-
-    // Preview ảnh trước khi upload
-    function previewImage(event) {
-        const reader = new FileReader();
-        reader.onload = function () {
-            const output = document.getElementById('previewImg');
-            output.src = reader.result;
-            output.style.display = 'block';
-        };
-        reader.readAsDataURL(event.target.files[0]);
-    }
-</script>

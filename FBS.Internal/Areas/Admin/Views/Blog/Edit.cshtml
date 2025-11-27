@@ -26,6 +26,8 @@
 <div class="container-fluid add-product">
     <form asp-action="Edit" method="post" enctype="multipart/form-data">
         <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Thumbnail" />
+
 
         <div class="row">
 
@@ -49,7 +51,8 @@
                         <!-- Content -->
                         <div class="mb-3">
                             <label class="form-label">Nội dung</label>
-                            <textarea asp-for="Content" class="form-control" rows="10"></textarea>
+                            <textarea asp-for="Content" id="editor" class="form-control"></textarea>
+
                         </div>
 
                     </div>
