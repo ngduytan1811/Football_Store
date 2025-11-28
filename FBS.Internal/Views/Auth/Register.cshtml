@@ -29,47 +29,68 @@
         <div class="mn-register-wrapper">
             <div class="mn-register-container">
                 <div class="mn-register-form">
-                    <form asp-action="Register" asp-controller="Auth" method="post">
-                        <div class="alert alert-danger dark" asp-validation-summary="ModelOnly">
-                        </div>
+
+                    <form asp-action="Register" asp-controller="Auth" method="post" asp-antiforgery="true">
+
+                        <div class="alert alert-danger dark" asp-validation-summary="ModelOnly"></div>
+
                         <span class="mn-register-wrap">
                             <label>Tài khoản*</label>
                             <span asp-validation-for="UserName" class="text-danger"></span>
                             <input type="text" asp-for="UserName" placeholder="Nhập tên tài khoản...">
                         </span>
+
                         <span class="mn-register-wrap mn-register-half">
                             <label>Họ*</label>
                             <span asp-validation-for="FirstName" class="text-danger"></span>
                             <input type="text" asp-for="FirstName" placeholder="Nhập họ...">
                         </span>
+
                         <span class="mn-register-wrap mn-register-half">
                             <label>Tên*</label>
                             <span asp-validation-for="LastName" class="text-danger"></span>
                             <input type="text" asp-for="LastName" placeholder="Nhập tên...">
                         </span>
+
                         <span class="mn-register-wrap mn-register-half">
                             <label>Email*</label>
                             <span asp-validation-for="Email" class="text-danger"></span>
                             <input type="email" asp-for="Email" placeholder="Nhập địa chỉ email...">
                         </span>
+
                         <span class="mn-register-wrap mn-register-half">
                             <label>Số điện thoại*</label>
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                             <input type="text" asp-for="PhoneNumber" placeholder="Nhập số điện thoại...">
                         </span>
+
                         <span class="mn-register-wrap">
                             <label>Địa chỉ</label>
+                            <span asp-validation-for="Address" class="text-danger"></span>
                             <input type="text" asp-for="Address" placeholder="Nhập địa chỉ...">
                         </span>
 
+                        <span class="mn-register-wrap mn-register-half">
+                            <label>Mật khẩu*</label>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                            <input type="password" asp-for="Password" placeholder="Nhập mật khẩu...">
+                        </span>
+
+                        <span class="mn-register-wrap mn-register-half">
+                            <label>Nhập lại mật khẩu*</label>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            <input type="password" asp-for="ConfirmPassword" placeholder="Xác nhận mật khẩu...">
+                        </span>
+
                         <span class="mn-register-wrap mn-register-btn">
-                            <span>Nếu đã có tài khoản?<a asp-action="Login" asp-controller="Auth">Đăng nhập</a></span>
+                            <span>Nếu đã có tài khoản? <a asp-action="Login" asp-controller="Auth">Đăng nhập</a></span>
                             <button class="mn-btn-1" type="submit"><span>Đăng ký</span></button>
                         </span>
+
                     </form>
+
                 </div>
             </div>
         </div>
     </div>
 </section>
-

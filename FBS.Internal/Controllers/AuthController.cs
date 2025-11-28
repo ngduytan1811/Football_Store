@@ -3,7 +3,6 @@ using FBS.Application.DataTranferObjects.Users;
 using FBS.Application.Services.Interfaces;
 using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
-using FBS.Shared.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +14,11 @@ namespace FBS.Internal.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly IUserService _userService;
 
-        public AuthController(IUserService userService, SignInManager<User> signInManager, UserManager<User> userManager, IUnitOfWork unitOfWork)
+        public AuthController(
+            IUserService userService,
+            SignInManager<User> signInManager,
+            UserManager<User> userManager,
+            IUnitOfWork unitOfWork)
             : base(userManager, unitOfWork)
         {
             _userService = userService;
@@ -23,8 +26,13 @@ namespace FBS.Internal.Controllers
             _signInManager = signInManager;
         }
 
-        public IActionResult Login()
+        // ============================
+        // LOGIN
+        // ============================
+
+        public IActionResult Login(string? returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
@@ -32,33 +40,44 @@ namespace FBS.Internal.Controllers
         public async Task<IActionResult> Login(LoginDto request, string? returnUrl = null)
         {
             if (!ModelState.IsValid)
+                return View(request);
+
+            var user = await _userManager.FindByNameAsync(request.Username);
+
+            if (user == null)
             {
+                ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng!");
                 return View(request);
             }
 
-            try
+            if (!user.IsActive)
             {
-                var user = await _userManager.FindByNameAsync(request.Username);
-                if (user == null)
-                {
-                    ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng!");
-                    return View(request);
-                }
-
-                var validateLogin = await ValidatePassword(request);
-                if (!validateLogin)
-                {
-                    ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng!");
-                    return View(request);
-                }
-
-                return Redirect(returnUrl ?? "/");
-            }
-            catch (Exception ex)
-            {
+                ModelState.AddModelError("", "Tài khoản đã bị khóa. Vui lòng liên hệ hỗ trợ!");
                 return View(request);
             }
+
+            var result = await _signInManager.PasswordSignInAsync(
+                user,
+                request.Password,
+                isPersistent: false,
+                lockoutOnFailure: false
+            );
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng!");
+                return View(request);
+            }
+
+            user.LastLogin = DateTime.Now;
+            await _userManager.UpdateAsync(user);
+
+            return Redirect(returnUrl ?? "/");
         }
+
+        // ============================
+        // REGISTER
+        // ============================
 
         public IActionResult Register()
         {
@@ -69,36 +88,66 @@ namespace FBS.Internal.Controllers
         public async Task<IActionResult> Register(UserSaveDto request)
         {
             if (!ModelState.IsValid)
-            {
                 return View(request);
-            }
 
             try
             {
-                var result = await _userService.CreateUser(request);
-                if (result.Type != GlobalConstants.ResponseType.Success)
+                // Kiểm tra trùng UserName
+                var existingUser = await _userManager.FindByNameAsync(request.UserName);
+                if (existingUser != null)
                 {
-                    return View();
+                    ModelState.AddModelError("UserName", "Tên tài khoản đã tồn tại!");
+                    return View(request);
+                }
+
+                // Kiểm tra trùng Email
+                var existingEmail = await _userManager.FindByEmailAsync(request.Email);
+                if (existingEmail != null)
+                {
+                    ModelState.AddModelError("Email", "Email đã được sử dụng!");
+                    return View(request);
+                }
+
+                // Khởi tạo user
+                var user = new User
+                {
+                    UserName = request.UserName,
+                    Email = request.Email,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    PhoneNumber = request.PhoneNumber,
+                    Address = request.Address,
+                    CreatedAt = DateTime.Now,
+                    IsActive = true
+                };
+
+                var result = await _userManager.CreateAsync(user, request.Password);
+
+                if (!result.Succeeded)
+                {
+                    foreach (var err in result.Errors)
+                        ModelState.AddModelError("", err.Description);
+
+                    return View(request);
                 }
 
                 return RedirectToAction("Login");
             }
-            catch (Exception ex)
+            catch
             {
-                return View();
+                ModelState.AddModelError("", "Có lỗi xảy ra! Vui lòng thử lại.");
+                return View(request);
             }
         }
+
+        // ============================
+        // LOGOUT
+        // ============================
 
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
-        }
-
-        private async Task<bool> ValidatePassword(LoginDto request)
-        {
-            var result = await _signInManager.PasswordSignInAsync(request.Username, request.Password, false, true);
-            return result.Succeeded;
         }
     }
 }

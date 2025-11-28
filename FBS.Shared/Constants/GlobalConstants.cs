@@ -6,7 +6,7 @@ namespace FBS.Shared.Constants
 {
     public static class GlobalConstants
     {
-        public const string PasswordDefault = "123";
+        public const string PasswordDefault = "G123@";
         public const int DefaultPageSize = 20;
 
         public static class ResponseType
