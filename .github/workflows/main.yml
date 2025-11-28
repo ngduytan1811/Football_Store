@@ -19,7 +19,7 @@ jobs:
         dotnet-version: "8.0.x"
 
     - name: Publish project
-      run: dotnet publish **/FBS.Internal.csproj -c Release -o publish -p:ExcludeFiles="appsettings*.json"
+      run: dotnet publish **/FBS.Internal.csproj -c Release -o publish -p:ExcludeFiles="appsettings.json"
 
     - name: Compress publish folder
       run: tar -czf publish.tar.gz -C publish .
