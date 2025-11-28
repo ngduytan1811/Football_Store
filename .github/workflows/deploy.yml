@@ -19,7 +19,7 @@ jobs:
         dotnet-version: "8.0.x"
 
     - name: Publish project
-      run: dotnet publish -c Release -o publish
+      run: dotnet publish **/FBS.Internal.csproj -c Release -o publish
 
     - name: Compress publish folder
       run: tar -czf publish.tar.gz -C publish .
