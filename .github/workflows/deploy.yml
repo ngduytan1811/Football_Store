@@ -1,0 +1,51 @@
+name: Deploy ASP.NET Core to Linux VPS via SSH
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: "8.0.x"
+
+    - name: Publish
+      run: dotnet publish -c Release -o publish
+
+    - name: Compress publish folder
+      run: tar -czf publish.tar.gz -C publish .
+
+    - name: Copy files to VPS
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.SSH_PORT }}
+        source: "publish.tar.gz"
+        target: "/var/www/myapp"
+
+    - name: SSH into VPS and deploy
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+          cd /var/www/myapp
+          tar -xzf publish.tar.gz
+          rm -f publish.tar.gz
+
+          # restart service
+          sudo systemctl restart football_store
+
+          echo "🚀 Deploy Thành Công!"
