@@ -13,20 +13,17 @@ namespace FBS.Infrastructure.Entities
 
         public virtual User? User { get; set; }
 
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
 
         public string? FullName => $"{FirstName} {LastName}";
 
-        public string PhoneNumber { get; set; }
-
+        public string? PhoneNumber { get; set; }
         public string? Avatar { get; set; } = string.Empty;
-
         public string? Email { get; set; } = string.Empty;
-
         public string? Address { get; set; } = string.Empty;
 
-        public DateTime? BirthDay { get; set; } = null;
+        public DateTime? BirthDay { get; set; }
     }
+
 }

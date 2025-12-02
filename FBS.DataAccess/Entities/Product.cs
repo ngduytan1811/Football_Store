@@ -26,5 +26,7 @@ namespace FBS.Infrastructure.Entities
         public virtual ProductColor ProductColor { get; set; }
 
         public virtual ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
+        public virtual ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
+
     }
 }

@@ -1,5 +1,4 @@
 ﻿using FBS.Shared.DataTranferObjects.Base;
-using Microsoft.AspNetCore.Http;
 using System.Globalization;
 
 namespace FBS.Application.DataTranferObjects.Products
@@ -12,9 +11,14 @@ namespace FBS.Application.DataTranferObjects.Products
         public string? Description { get; set; }
         public string? Detail { get; set; }
         public string? Image { get; set; }
-        
+
+        // ⭐ DANH SÁCH ẢNH PHỤ
+        public List<string> SubImages { get; set; } = new();
+
         public decimal? Price { get; set; }
-        public string? PriceString => Price.HasValue ? Price.Value.ToString("C", new CultureInfo("vi-VN")) : string.Empty;
+        public string? PriceString =>
+            Price.HasValue ? Price.Value.ToString("C", new CultureInfo("vi-VN")) : string.Empty;
+
         public List<string> Sizes { get; set; } = new();
         public string? Color { get; set; }
         public string? Brand { get; set; }

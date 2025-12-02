@@ -1,23 +1,20 @@
-﻿// <copyright file= UnitOfWork.cs company= Giang Nguyen>
-// Copyright (c) Giang Nguyen. All rights reserved.
-// </copyright>
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using FBS.Infrastructure.Repositories.Interfaces;
+using FBS.Shared.Constants;
 
 namespace FBS.Infrastructure.Repositories
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.ChangeTracking;
-    using Microsoft.Extensions.Caching.Distributed;
-    using Microsoft.Extensions.Caching.Memory;
-    using FBS.Infrastructure.Repositories.Interfaces;
-    using FBS.Shared.Constants;
-
     public class UnitOfWork<TContext> : IUnitOfWork<TContext>
         where TContext : DbContext, IDisposable
     {
-        private readonly Dictionary<Type, object> _repositories = new Dictionary<Type, object>();
+        private readonly Dictionary<Type, object> _repositories = new();
 
         public UnitOfWork(TContext context)
         {
@@ -39,10 +36,13 @@ namespace FBS.Infrastructure.Repositories
 
         public IDistributedCache DistributedCache { get; set; }
 
+        // -------------------------
+        // READWRITE REPOSITORY
+        // -------------------------
         public IRepositoryAsync<TEntity> GetRepositoryAsync<TEntity>()
-             where TEntity : class
+            where TEntity : class
         {
-            var type = typeof(RepositoryAsync<TEntity>);
+            var type = typeof(IRepositoryAsync<TEntity>);
             if (!_repositories.ContainsKey(type))
             {
                 _repositories[type] = new RepositoryAsync<TEntity>(Context);
@@ -51,10 +51,13 @@ namespace FBS.Infrastructure.Repositories
             return (IRepositoryAsync<TEntity>)_repositories[type];
         }
 
+        // -------------------------
+        // READONLY REPOSITORY
+        // -------------------------
         public IRepositoryReadOnlyAsync<TEntity> GetRepositoryReadOnlyAsync<TEntity>()
             where TEntity : class
         {
-            var type = typeof(RepositoryReadOnlyAsync<TEntity>);
+            var type = typeof(IRepositoryReadOnlyAsync<TEntity>);
             if (!_repositories.ContainsKey(type))
             {
                 _repositories[type] = new RepositoryReadOnlyAsync<TEntity>(Context);
@@ -63,6 +66,9 @@ namespace FBS.Infrastructure.Repositories
             return (IRepositoryReadOnlyAsync<TEntity>)_repositories[type];
         }
 
+        // -------------------------
+        // SAVE
+        // -------------------------
         public async Task<int> SaveChangesAsync()
         {
             SaveChangesInternal();
@@ -75,12 +81,14 @@ namespace FBS.Infrastructure.Repositories
             GC.SuppressFinalize(this);
         }
 
+        // -------------------------
+        // INTERNAL SAVE LOGIC
+        // -------------------------
         private void SaveChangesInternal()
         {
             Context.ChangeTracker.DetectChanges();
             var entries = Context.ChangeTracker.Entries()
-                .Where(x => x.State == EntityState.Added
-                    || x.State == EntityState.Modified);
+                .Where(x => x.State == EntityState.Added || x.State == EntityState.Modified);
 
             SaveChangesInternal(entries, EntityState.Added);
             SaveChangesInternal(entries, EntityState.Modified);
@@ -90,22 +98,17 @@ namespace FBS.Infrastructure.Repositories
         {
             PropertyEntry prop;
 
-            // Enforce type defaults for all entities
             foreach (var item in entries)
             {
                 foreach (var p in item.Properties)
                 {
                     if (p.CurrentValue == null)
-                    {
                         continue;
-                    }
 
-                    switch (p.Metadata.ClrType.Name)
+                    if (p.Metadata.ClrType == typeof(string))
                     {
-                        case "String": // Replace all empty strings with null
-                            var emptyString = string.IsNullOrWhiteSpace(p.CurrentValue.ToString());
-                            p.CurrentValue = emptyString ? null : p.CurrentValue;
-                            break;
+                        var emptyString = string.IsNullOrWhiteSpace(p.CurrentValue.ToString());
+                        p.CurrentValue = emptyString ? null : p.CurrentValue;
                     }
                 }
             }
@@ -114,46 +117,39 @@ namespace FBS.Infrastructure.Repositories
             {
                 if (state == EntityState.Added)
                 {
-                    // CreatedDate
                     prop = item.Properties.FirstOrDefault(p => p.Metadata.Name == ColumnNames.CreatedAt);
                     if (prop != null)
                     {
                         prop.CurrentValue = DateTime.Now;
 
-                        // CreatedBy
                         if (CurrentUserEntityId != null)
                         {
                             prop = item.Properties.FirstOrDefault(p => p.Metadata.Name == ColumnNames.CreatedById);
                             if (prop != null)
-                            {
                                 prop.CurrentValue = CurrentUserEntityId;
-                            }
                         }
                     }
                 }
 
-                // UpdatedAt
                 prop = item.Properties.FirstOrDefault(p => p.Metadata.Name == ColumnNames.UpdatedAt);
                 if (prop != null)
                 {
                     prop.CurrentValue = DateTime.Now;
 
-                    // UpdatedById
                     if (CurrentUserEntityId != null)
                     {
                         prop = item.Properties.FirstOrDefault(p => p.Metadata.Name == ColumnNames.UpdatedById);
                         if (prop != null)
-                        {
                             prop.CurrentValue = CurrentUserEntityId;
-                        }
                     }
                 }
 
-                // Trim String Entries Before Saving
-                var propertyValues = item.Properties.Where(p => p.CurrentValue != null && p.CurrentValue.GetType() == typeof(string) && !string.IsNullOrEmpty(Convert.ToString(p.CurrentValue)));
-                foreach (PropertyEntry propertyValue in propertyValues)
+                var stringProps = item.Properties
+                    .Where(p => p.CurrentValue != null && p.CurrentValue is string);
+
+                foreach (var sp in stringProps)
                 {
-                    propertyValue.CurrentValue = propertyValue.CurrentValue.ToString().Trim();
+                    sp.CurrentValue = sp.CurrentValue.ToString().Trim();
                 }
             }
         }

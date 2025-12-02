@@ -42,27 +42,59 @@
                             <div class="row">
                                 <div class="single-pro-img">
                                     <div class="single-product-scroll">
+
+                                        <!-- ẢNH CHÍNH (SLIDER) -->
                                         <div class="single-product-cover">
+
+                                            <!-- Ảnh chính -->
                                             <div class="single-slide zoom-image-hover">
-                                                <img class="img-responsive" src="~/theme/client/img/giay/29.jpg"
-                                                     alt="">
+                                                <img class="img-responsive"
+                                                     src="/theme/client/img/product/@product.Image"
+                                                     alt="@product.Name" />
                                             </div>
-                                            <div class="single-slide zoom-image-hover">
-                                                <img class="img-responsive" src="~/theme/client/img/giay/30.jpg"
-                                                     alt="">
-                                            </div>
+
+                                            <!-- Ảnh phụ -->
+                                            @if (product.SubImages != null)
+                                            {
+                                                foreach (var img in product.SubImages)
+                                                {
+                                                    <div class="single-slide zoom-image-hover">
+                                                        <img class="img-responsive"
+                                                             src="/theme/client/img/product/@img"
+                                                             alt="@product.Name" />
+                                                    </div>
+                                                }
+                                            }
                                         </div>
+
+
+                                        <!-- THUMBNAIL DƯỚI -->
                                         <div class="single-nav-thumb">
+
+                                            <!-- Thumbnail ảnh chính -->
                                             <div class="single-slide">
-                                                <img class="img-responsive" src="~/theme/client/img/giay/29.jpg"
-                                                     alt="">
+                                                <img class="img-responsive"
+                                                     src="/theme/client/img/product/@product.Image"
+                                                     alt="@product.Name" />
                                             </div>
-                                            <div class="single-slide">
-                                                <img class="img-responsive" src="~/theme/client/img/giay/30.jpg"
-                                                     alt="">
-                                            </div>
+
+                                            <!-- Thumbnail ảnh phụ -->
+                                            @if (product.SubImages != null)
+                                            {
+                                                foreach (var img in product.SubImages)
+                                                {
+                                                    <div class="single-slide">
+                                                        <img class="img-responsive"
+                                                             src="/theme/client/img/product/@img"
+                                                             alt="@product.Name" />
+                                                    </div>
+                                                }
+                                            }
+
                                         </div>
+
                                     </div>
+
                                 </div>
                                 <div class="single-pro-desc m-t-991">
                                     <div class="single-pro-content">

@@ -23,6 +23,7 @@ namespace FBS.Internal.Controllers
         {
             var dataSearch = new BaseSearchDto<ProductSearchDto>()
             {
+
                 SearchParams = request,
                 Page = request.Page,
             };

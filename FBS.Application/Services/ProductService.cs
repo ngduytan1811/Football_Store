@@ -1,53 +1,43 @@
-﻿// <copyright file= CatgoryService.cs company= Tan Nguyen>
-// Copyright (c) Tan Nguyen. All rights reserved.
-// </copyright>
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using FBS.API.Responses.Base;
+using FBS.Application.DataTranferObjects.Products;
+using FBS.Application.Services.Interfaces;
+using FBS.Infrastructure.Entities;
+using FBS.Infrastructure.Repositories.Interfaces;
+using FBS.Shared.Constants;
+using FBS.Shared.DataTranferObjects.Base;
+using FBS.Shared.Enums;
+using FBS.Shared.Helpers;
 
 namespace FBS.Application.Services
 {
-    using System;
-    using System.Data;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using FBS.API.Responses.Base;
-    using FBS.Application.DataTranferObjects.Products;
-    using FBS.Application.Services.Interfaces;
-    using FBS.Infrastructure.Entities;
-    using FBS.Infrastructure.Repositories.Interfaces;
-    using FBS.Shared.Constants;
-    using FBS.Shared.DataTranferObjects.Base;
-    using FBS.Shared.Enums;
-    using FBS.Shared.Helpers;
-
     public class ProductService : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private object data;
 
-        public ProductService(
-            IUnitOfWork unitOfWork)
+        public ProductService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
+        // ======================
+        // RANDOM PRODUCTS
+        // ======================
         public async Task<List<ProductDto>> GetRandomProducts()
         {
             var repo = _unitOfWork.GetRepositoryReadOnlyAsync<Product>();
             var data = await repo.QueryAll();
 
-            data = data
-                .Include(x => x.ProductSizes)
-                .Include(x => x.ProductColor)
-                .Include(x => x.Category);
+            data = data.Include(x => x.ProductSizes)
+                       .Include(x => x.ProductColor)
+                       .Include(x => x.Category);
 
-            // ⭐ LẤY TOÀN BỘ RA RAM
             var list = await data.ToListAsync();
-
-            // ⭐ RANDOM TRÊN LIST (đúng 100%, không phụ thuộc EF)
             list = list.OrderBy(x => Guid.NewGuid()).Take(6).ToList();
-
-            var folderPath = Path.Combine("theme", "client", "img", "product");
 
             return list.Select(product => new ProductDto
             {
@@ -60,117 +50,76 @@ namespace FBS.Application.Services
                 Color = product.ProductColor?.Color,
                 Sizes = product.ProductSizes.Select(ps => ps.Size).ToList(),
                 Image = !string.IsNullOrEmpty(product.Image)
-        ? "/theme/client/img/product/" + product.Image
-        : string.Empty,
-
+                        ? "/theme/client/img/product/" + product.Image
+                        : string.Empty,
                 Description = product.Description,
                 CreatedAt = product.CreatedAt
             }).ToList();
         }
 
-
+        // ======================
+        // LIST PRODUCTS
+        // ======================
         public async Task<BaseTableResponse<ProductDto>> GetProducts(BaseSearchDto<ProductSearchDto> dto)
         {
             var result = new BaseTableResponse<ProductDto>();
+
             var queryProduct = await _unitOfWork.GetRepositoryReadOnlyAsync<Product>().QueryAll();
-            var queryProductReview = await _unitOfWork.GetRepositoryReadOnlyAsync<ProductReview>().QueryAll();
-            queryProduct = queryProduct.Include(x => x.ProductSizes).Include(x => x.ProductColor).Include(x => x.Category);
-            var searchData = dto.SearchParams ?? new ProductSearchDto();
+            var queryReview = await _unitOfWork.GetRepositoryReadOnlyAsync<ProductReview>().QueryAll();
 
-            var folderPath = Path.Combine(
-                "theme",
-                "client",
-                "img",
-                "product"
-             );
-            if (!string.IsNullOrEmpty(searchData.SearchName))
+            queryProduct = queryProduct.Include(x => x.ProductSizes)
+                                       .Include(x => x.ProductColor)
+                                       .Include(x => x.Category);
+
+            var search = dto.SearchParams ?? new ProductSearchDto();
+
+            if (!string.IsNullOrEmpty(search.SearchName))
             {
-                var searchValue = searchData.SearchName.ToLower().Trim();
-                queryProduct = queryProduct.Where(x => x.Name.ToLower().Contains(searchValue) || x.Description.ToLower().Contains(searchValue));
+                var key = search.SearchName.ToLower().Trim();
+                queryProduct = queryProduct.Where(x =>
+                    x.Name.ToLower().Contains(key) ||
+                    x.Description.ToLower().Contains(key)
+                );
             }
 
-            if (searchData.Sizes != null && searchData.Sizes.Count > 0)
-            {
-                queryProduct = queryProduct.Where(x => x.ProductSizes.Any(i => searchData.Sizes.Contains(i.Size)));
-            }
+            if (search.Sizes?.Count > 0)
+                queryProduct = queryProduct.Where(x =>
+                    x.ProductSizes.Any(s => search.Sizes.Contains(s.Size)));
 
-            if (searchData.Brands != null && searchData.Brands.Count > 0)
-            {
-                queryProduct = queryProduct.Where(x => searchData.Brands.Contains(x.Brand));
-            }
+            if (search.Brands?.Count > 0)
+                queryProduct = queryProduct.Where(x => search.Brands.Contains(x.Brand));
 
-            if (searchData.FromPrice.HasValue)
-            {
-                queryProduct = queryProduct.Where(x => x.Price >= searchData.FromPrice);
-            }
+            if (search.FromPrice.HasValue)
+                queryProduct = queryProduct.Where(x => x.Price >= search.FromPrice);
 
-            if (searchData.ToPrice.HasValue)
-            {
-                queryProduct = queryProduct.Where(x => x.Price <= searchData.ToPrice);
-            }
+            if (search.ToPrice.HasValue)
+                queryProduct = queryProduct.Where(x => x.Price <= search.ToPrice);
 
-            if (searchData.CategoryId.HasValue)
-            {
-                queryProduct = queryProduct.Where(x => x.CategoryId == searchData.CategoryId);
-            }
-
-            if (searchData.CategoryId.HasValue)
-            {
-                queryProduct = queryProduct.Where(x => x.CategoryId == searchData.CategoryId);
-            }
+            if (search.CategoryId.HasValue)
+                queryProduct = queryProduct.Where(x => x.CategoryId == search.CategoryId);
 
             result.Total = queryProduct.Count();
-
-            if (!string.IsNullOrEmpty(searchData.Sort))
-            {
-                var dataSort = searchData.Sort.Split("_");
-                dto.ColumnSort = dataSort[0];
-                dto.Asc = dataSort[1] == "Asc";
-            }
 
             var query = queryProduct.Select(product => new ProductDto
             {
                 Id = product.Id,
                 Status = product.Status,
-                CategoryName = product.CategoryId.HasValue ? product.Category.Name : string.Empty,
+                CategoryName = product.Category != null ? product.Category.Name : null,
+
                 CategoryId = product.CategoryId,
                 Price = product.Price,
                 Name = product.Name,
                 Color = product.ProductColor.Color,
                 Brand = product.Brand,
-
-                Image = !string.IsNullOrEmpty(product.Image)
-        ? "/theme/client/img/product/" + product.Image
-        : string.Empty,
-
+                Image = product.Image != null
+                        ? "/theme/client/img/product/" + product.Image
+                        : string.Empty,
                 Sizes = product.ProductSizes.Select(ps => ps.Size).ToList(),
                 Description = product.Description,
                 CreatedAt = product.CreatedAt,
-                
             });
 
-            query = dto.ColumnSort switch
-            {
-                "Name" => dto.Asc ? query.OrderBy(i => i.CreatedAt) : query.OrderByDescending(i => i.CreatedAt),
-                "Price" => dto.Asc ? query.OrderBy(i => i.CreatedAt) : query.OrderByDescending(i => i.CreatedAt),
-                _ => query,
-            };
-
             var (items, totalPage) = TableResponseHelper.MakeToList(query, result.Total, dto.Start, dto.PageSize);
-
-            var productIds = items.Select(x => x.Id).ToList();
-
-            var reivews = queryProductReview.Where(x => productIds.Contains(x.ProductId.Value)).ToList();
-
-            foreach (var item in items)
-            {
-                var reviewArr = reivews.Where(x => x.ProductId == item.Id);
-                item.Reviews = reviewArr.Select(x => new ProductReivewDto
-                {
-                    FullName = x.FullName,
-                    Message = x.Message
-                }).ToList();
-            }
 
             result.Items = items;
             result.TotalPage = totalPage;
@@ -178,18 +127,22 @@ namespace FBS.Application.Services
             return result;
         }
 
+        // ======================
+        // FIND PRODUCT BY ID
+        // ======================
         public async Task<BaseResponse<ProductDto>> FindById(Guid productId)
         {
             var result = new BaseResponse<ProductDto>();
 
-            var queryProduct = await _unitOfWork.GetRepositoryReadOnlyAsync<Product>().QueryAll();
-            queryProduct = queryProduct
+            var repo = await _unitOfWork.GetRepositoryReadOnlyAsync<Product>().QueryAll();
+
+            repo = repo
                 .Include(x => x.ProductSizes)
                 .Include(x => x.ProductColor)
-                .Include(x => x.Category);
+                .Include(x => x.Category)
+                .Include(x => x.ProductImages); 
 
-            var product = queryProduct.FirstOrDefault(i => i.Id == productId);
-
+            var product = repo.FirstOrDefault(i => i.Id == productId);
             if (product == null)
                 return result;
 
@@ -202,29 +155,33 @@ namespace FBS.Application.Services
                 Status = product.Status,
                 Color = product.ProductColor?.Color,
                 Image = product.Image,
+
                 Brand = product.Brand,
                 CategoryId = product.CategoryId,
                 CategoryName = product.Category?.Name,
                 Price = product.Price,
-                Sizes = product.ProductSizes.Select(ps => ps.Size).ToList()
+                Sizes = product.ProductSizes.Select(ps => ps.Size).ToList(),
+                SubImages = product.ProductImages.Select(i => i.ImagePath).ToList()
             };
 
             return result;
         }
 
-
+        // ======================
+        // CREATE PRODUCT REVIEW
+        // ======================
         public async Task<BaseResponse<string>> CreateProductReview(ProductReviewSaveDto dto)
         {
             var result = new BaseResponse<string>();
-            var productReviewRep = _unitOfWork.GetRepositoryAsync<ProductReview>();
 
-            await productReviewRep.Add(new ProductReview
+            var productReviewRepo = _unitOfWork.GetRepositoryAsync<ProductReview>();
+
+            await productReviewRepo.Add(new ProductReview
             {
                 ProductId = dto.ProductId,
-                Message = dto.Message,
                 FullName = dto.FullName,
-               
-                Status = StatusEnum.Active,
+                Message = dto.Message,
+                Status = StatusEnum.Active
             });
 
             await _unitOfWork.SaveChangesAsync();
@@ -232,86 +189,128 @@ namespace FBS.Application.Services
             return result;
         }
 
+        // ======================
+        // CREATE PRODUCT
+        // ======================
         public async Task<BaseResponse<string>> CreateProduct(ProductSaveDto dto)
-        {
-            var result = new BaseResponse<string>();
-            var productColorRep = _unitOfWork.GetRepositoryAsync<ProductColor>();
-            var productSizeRep = _unitOfWork.GetRepositoryAsync<ProductSize>();
-        
-
-            var newProduct = new Product
-            {
-                Name = dto.Name.Trim(),
-                CategoryId = dto.CategoryId,
-                Description = dto.Description?.Trim(),
-                Price = dto.Price,
-                Brand = dto.Brand,
-                Detail = dto.Detail,
-                Status = StatusEnum.Active,
-                Image = dto.Image,
-            };
-
-            await productColorRep.Add(new ProductColor
-            {
-                Product = newProduct,
-                Color = dto.Color,
-            });
-
-            var productSizesinsert = dto.Sizes.Select(x => new ProductSize
-            {
-                Product = newProduct,
-                Size = x,
-            }).ToList();
-            await productSizeRep.Add(productSizesinsert);
-
-
-            await _unitOfWork.SaveChangesAsync();
-
-            return result;
-        }
-
-        public async Task<BaseResponse<string>> UpdateProduct(Guid id, ProductSaveDto dto)
         {
             var result = new BaseResponse<string>();
 
             var productRep = _unitOfWork.GetRepositoryAsync<Product>();
-            var productSizeRep = _unitOfWork.GetRepositoryAsync<ProductSize>();
             var productColorRep = _unitOfWork.GetRepositoryAsync<ProductColor>();
+            var productSizeRep = _unitOfWork.GetRepositoryAsync<ProductSize>();
+            var imageRep = _unitOfWork.GetRepositoryAsync<ProductImage>();
+
+            // ===== Tạo product =====
+            var product = new Product
+            {
+                Name = dto.Name?.Trim(),
+                CategoryId = dto.CategoryId,
+                Description = dto.Description,
+                Detail = dto.Detail,
+                Brand = dto.Brand,
+                Price = dto.Price,
+                Status = StatusEnum.Active,
+                Image = dto.Image
+            };
+
+            await productRep.Add(product);
+
+            // ===== Màu =====
+            await productColorRep.Add(new ProductColor
+            {
+                Product = product,
+                Color = dto.Color
+            });
+
+            // ===== Sizes =====
+            var sizes = dto.Sizes.Distinct().Select(s => new ProductSize
+            {
+                Product = product,
+                Size = s
+            }).ToList();
+
+            await productSizeRep.Add(sizes);
+
+            // ===== Lưu product trước =====
+            await _unitOfWork.SaveChangesAsync();
+
+            // ===== Lưu ảnh phụ =====
+            if (dto.SubImages != null && dto.SubImages.Count > 0)
+            {
+                foreach (var img in dto.SubImages)
+                {
+                    await imageRep.Add(new ProductImage
+                    {
+                        Id = Guid.NewGuid(),
+                        ProductId = product.Id,
+                        ImagePath = img
+                    });
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+
+            return result;
+        }
+
+
+        // ======================
+        // ADD MULTIPLE IMAGES
+        // ======================
+        public async Task AddProductImages(Guid productId, List<string> images)
+        {
+            var repo = _unitOfWork.GetRepositoryAsync<ProductImage>();
+
+            foreach (var img in images)
+            {
+                await repo.Add(new ProductImage
+                {
+                    Id = Guid.NewGuid(),
+                    ProductId = productId,
+                    ImagePath = img
+                });
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        // ======================
+        // UPDATE PRODUCT
+        // ======================
+        public async Task<BaseResponse<string>> UpdateProduct(Guid id, ProductSaveDto dto, List<string> newImages)
+        {
+            var result = new BaseResponse<string>();
+
+            var productRep = _unitOfWork.GetRepositoryAsync<Product>();
+            var productColorRep = _unitOfWork.GetRepositoryAsync<ProductColor>();
+            var productSizeRep = _unitOfWork.GetRepositoryAsync<ProductSize>();
+            var productImageRep = _unitOfWork.GetRepositoryAsync<ProductImage>();
 
             var product = await productRep.Single(x => x.Id == id);
-
             if (product == null)
-            {
                 return result;
-            }
 
-            // GET COLOR
-            var productColor = await productColorRep.Single(x => x.ProductId == product.Id);
+            var productColor = await productColorRep.Single(x => x.ProductId == id);
 
-            // GET ALL SIZES (dùng QueryCondition)
-            var query = await productSizeRep.QueryCondition(x => x.ProductId == product.Id);
-            var productSizes = await query.ToListAsync();
-
-            // UPDATE PRODUCT INFO
-            product.Name = dto.Name.Trim();
+            // =============== UPDATE PRODUCT =======================
+            product.Name = dto.Name?.Trim();
             product.CategoryId = dto.CategoryId;
-            product.Status = dto.Status;
+            product.Description = dto.Description;
             product.Price = dto.Price;
             product.Brand = dto.Brand;
-            product.Description = dto.Description;
+            product.Status = dto.Status;
             product.Image = dto.Image;
-
-            // UPDATE COLOR
             productColor.Color = dto.Color;
+            product.Detail = dto.Detail;
 
-            // ❗ DELETE OLD SIZES
-            foreach (var item in productSizes)
-            {
-                await productSizeRep.Delete(item);
-            }
+            // =============== UPDATE SIZE ===========================
+            var oldSizes = await (await productSizeRep.QueryCondition(x => x.ProductId == id)).ToListAsync();
 
-            // ❗ ADD NEW SIZES (distinct tránh trùng)
-            var newSizes = dto.Sizes.Distinct().Select(size => new ProductSize
+            foreach (var s in oldSizes)
+                await productSizeRep.Delete(s);
+
+            var newSizes = dto.Sizes.Select(size => new ProductSize
             {
                 ProductId = product.Id,
                 Size = size
@@ -319,34 +318,83 @@ namespace FBS.Application.Services
 
             await productSizeRep.Add(newSizes);
 
-            // SAVE ALL
+            // =============== UPDATE PRODUCT & COLOR =================
             await productRep.Update(product);
             await productColorRep.Update(productColor);
+
+            // =============== UPDATE IMAGES =========================
+            var oldImages = await (await productImageRep.QueryCondition(x => x.ProductId == id)).ToListAsync();
+
+            var keepImages = dto.OldSubImages ?? new List<string>();
+
+            // XOÁ ảnh phụ bị user xoá
+            foreach (var img in oldImages)
+            {
+                if (!keepImages.Contains(img.ImagePath))
+                {
+                    await productImageRep.Delete(img);   // chỉ xoá ảnh user xoá
+                }
+            }
+
+            // THÊM ảnh phụ mới
+            if (newImages != null && newImages.Count > 0)
+            {
+                foreach (var img in newImages)
+                {
+                    await productImageRep.Add(new ProductImage
+                    {
+                        Id = Guid.NewGuid(),
+                        ProductId = id,
+                        ImagePath = img
+                    });
+                }
+            }
+
+            // Lưu thay đổi
             await _unitOfWork.SaveChangesAsync();
 
             return result;
         }
 
 
+
+        // ======================
+        // DELETE SUB IMAGES
+        // ======================
+        public async Task RemoveProductImages(Guid productId)
+        {
+            var repo = _unitOfWork.GetRepositoryAsync<ProductImage>();
+
+            var query = await repo.QueryCondition(x => x.ProductId == productId);
+            var list = await query.ToListAsync();
+
+            foreach (var img in list)
+            {
+                await repo.Delete(img);
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        // ======================
+        // DELETE PRODUCT
+        // ======================
         public async Task<BaseResponse<string>> DeleteProduct(Guid id)
         {
             var result = new BaseResponse<string>();
 
-            var productRep = _unitOfWork.GetRepositoryAsync<Product>();
-
-            var product = await productRep.Single(x => x.Id == id);
+            var repo = _unitOfWork.GetRepositoryAsync<Product>();
+            var product = await repo.Single(x => x.Id == id);
 
             if (product == null)
-            {
                 return result;
-            }
 
-            await productRep.Delete(product);
+            
 
+            await repo.Delete(product);
             await _unitOfWork.SaveChangesAsync();
 
             return result;
         }
-
     }
 }

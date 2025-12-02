@@ -50,6 +50,7 @@ namespace FootballShop.Areas.Admin.Controllers
                     var member = queryMember.FirstOrDefault(x => x.UserId == user.Id);
                     return new CurrentUserViewModel
                     {
+
                         UserName = user.UserName,
                         PhoneNumber = member?.PhoneNumber,
                         IsAdmin = user.IsAdmin,

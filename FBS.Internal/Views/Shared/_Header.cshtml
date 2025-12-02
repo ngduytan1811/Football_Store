@@ -1,7 +1,8 @@
 ﻿@using FBS.Application.DataTranferObjects.Cart
 @using FBS.Internal.Models
 @{
-    var currentUser = (CurrentUserViewModel?)ViewData["CurrentUser"];
+    var currentUser = ViewBag.CurrentUser as CurrentUserViewModel;
+
     var cart = (List<CartItemDto>)ViewData["Cart"] ?? new List<CartItemDto>();
 }
 <header>
@@ -163,7 +164,7 @@
                             @if (currentUser != null)
                             {
                                 <li class="border-bottom">
-                                    <a href="javascript:void(0)" class="text-primary">@currentUser.UserName</a>
+                                    <a href="/User/Profile">@currentUser.UserName</a>
                                 </li>
                                 <li>
                                     <a asp-action="Logout" asp-controller="Auth">Đăng xuất</a>
@@ -178,6 +179,7 @@
                                     <a asp-action="Register" asp-controller="Auth">Đăng ký</a>
                                 </li>
                             }
+
                         </ul>
                     </div>
 

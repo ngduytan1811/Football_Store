@@ -134,7 +134,9 @@ namespace FBS.Application.Services
                 CreatedAt = DateTime.Now,
             };
 
-            var resultCreate = await _userManager.CreateAsync(newUser, GlobalConstants.PasswordDefault);
+            var defaultPassword = PasswordUtils.GeneratePassword(8);
+            var resultCreate = await _userManager.CreateAsync(newUser, defaultPassword);
+
             if (resultCreate != null && resultCreate.Succeeded)
             {
                 var memberRep = _unitOfWork.GetRepositoryAsync<Member>();

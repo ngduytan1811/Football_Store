@@ -65,6 +65,7 @@ namespace FBS.Internal.Controllers
                 Color = productData?.Data?.Color,
                 Size = request.Size,
                 Quantity = request.Quantity
+               
             };
 
             // Tìm item theo product + size
@@ -133,25 +134,27 @@ namespace FBS.Internal.Controllers
 
             var cart = GetCart();
 
+            // 🔥 GÁN CUSTOMER ID VÀ EMAIL TỪ USER ĐANG ĐĂNG NHẬP
+            request.CustomerId = CurrentUser.CustomerId;
+            request.Email = CurrentUser.Email;
+
             request.CartItems = cart.Select(x => new CartItemDto
             {
                 ProductId = x.ProductId,
                 Quantity = x.Quantity,
                 Price = x.Price,
                 Size = x.Size,
-                Color = x.Color,
+                Color = x.Color
+               
             }).ToList();
 
             var result = await _orderService.CreateOrder(request);
 
-            if (result.Type == GlobalConstants.ResponseType.Success)
-            {
-                ClearCart();
-                TempData["SuccessMessage"]= "Bạn đã đặt hàng thành công!";
-                return RedirectToAction("Index", "Home");
-            }
+            ClearCart();
+            TempData["OrderSuccess"] = "Bạn đã đặt hàng thành công!";
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Cart");
         }
+
     }
 }

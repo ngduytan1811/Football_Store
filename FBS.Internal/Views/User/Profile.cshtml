@@ -1,0 +1,203 @@
+﻿@model FBS.Internal.Models.CurrentUserViewModel
+@{
+    ViewData["Title"] = "Thông tin tài khoản";
+}
+
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mb-4 shadow-sm" role="alert">
+        <i class="ri-checkbox-circle-line"></i> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<style>
+    .profile-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        display: flex;
+        gap: 30px;
+        animation: fadeInSmooth .35s ease-in-out;
+    }
+
+    @@keyframes fadeInSmooth {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+   
+    .profile-left {
+        width: 270px;
+        background: #fff;
+        padding: 25px;
+        border-radius: 14px;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.08);
+    }
+
+        .profile-left .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: auto;
+            background: #eee;
+            overflow: hidden;
+            border: 3px solid #e9e9e9;
+        }
+
+        .profile-left h5 {
+            text-align: center;
+            margin-top: 12px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .profile-left ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 25px;
+        }
+
+        .profile-left li {
+            padding: 12px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .25s;
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+        }
+
+            .profile-left li i {
+                margin-right: 10px;
+                font-size: 18px;
+                color: #ff5722;
+            }
+
+            .profile-left li:hover {
+                background: #fff4ef;
+                color: #ff5722;
+            }
+
+            .profile-left li a {
+                color: inherit;
+                text-decoration: none;
+                width: 100%;
+            }
+
+    
+    .profile-right {
+        flex: 1;
+        background: #fff;
+        padding: 35px;
+        border-radius: 14px;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.08);
+    }
+
+        .profile-right h3 {
+            margin-bottom: 25px;
+            font-weight: 700;
+            border-bottom: 2px solid #f3f3f3;
+            padding-bottom: 10px;
+        }
+
+    .profile-row {
+        display: flex;
+        padding: 14px 0;
+        border-bottom: 1px solid #f1f1f1;
+        font-size: 16px;
+    }
+
+    .profile-label {
+        width: 180px;
+        font-weight: 600;
+        color: #555;
+    }
+
+    .profile-value {
+        flex: 1;
+        font-weight: 500;
+        color: #222;
+    }
+
+    .edit-btn {
+        margin-top: 25px;
+        background: #ff5722;
+        color: #fff;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 600;
+        transition: 0.25s;
+    }
+
+        .edit-btn:hover {
+            background: #e64a19;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,87,34,0.3);
+        }
+
+</style>
+
+<div class="profile-container">
+
+   
+    <div class="profile-left">
+        <div class="avatar">
+            <img src="/images/avatar-default.png" width="120" height="120" />
+        </div>
+
+        <h5>@Model.FirstName @Model.LastName</h5>
+
+        <ul>
+          
+            <li><a href="/UserOrder"><i class="ri-file-list-line"></i> Đơn hàng của tôi</a></li>
+
+            <li><a href="/User/ChangePassword"><i class="ri-lock-line"></i> Đổi mật khẩu</a></li>
+        </ul>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="profile-right">
+        <h3>Thông Tin Tài Khoản</h3>
+
+        <div class="profile-row">
+            <div class="profile-label">Họ và tên:</div>
+            <div class="profile-value">@Model.FirstName @Model.LastName</div>
+        </div>
+
+        <div class="profile-row">
+            <div class="profile-label">Tên đăng nhập:</div>
+            <div class="profile-value">@Model.UserName</div>
+        </div>
+
+        <div class="profile-row">
+            <div class="profile-label">Số điện thoại:</div>
+            <div class="profile-value">@Model.PhoneNumber</div>
+        </div>
+
+        <div class="profile-row">
+            <div class="profile-label">Email:</div>
+            <div class="profile-value">@Model.Email</div>
+        </div>
+
+        <div class="profile-row">
+            <div class="profile-label">Địa chỉ:</div>
+            <div class="profile-value">@Model.Address</div>
+        </div>
+
+        <a href="/User/Edit">
+            <button class="edit-btn"> Chỉnh sửa thông tin</button>
+        </a>
+    </div>
+
+</div>

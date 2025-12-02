@@ -188,18 +188,15 @@ namespace FBS.Infrastructure.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int?>("Status")
@@ -474,6 +471,44 @@ namespace FBS.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("ProductColors");
+                });
+
+            modelBuilder.Entity("FBS.Infrastructure.Entities.ProductImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("CreatedById")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid?>("UpdatedById")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductImages");
                 });
 
             modelBuilder.Entity("FBS.Infrastructure.Entities.ProductReview", b =>
@@ -783,7 +818,7 @@ namespace FBS.Infrastructure.Migrations
                             IsAdmin = true,
                             LockoutEnabled = true,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJBRTDWTYrYx+9mMc8LdFdhlm4yK67TkTxCpaL+XYXQDxhPnT1KMY6rfWIDd0PzBJQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENVRECwQw8Xd7AseCYe3XxbSz+KrbYzerDDtUuaJxM2qmtx4k0I2S9TYZpLnlAazQQ==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "ZY5BGSWBARTE74T6ZLO7WKKMMILBEB2E",
                             Status = 1,
@@ -940,6 +975,17 @@ namespace FBS.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("FBS.Infrastructure.Entities.ProductImage", b =>
+                {
+                    b.HasOne("FBS.Infrastructure.Entities.Product", "Product")
+                        .WithMany("ProductImages")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("FBS.Infrastructure.Entities.ProductReview", b =>
                 {
                     b.HasOne("FBS.Infrastructure.Entities.Product", "Product")
@@ -1037,6 +1083,8 @@ namespace FBS.Infrastructure.Migrations
                 {
                     b.Navigation("ProductColor")
                         .IsRequired();
+
+                    b.Navigation("ProductImages");
 
                     b.Navigation("ProductReviews");
 

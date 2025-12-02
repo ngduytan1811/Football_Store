@@ -9,6 +9,9 @@ namespace FBS.Application.DataTranferObjects.Orders
 {
     public class OrderItemDto
     {
+        public Guid? ProductId { get; set; }          
+        public string? ProductName { get; set; }
+        public string? ProductImage { get; set; }
         public Guid? OrderId { get; set; }
         public Guid? ProductSizeId { get; set; }
         public string? ProductSize { get; set; }

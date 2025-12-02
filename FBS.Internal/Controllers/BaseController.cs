@@ -4,17 +4,14 @@ using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
 using FBS.Internal.Models;
 using FBS.Internal.Utils;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
+using FBS.Shared.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Security.Claims;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FBS.Internal.Controllers
 {
-
     public class BaseController : Controller
     {
         private const string CartSessionKey = "CartSession";
@@ -30,87 +27,106 @@ namespace FBS.Internal.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        // LẤY USER HIỆN TẠI (có cache)
         protected CurrentUserViewModel? CurrentUser
         {
             get
             {
                 if (_currentUser != null)
-                {
                     return _currentUser;
-                }
 
                 _currentUser = GetCurrentUserAsync().GetAwaiter().GetResult();
                 return _currentUser;
             }
         }
 
+        // LẤY DỮ LIỆU USER TỪ DB
         protected async Task<CurrentUserViewModel?> GetCurrentUserAsync()
         {
-            if (User.Identity.IsAuthenticated)
-            {
-                var user = await _userManager.GetUserAsync(User);
+            if (!User.Identity.IsAuthenticated)
+                return null;
 
-                if (user != null)
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return null;
+
+            // Lấy Customer theo UserId
+            var customerRepo = _unitOfWork.GetRepositoryReadOnlyAsync<Customer>();
+            var customerQuery = await customerRepo.QueryAll();
+            var customer = customerQuery.FirstOrDefault(x => x.UserId == user.Id);
+
+            // Nếu chưa có Customer thì tạo mới
+            if (customer == null)
+            {
+                var writeRepo = _unitOfWork.GetRepositoryAsync<Customer>();
+                customer = new Customer
                 {
-                    var queryMember = await _unitOfWork.GetRepositoryReadOnlyAsync<Member>().QueryAll();
-                    var member = queryMember.FirstOrDefault(x => x.UserId == user.Id);
-                    return new CurrentUserViewModel
-                    {
-                        UserName = user.UserName,
-                        PhoneNumber = member?.PhoneNumber,
-                        IsAdmin = user.IsAdmin,
-                        FirstName = member?.FirstName,
-                        LastName = member?.LastName,
-                    };
-                }
+                    UserId = user.Id,
+                    FirstName = "Unknown",
+                    LastName = "",
+                    Address = "",
+                    PhoneNumber = user.PhoneNumber ?? "0000000000",
+                    Email = user.Email ?? "noemail@example.com",
+                    IsActive = true,
+                    Status = StatusEnum.Active,
+                    CreatedAt = DateTime.Now
+                };
+
+                await writeRepo.Add(customer);
+                await _unitOfWork.SaveChangesAsync();
             }
-            return null;
+
+
+            return new CurrentUserViewModel
+            {
+                UserId = user.Id,
+                CustomerId = customer.Id,       // <-- BẮT BUỘC PHẢI GÁN
+                UserName = user.UserName,
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                Email = customer.Email,
+                PhoneNumber = customer.PhoneNumber,
+                Address = customer.Address,
+                IsAdmin = user.IsAdmin
+            };
         }
+
 
         protected string? CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        public override async Task OnActionExecutionAsync(
-       ActionExecutingContext context,
-       ActionExecutionDelegate next)
+        // CHẠY TRƯỚC MỖI ACTION
+        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            base.OnActionExecuting(context);
+            // Reset cache user để luôn lấy dữ liệu mới nhất
+            _currentUser = null;
 
-            var cart = GetCart();
-            ViewData["Cart"] = cart;
+            // Load lại thông tin user
+            ViewBag.CurrentUser = CurrentUser;
 
-            var user = CurrentUser;
+            // Load Cart
+            ViewData["Cart"] = GetCart();
 
-            if (user != null)
-            {
-                ViewData["CurrentUser"] = user;
-            }
-            else
-            {
-                ViewData["CurrentUser"] = null;
-            }
-
+            // Load danh mục
             var query = await _unitOfWork.GetRepositoryReadOnlyAsync<Category>().QueryAll();
-
-            var dataCategory = query.Where(x => x.IsActive).Select(x => new CategoryDto
+            var allCategories = query.Where(x => x.IsActive).Select(x => new CategoryDto
             {
                 Id = x.Id,
                 Name = x.Name,
                 ParentId = x.ParentId,
-                Status = x.Status,
+                Status = x.Status
             }).ToList();
 
-            var categories = dataCategory.Where(x => !x.ParentId.HasValue).ToList();
+            var rootCategories = allCategories.Where(x => !x.ParentId.HasValue).ToList();
 
-            foreach (var category in categories)
-            {
-                category.Items = dataCategory.Where(x => x.ParentId == category.Id).ToList();
-            }
+            foreach (var item in rootCategories)
+                item.Items = allCategories.Where(x => x.ParentId == item.Id).ToList();
 
-            ViewBag.Categories = categories;
+            ViewBag.Categories = rootCategories;
 
             await next();
         }
 
+        // CART FUNCTION
         protected List<CartItemDto> GetCart()
         {
             var cart = HttpContext.Session.Get<List<CartItemDto>>(CartSessionKey);
@@ -121,6 +137,7 @@ namespace FBS.Internal.Controllers
         {
             HttpContext.Session.Set(CartSessionKey, cart);
         }
+
         protected void ClearCart()
         {
             HttpContext.Session.Remove(CartSessionKey);

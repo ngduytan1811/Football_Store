@@ -1,152 +1,218 @@
 ﻿@using FBS.Application.DataTranferObjects.Categories
 @using FBS.Application.DataTranferObjects.Products
-@using FBS.Shared.Constants
 @model ProductSaveDto
+
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     var categoryDropdown = (List<CategoryDto>)ViewData["Categories"];
 }
 
-
-<div class="container-fluid">
-    <div class="page-title">
-        <div class="row">
-            <div class="col-sm-6">
-                <h3>Thêm sản phẩm</h3>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Dashboard"><i data-feather="home"></i></a></li>
-                    <li class="breadcrumb-item active">Thêm sản phẩm</li>
-                </ol>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="container-fluid add-product">
-    <form asp-action="Create" enctype="multipart/form-data" asp-controller="Product" method="post">
+
+    <form asp-action="Create" asp-controller="Product" method="post" enctype="multipart/form-data">
+
         <div class="row">
+
+            <!-- ================= LEFT ================= -->
             <div class="col-xl-6">
                 <div class="card">
                     <div class="card-body">
-                        <div class="product-info">
-                            <h5>Thông tin</h5>
-                            <div class="product-group">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Tên sản phẩm</label>
-                                            <input class="form-control" asp-for="Name" placeholder="Tên sản phẩm" type="text"><span class="text-danger"></span>
-                                            <span asp-validation-for="Name" class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Tóm tắt</label>
-                                            <input class="form-control" asp-for="Description" placeholder="Nội dung" type="text"><span class="text-danger"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <h5 class="mt-4">Danh mục</h5>
-                            <div class="product-group">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="mb-3">
-                                            <label class="form-label">Danh mục</label>
-                                            <select asp-for="CategoryId" class="form-select">
-                                                <option selected hidden value="">Chọn..</option>
-                                                @foreach (var cate in categoryDropdown)
-                                                {
-                                                    <option value="@cate.Id">@cate.Name</option>
-                                                }
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Thương hiệu</label>
-                                            <select asp-for="Brand" class="form-select">
-                                                <option selected hidden value="">Chọn..</option>
-                                                @foreach (var brand in GlobalConstants.Brands)
-                                                {
-                                                    <option value="@brand">@brand</option>
-                                                }
-                                            </select>
 
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Màu</label>
-                                            <select asp-for="Color" class="form-select">
-                                                <option hidden selected>Chọn..</option>
-                                                @foreach (var color in GlobalConstants.Color)
-                                                {
-                                                    <option value="@color">@color</option>
-                                                }
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
+                        <h5>Thông tin sản phẩm</h5>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tên sản phẩm</label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Tóm tắt</label>
+                            <input asp-for="Description" class="form-control" />
+                        </div>
+
+                        <h5 class="mt-4">Danh mục</h5>
+
+                        <div class="mb-3">
+                            <label class="form-label">Danh mục</label>
+                            <select asp-for="CategoryId" class="form-select">
+                                <option hidden selected>Chọn...</option>
+                                @foreach (var cate in categoryDropdown)
+                                {
+                                    <option value="@cate.Id">@cate.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">Thương hiệu</label>
+                                <select asp-for="Brand" class="form-select">
+                                    <option hidden selected>Chọn...</option>
+                                    @foreach (var brand in FBS.Shared.Constants.GlobalConstants.Brands)
+                                    {
+                                        <option value="@brand">@brand</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">Màu</label>
+                                <select asp-for="Color" class="form-select">
+                                    <option hidden selected>Chọn...</option>
+                                    @foreach (var color in FBS.Shared.Constants.GlobalConstants.Color)
+                                    {
+                                        <option value="@color">@color</option>
+                                    }
+                                </select>
                             </div>
                         </div>
+
                     </div>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label">Thông tin chi tiết</label>
+                    <textarea asp-for="Detail" class="form-control" rows="5"></textarea>
+                </div>
             </div>
+           
+
+
+            <!-- ================= RIGHT ================= -->
             <div class="col-xl-6">
                 <div class="card">
-                    <div class="card-body ">
-                        <div class="product-info">
-                            <h5>Ảnh sản phẩm</h5>
-                            <div class="mb-3">
+                    <div class="card-body">
 
-                                <input asp-for="ImageFile" class="form-control" type="file">
-                                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        <h5>Hình ảnh sản phẩm</h5>
 
-                            </div>
-                            <h5 class="mt-4">Kích thước</h5>
-                            <div class="product-group">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <label class="form-label">Kích thước</label>
-                                        <div class="form-group">
-                                            @foreach (var s in new[] { "39", "40", "41", "42", "43", "S" ,"M","L","XL", "2XL"})
-                                            {
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="Sizes" id="size_@s" value="@s" />
-                                                    <label class="form-check-label" for="size_@s">@s</label>
+                        <!-- Ảnh chính -->
+                        <label class="form-label fw-bold">Ảnh chính</label>
+                        <input asp-for="ImageFile"
+                               type="file"
+                               accept="image/*"
+                               style="border:1px solid #ddd;padding:6px"
+                               onchange="previewMain(event)" />
 
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
+                        <div id="previewMainImage" class="mt-2"></div>
 
-                                    <div class="col-sm-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Giá</label>
-                                            <input asp-for="Price" class="form-control" type="number">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <hr />
+
+                        <!-- Ảnh phụ -->
+                        <label class="form-label fw-bold">Ảnh phụ (nhiều hình)</label>
+
+                        <input asp-for="SubImageFiles"
+                               type="file"
+                               name="SubImageFiles"
+                               id="SubImageFiles"
+                               multiple
+                               accept="image/*"
+                               style="border:1px solid #ddd;padding:6px"
+                               onchange="previewSub1(event)" />
+
+                        <div id="previewSubImages" class="mt-2 d-flex flex-wrap"></div>
+                        <label class="form-label fw-bold">Ảnh phụ 1</label>
+
+                        <input asp-for="SubImageFiles"
+                               type="file"
+                               name="SubImageFiles"
+                               id="SubImageFiles"
+                               multiple
+                               accept="image/*"
+                               style="border:1px solid #ddd;padding:6px"
+                               onchange="previewSub2(event)" />
+
+                        <div id="previewSubImages" class="mt-2 d-flex flex-wrap"></div>
+
+                        <label class="form-label fw-bold">Ảnh phụ 2</label>
+
+                        <input asp-for="SubImageFiles"
+                               type="file"
+                               name="SubImageFiles"
+                               id="SubImageFiles"
+                               multiple
+                               accept="image/*"
+                               style="border:1px solid #ddd;padding:6px"
+                               onchange="previewSub3(event)" />
+
+                        <div id="previewSubImages" class="mt-2 d-flex flex-wrap"></div>
+
+                       
+
+                      
+
+                        <h5 class="mt-4">Kích thước</h5>
+
+                        <div class="form-group">
+                            @foreach (var size in new[] { "39", "40", "41", "42", "43", "S", "M", "L", "XL", "2XL" })
+                            {
+                                <label class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="Sizes" value="@size" />
+                                    <span class="form-check-label">@size</span>
+                                </label>
+                            }
                         </div>
-                        <div class="mt-4">
-                            <div class="row">
-                                <div class="col-sm-12 text-end"><button type="submit" class="btn btn-primary me-3">Thêm </button><a asp-action="Index" asp-controller="Product" class="btn btn-secondary">Hủy</a></div>
-                            </div>
+
+                        <div class="mt-3 mb-3">
+                            <label class="form-label">Giá</label>
+                            <input asp-for="Price" class="form-control" type="number" />
                         </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary me-3">Thêm</button>
+                            <a asp-action="Index" asp-controller="Product" class="btn btn-secondary">Hủy</a>
+                        </div>
+
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
 
+        </div>
+
+    </form>
 </div>
 
+
+<!-- ================= JS PREVIEW ================= -->
+
+<script>
+    function previewMain(event) {
+        let container = document.getElementById("previewMainImage");
+        container.innerHTML = "";
+
+        let file = event.target.files[0];
+        if (!file) return;
+
+        let reader = new FileReader();
+        reader.onload = e => {
+            let img = document.createElement("img");
+            img.src = e.target.result;
+            img.style.width = "150px";
+            img.style.height = "150px";
+            img.style.objectFit = "cover";
+            img.style.borderRadius = "8px";
+            container.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function previewSub(event) {
+        let container = document.getElementById("previewSubImages");
+        container.innerHTML = "";
+
+        Array.from(event.target.files).forEach(f => {
+            let reader = new FileReader();
+            reader.onload = e => {
+                let img = document.createElement("img");
+                img.src = e.target.result;
+                img.style.width = "120px";
+                img.style.height = "120px";
+                img.style.objectFit = "cover";
+                img.style.borderRadius = "8px";
+                img.style.margin = "5px";
+                container.appendChild(img);
+            };
+            reader.readAsDataURL(f);
+        });
+    }
+</script>

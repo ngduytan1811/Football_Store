@@ -9,11 +9,14 @@ namespace FBS.Application.DataTranferObjects.Cart
 {
     public class CheckoutDto
     {
+        public Guid? CustomerId { get; set; }
+
         [Required(ErrorMessage ="Họ tên là bắt buộc")]
         public string? FullName { get; set; }
 
         [Required(ErrorMessage = "Số điện thoại là bắt buộc")]
         public string? PhoneNumber { get; set; }
+        public string? Email { get; set; }
 
         [Required(ErrorMessage = "Địa chỉ là bắt buộc")]
         public string? Address { get; set; }

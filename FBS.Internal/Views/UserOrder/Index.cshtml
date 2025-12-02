@@ -1,0 +1,88 @@
+﻿@model List<FBS.Application.DataTranferObjects.Orders.OrderDto>
+
+@{
+    ViewData["Title"] = "Đơn hàng của tôi";
+}
+
+<h2 class="fw-bold mb-4">Đơn hàng của tôi</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info shadow-sm">
+        Bạn chưa có đơn hàng nào.
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle order-table shadow-sm">
+            <thead class="table-light">
+                <tr>
+                    <th class="fw-bold">Mã đơn</th>
+                    <th class="fw-bold">Ngày đặt</th>
+                    <th class="fw-bold">Tên khách</th>
+                    <th class="fw-bold">SĐT</th>
+                    <th class="fw-bold text-center">Trạng thái</th>
+                    <th class="fw-bold text-center">Thao tác</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td>@order.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@order.CustomerName</td>
+                        <td>@order.CustomerPhone</td>
+
+                        <td class="text-center">
+                            <span class="badge status-badge">
+                                Chờ xác nhận
+                            </span>
+                        </td>
+
+                        <td class="text-center">
+                            <a href="/UserOrder/Detail/@order.Id"
+                               class="btn btn-primary btn-sm px-3">
+                                Xem chi tiết
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<style>
+    .order-table {
+        border-radius: 10px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+        .order-table tbody tr:hover {
+            background: #f8f9fa !important;
+            cursor: pointer;
+        }
+
+    .status-badge {
+        background: #007bff;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: white;
+    }
+
+    .btn-primary {
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    h2 {
+        color: #333;
+    }
+</style>
