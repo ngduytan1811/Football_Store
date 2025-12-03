@@ -12,5 +12,7 @@ namespace FBS.Infrastructure.Entities
         public string Thumbnail { get; set; }   
         public string Content { get; set; }     
         public string Author { get; set; }
+        public List<BlogImage> Images { get; set; } = new List<BlogImage>();
+
     }
 }

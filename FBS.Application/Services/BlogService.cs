@@ -5,6 +5,7 @@ using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
 using FBS.Shared.DataTranferObjects.Base;
 using FBS.Shared.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,7 +79,8 @@ namespace FBS.Application.Services
         public async Task<BaseResponse<BlogDto>> FindById(Guid id)
         {
             var repo = _unitOfWork.GetRepositoryReadOnlyAsync<Blog>();
-            var entity = await repo.Single(x => x.Id == id);
+            var entity = await repo.Single(x => x.Id == id, 
+                include:q =>q.Include(b =>b.Images));
 
             if (entity == null)
                 return new BaseResponse<BlogDto>();
@@ -91,14 +93,20 @@ namespace FBS.Application.Services
                     Title = entity.Title,
                     Content = entity.Content,
                     Author = entity.Author,
-                    Thumbnail = entity.Thumbnail
+                    Thumbnail = entity.Thumbnail,
+                    Images = entity.Images != null
+                ? entity.Images.Select(i => i.Image).ToList()
+                : new List<string>(),
+                    CreatedAt =entity.CreatedAt
+
                 }
             };
         }
 
         public async Task<BaseResponse<string>> CreateBlog(BlogSaveDto dto)
         {
-            var repo = _unitOfWork.GetRepositoryAsync<Blog>();
+            var repoBlog = _unitOfWork.GetRepositoryAsync<Blog>();
+            var repoBlogImg = _unitOfWork.GetRepositoryAsync<BlogImage>();
 
             var blog = new Blog
             {
@@ -106,33 +114,111 @@ namespace FBS.Application.Services
                 Content = dto.Content,
                 Author = dto.Author,
                 Thumbnail = dto.Thumbnail,
-                Status = StatusEnum.Active
+                Status = StatusEnum.Active,
+                CreatedAt = DateTime.Now
             };
 
-            await repo.Add(blog);
+            await repoBlog.Add(blog);
             await _unitOfWork.SaveChangesAsync();
 
-            return new BaseResponse<string>();
+            // === LƯU NHIỀU ẢNH PHỤ ===
+            if (dto.SubImages != null && dto.SubImages.Count > 0)
+            {
+                foreach (var img in dto.SubImages)
+                {
+                    await repoBlogImg.Add(new BlogImage
+                    {
+                        BlogId = blog.Id,
+                        Image = img
+                    });
+                }
+
+                await _unitOfWork.SaveChangesAsync();
+            }
+
+            return new BaseResponse<string>
+            {
+                Type = "Success",
+                Message = "Tạo bài viết thành công"
+            };
         }
+
 
         public async Task<BaseResponse<string>> UpdateBlog(Guid id, BlogSaveDto dto)
         {
-            var repo = _unitOfWork.GetRepositoryAsync<Blog>();
-            var entity = await repo.Single(x => x.Id == id);
+            var repoBlog = _unitOfWork.GetRepositoryAsync<Blog>();
+            var repoBlogImg = _unitOfWork.GetRepositoryAsync<BlogImage>();
 
-            if (entity == null)
-                return new BaseResponse<string>();
+            // Lấy blog + include ảnh phụ
+            var blog = await repoBlog.Single(
+                x => x.Id == id,
+                include: q => q.Include(b => b.Images),
+                disableTracking: false
+            );
 
-            entity.Title = dto.Title;
-            entity.Content = dto.Content;
-            entity.Author = dto.Author;
-            entity.Thumbnail = dto.Thumbnail;
+            if (blog == null)
+            {
+                return new BaseResponse<string>
+                {
+                    Type = "Error",
+                    Message = "Không tìm thấy bài viết"
+                };
+            }
 
-            await repo.Update(entity);
+            // ============================
+            // UPDATE BLOG THÔNG THƯỜNG
+            // ============================
+
+            blog.Title = dto.Title;
+            blog.Content = dto.Content;
+            blog.Author = dto.Author;
+            blog.Thumbnail = dto.Thumbnail;
+            blog.UpdatedAt = DateTime.Now;
+
             await _unitOfWork.SaveChangesAsync();
 
-            return new BaseResponse<string>();
+            // ============================
+            // UPDATE ẢNH PHỤ
+            // ============================
+
+            // Danh sách ảnh cũ trong DB
+            var dbImages = blog.Images.Select(x => x.Image).ToList();
+
+            // Danh sách ảnh mới (client gửi lên)
+            var newList = dto.SubImages ?? new List<string>();
+
+            // XÓA ảnh không còn dùng nữa
+            var removeList = dbImages.Except(newList).ToList();
+            foreach (var img in removeList)
+            {
+                var entity = await repoBlogImg.Single(x => x.Image == img);
+                if (entity != null)
+                    await repoBlogImg.Delete(entity);
+            }
+
+            // THÊM ảnh mới (chỉ thêm ảnh chưa có)
+            var addList = newList.Except(dbImages).ToList();
+            foreach (var img in addList)
+            {
+                await repoBlogImg.Add(new BlogImage
+                {
+                    BlogId = id,
+                    Image = img
+                });
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return new BaseResponse<string>
+            {
+                Type = "Success",
+                Message = "Cập nhật bài viết thành công!"
+            };
         }
+
+
+
+
 
         public async Task<BaseResponse<string>> DeleteBlog(Guid id)
         {

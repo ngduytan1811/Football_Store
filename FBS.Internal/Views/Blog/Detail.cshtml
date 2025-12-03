@@ -1,73 +1,58 @@
 ﻿@model FBS.Application.DataTranferObjects.Blog.BlogDto
 
-@{
-    ViewData["Title"] = Model?.Title ?? "Chi tiết bài viết";
-}
+<div class="container mt-5" style="max-width:900px;">
 
-<style>
-    .blog-container {
-        max-width: 900px;
-        margin: auto;
+    <!-- TIÊU ĐỀ -->
+    <h1 class="fw-bold mb-3">@Model.Title</h1>
+
+    <!-- TÁC GIẢ + NGÀY ĐĂNG -->
+    <p class="text-muted">
+        @Model.Author — @(Model.CreatedAt?.ToString("dd/MM/yyyy") ?? "")
+
+    </p>
+
+    <!-- ẢNH THUMBNAIL -->
+    @if (!string.IsNullOrEmpty(Model.Thumbnail))
+    {
+        <img src="/@Model.Thumbnail"
+             class="img-fluid rounded mb-4"
+             style="width:100%;object-fit:cover;" />
     }
 
-    .blog-content {
-        font-size: 1.15rem;
-        line-height: 1.9;
-        color: #333;
-        background: #fff;
-        padding: 35px;
-        border-radius: 12px;
-        box-shadow: 0px 4px 20px rgba(0,0,0,0.05);
+    <!-- TÁCH CONTENT RA 2 ĐOẠN -->
+    @{
+        var parts = (Model.Content ?? "").Split("<!--IMG-BLOCK-->");
+        string c1 = parts.Length > 0 ? parts[0] : "";
+        string c2 = parts.Length > 1 ? parts[1] : "";
     }
 
-        .blog-content p {
-            margin-bottom: 18px;
-        }
-
-        .blog-content img {
-            max-width: 100%;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-
-        /* Typography đẹp */
-        .blog-content h2,
-        .blog-content h3 {
-            margin-top: 32px;
-            margin-bottom: 16px;
-            font-weight: 700;
-        }
-
-        /* First letter style */
-        .blog-content p:first-child:first-letter {
-            float: left;
-            font-size: 3.2rem;
-            line-height: 1;
-            padding-right: 10px;
-            padding-top: 5px;
-            color: #0d6efd;
-            font-weight: bold;
-        }
-</style>
-
-<div class="container py-4 blog-container">
-
-    <a href="/blog" class="btn btn-outline-secondary mb-3">
-        <i class="bi bi-arrow-left"></i> Quay lại
-    </a>
-
-    <h1 class="fw-bold mb-2">@Model.Title</h1>
-
-    <div class="text-muted mb-4">
-        <i class="bi bi-person"></i> @Model.Author
-        &nbsp; | &nbsp;
-        <i class="bi bi-clock"></i> @Model.CreatedAt?.ToString("dd/MM/yyyy")
+    <!-- NỘI DUNG 1 -->
+    <div class="content mb-4" style="font-size:18px;line-height:1.7;">
+        @Html.Raw(c1)
     </div>
 
-    <img src="/@Model.Thumbnail" class="img-fluid rounded shadow-sm mb-4" />
+    <!-- ẢNH PHỤ 1 -->
+    @if (Model.Images != null && Model.Images.Count > 0)
+    {
+        <img src="/@Model.Images[0]"
+             class="img-fluid rounded mb-4"
+             style="width:100%;object-fit:cover;" />
+    }
 
-    <div class="blog-content">
-        @Html.Raw(Model.Content)  <!-- Nội dung được styled đẹp -->
+    <!-- NỘI DUNG 2 -->
+    <div class="content mb-4" style="font-size:18px;line-height:1.7;">
+        @Html.Raw(c2)
     </div>
+
+    <!-- CÁC ẢNH PHỤ CÒN LẠI -->
+    @if (Model.Images != null && Model.Images.Count > 1)
+    {
+        for (int i = 1; i < Model.Images.Count; i++)
+        {
+            <img src="/@Model.Images[i]"
+                 class="img-fluid rounded mb-4"
+                 style="width:100%;object-fit:cover;" />
+        }
+    }
 
 </div>

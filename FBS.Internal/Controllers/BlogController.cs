@@ -38,11 +38,14 @@ namespace FBS.Internal.Controllers
         }
 
         
-        [HttpGet("detail/{id}")]     
+        [HttpGet("detail/{id}")]
         public async Task<IActionResult> Detail(Guid id)
         {
-            var data = await _blogService.FindById(id);
-            return View(data.Data);
+            var result = await _blogService.FindById(id);
+            if (result.Data == null) return RedirectToAction("Index");
+
+            return View(result.Data);
         }
+
     }
 }

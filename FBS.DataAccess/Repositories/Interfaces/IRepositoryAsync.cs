@@ -43,5 +43,7 @@ namespace FBS.Infrastructure.Repositories.Interfaces
             bool disableTracking = true);
 
         Task<IQueryable<T>> QueryCondition(Expression<Func<T, bool>> expression);
+        Task<List<T>> FindByAsync(Expression<Func<T, bool>> predicate);
+
     }
 }

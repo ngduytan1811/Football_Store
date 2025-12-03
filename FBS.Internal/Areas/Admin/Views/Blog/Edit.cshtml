@@ -3,56 +3,45 @@
 @{
     ViewData["Title"] = "Chỉnh sửa bài viết";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-
-    var blog = Model; // dữ liệu load từ controller
 }
-
-<div class="container-fluid">
-    <div class="page-title">
-        <div class="row">
-            <div class="col-sm-6">
-                <h3>Chỉnh sửa bài viết</h3>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Dashboard"><i data-feather="home"></i></a></li>
-                    <li class="breadcrumb-item active">Edit Blog</li>
-                </ol>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="container-fluid add-product">
     <form asp-action="Edit" method="post" enctype="multipart/form-data">
+
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="Thumbnail" />
 
-
-        <div class="row">
+        <div class="row g-4">
 
             <!-- LEFT -->
             <div class="col-xl-8">
-                <div class="card">
-                    <div class="card-body">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
 
-                        <!-- Title -->
-                        <div class="mb-3">
-                            <label class="form-label">Tiêu đề</label>
-                            <input asp-for="Title" class="form-control" />
+                        <div class="mb-4">
+                            <label class="fw-bold">Tiêu đề</label>
+                            <input asp-for="Title" class="form-control form-control-lg" />
                         </div>
 
-                        <!-- Author -->
-                        <div class="mb-3">
-                            <label class="form-label">Tác giả</label>
-                            <input asp-for="Author" class="form-control" />
+                        <div class="mb-4">
+                            <label class="fw-bold">Tác giả</label>
+                            <input asp-for="Author" class="form-control form-control-lg" />
                         </div>
 
-                        <!-- Content -->
-                        <div class="mb-3">
-                            <label class="form-label">Nội dung</label>
-                            <textarea asp-for="Content" id="editor" class="form-control"></textarea>
+                        @{
+                            string[] parts = (Model.Content ?? "").Split("<!--IMG-BLOCK-->");
+                            string p1 = parts.Length > 0 ? parts[0] : "";
+                            string p2 = parts.Length > 1 ? parts[1] : "";
+                        }
 
+                        <div class="mb-4">
+                            <label class="fw-bold">Nội dung đoạn 1</label>
+                            <textarea name="ContentPart1" rows="6" class="form-control">@p1</textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="fw-bold">Nội dung đoạn 2</label>
+                            <textarea name="ContentPart2" rows="6" class="form-control">@p2</textarea>
                         </div>
 
                     </div>
@@ -61,58 +50,167 @@
 
             <!-- RIGHT -->
             <div class="col-xl-4">
-                <div class="card">
-                    <div class="card-body">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
 
-                        <!-- Thumbnail -->
-                        <h5>Ảnh thumbnail</h5>
+                        <h5 class="fw-bold">Ảnh thumbnail</h5>
 
-                        <!-- Ảnh cũ -->
-                        @if (!string.IsNullOrEmpty(blog.Thumbnail))
+                        @if (!string.IsNullOrEmpty(Model.Thumbnail))
                         {
-                            <img src="~/@blog.Thumbnail" id="oldImg"
-                                 style="width:100%;border-radius:8px;margin-bottom:10px" />
+                            <img src="~/@Model.Thumbnail"
+                                 id="oldImg"
+                                 style="width:100%; height:220px; object-fit:cover; border-radius:10px; margin-bottom:10px;" />
                         }
 
-                        <!-- Chọn ảnh mới -->
-                        <div class="mb-3">
-                            <input asp-for="ThumbnailFile" class="form-control" type="file" accept="image/*" onchange="previewImage(event)" />
+                        <input asp-for="ThumbnailFile" type="file" class="form-control mb-3"
+                               accept="image/*" onchange="previewThumbnail(event)" />
 
-                            <!-- Preview ảnh mới -->
-                            <img id="previewImg"
-                                 src=""
-                                 style="width:100%;margin-top:10px;display:none;border-radius:8px;object-fit:cover" />
+                        <img id="previewImg"
+                             style="width:100%; height:220px; object-fit:cover; border-radius:10px; display:none;" />
+
+                        <!-- ẢNH PHỤ -->
+                        <h5 class="fw-bold mt-3">Ảnh phụ (cũ + mới)</h5>
+
+                        <div id="imagesContainer" class="row mt-2">
+
+                            @foreach (var img in Model.SubImages)
+                            {
+                                <div class="col-4 mb-3 position-relative image-item"
+                                     data-type="old" data-img="@img">
+
+                                    <!-- ✔ Hidden input nằm trong item -->
+                                    <input type="hidden" name="OldSubImages" value="@img" />
+
+                                    <img src="/@img"
+                                         style="width:100%; height:120px; object-fit:cover; border-radius:10px;" />
+
+                                    <button type="button"
+                                            class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
+                                            onclick="removeImage(this)"
+                                            style="border-radius:50px;">
+                                        ✕
+                                    </button>
+                                </div>
+                            }
+
                         </div>
 
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary me-3">Lưu thay đổi</button>
-                            <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-                        </div>
+                        <!-- ADD ảnh phụ mới -->
+                        <h5 class="fw-bold mt-4">Thêm ảnh phụ mới</h5>
+
+                        <input id="SubImageFiles"
+                               name="SubImageFiles"
+                               type="file"
+                               multiple
+                               accept="image/*"
+                               class="form-control mb-3"
+                               onchange="previewNewImages(event)" />
+
+                        <button type="submit" class="btn btn-primary px-4 w-100">
+                            Lưu thay đổi
+                        </button>
 
                     </div>
                 </div>
             </div>
 
         </div>
+
     </form>
 </div>
 
-<script>
-    feather.replace();
+@section Scripts {
+    <script>
 
-    function previewImage(event) {
-        const reader = new FileReader();
+        /* ================================ */
+        /* PREVIEW THUMBNAIL */
+        /* ================================ */
+        function previewThumbnail(event) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                document.getElementById('previewImg').src = reader.result;
+                document.getElementById('previewImg').style.display = "block";
 
-        reader.onload = function () {
-            const newImg = document.getElementById('previewImg');
-            newImg.src = reader.result;
-            newImg.style.display = 'block';
+                const oldImg = document.getElementById('oldImg');
+                if (oldImg) oldImg.style.display = "none";
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
 
-            // Ẩn ảnh cũ
-            const oldImg = document.getElementById('oldImg');
-            if (oldImg) oldImg.style.display = 'none';
-        };
 
-        reader.readAsDataURL(event.target.files[0]);
-    }
-</script>
+        /* ================================ */
+        /* QUẢN LÝ ẢNH PHỤ MỚI */
+        /* ================================ */
+        let newImages = [];
+
+        function previewNewImages(event) {
+            const files = Array.from(event.target.files);
+
+            files.forEach(file => {
+                newImages.push(file);
+
+                const reader = new FileReader();
+                reader.onload = e => {
+
+                    const div = document.createElement("div");
+                    div.classList.add("col-4", "mb-3", "position-relative", "image-item");
+                    div.dataset.type = "new";
+
+                    div.innerHTML = `
+                        <img src="${e.target.result}"
+                             style="width:100%; height:120px; object-fit:cover; border-radius:10px;" />
+                        <button type="button"
+                                class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
+                                onclick="removeImage(this)"
+                                style="border-radius:50px;">✕</button>
+                    `;
+
+                    document.getElementById("imagesContainer").appendChild(div);
+                };
+
+                reader.readAsDataURL(file);
+            });
+
+            updateInputFiles();
+        }
+
+
+        /* ================================ */
+        /* XÓA ẢNH (CŨ + MỚI) */
+        /* ================================ */
+        function removeImage(btn) {
+
+            const item = btn.closest(".image-item");
+            const type = item.dataset.type;
+
+            if (type === "old") {
+                // xóa hidden input ngay trong item
+                const hidden = item.querySelector("input[name='OldSubImages']");
+                if (hidden) hidden.remove();
+            }
+
+            if (type === "new") {
+                const newItems = Array.from(document.querySelectorAll(".image-item[data-type='new']"));
+                const index = newItems.indexOf(item);
+
+                if (index >= 0) {
+                    newImages.splice(index, 1);
+                }
+                updateInputFiles();
+            }
+
+            item.remove();
+        }
+
+
+        /* ================================ */
+        /* Cập nhật file input */
+        /* ================================ */
+        function updateInputFiles() {
+            const dt = new DataTransfer();
+            newImages.forEach(f => dt.items.add(f));
+            document.getElementById("SubImageFiles").files = dt.files;
+        }
+
+    </script>
+}

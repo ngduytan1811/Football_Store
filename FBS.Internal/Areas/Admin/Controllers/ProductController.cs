@@ -8,6 +8,7 @@ using FBS.Shared.DataTranferObjects.Base;
 using FootballShop.Areas.Admin.Controllers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using static FBS.Shared.Constants.ContactConstants;
 
 namespace FBS.Internal.Areas.Admin.Controllers
 {
@@ -15,6 +16,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
     {
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
+        private Guid? categoryId;
 
         public ProductController(
             IProductService productService,
@@ -30,11 +32,15 @@ namespace FBS.Internal.Areas.Admin.Controllers
         // ============================
         // INDEX
         // ============================
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, Guid? categoryId = null)
         {
             var dataSearch = new BaseSearchDto<ProductSearchDto>()
             {
                 Page = page,
+                SearchParams = new ProductSearchDto()
+                {
+                    CategoryId = categoryId
+                }
             };
 
             var data = await _productService.GetProducts(dataSearch);
@@ -43,6 +49,17 @@ namespace FBS.Internal.Areas.Admin.Controllers
             data.Items?.ForEach(i => i.Index = startIndex++);
 
             ViewData["Products"] = data;
+            ViewData["Page"] = page;
+
+            var drop = await _categoryService.GetCategoryDropdown();
+            var parentCategories = drop.Data.Where(x => x.ParentId == null).ToList();
+
+            ViewData["Categories"] = parentCategories;
+
+
+            // Giữ danh mục đã chọn
+            ViewData["SelectedCategoryId"] = categoryId;
+
             return View();
         }
 

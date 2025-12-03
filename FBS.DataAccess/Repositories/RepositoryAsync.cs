@@ -128,5 +128,11 @@ namespace FBS.Infrastructure.Repositories
         {
             DbContext?.Dispose();
         }
+        public async Task<List<T>> FindByAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await DbSet.Where(predicate).ToListAsync();
+        }
+
     }
+
 }

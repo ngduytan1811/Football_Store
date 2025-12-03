@@ -27,7 +27,7 @@ namespace FBS.Internal.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        // LẤY USER HIỆN TẠI (có cache)
+        // LẤY USER HIỆN TẠI (CÓ CACHE)
         protected CurrentUserViewModel? CurrentUser
         {
             get
@@ -40,7 +40,7 @@ namespace FBS.Internal.Controllers
             }
         }
 
-        // LẤY DỮ LIỆU USER TỪ DB
+        // LẤY DỮ LIỆU USER TỪ DB (DÙNG BẢNG MEMBER)
         protected async Task<CurrentUserViewModel?> GetCurrentUserAsync()
         {
             if (!User.Identity.IsAuthenticated)
@@ -50,43 +50,46 @@ namespace FBS.Internal.Controllers
             if (user == null)
                 return null;
 
-            // Lấy Customer theo UserId
-            var customerRepo = _unitOfWork.GetRepositoryReadOnlyAsync<Customer>();
-            var customerQuery = await customerRepo.QueryAll();
-            var customer = customerQuery.FirstOrDefault(x => x.UserId == user.Id);
+            // Lấy Member
+            var memberRepo = _unitOfWork.GetRepositoryReadOnlyAsync<Member>();
+            var memberQuery = await memberRepo.QueryAll();
+            var member = memberQuery.FirstOrDefault(x => x.UserId == user.Id);
 
-            // Nếu chưa có Customer thì tạo mới
-            if (customer == null)
+            // Tạo Member nếu chưa có
+            if (member == null)
             {
-                var writeRepo = _unitOfWork.GetRepositoryAsync<Customer>();
-                customer = new Customer
+                var writeRepo = _unitOfWork.GetRepositoryAsync<Member>();
+                member = new Member
                 {
                     UserId = user.Id,
                     FirstName = "Unknown",
                     LastName = "",
                     Address = "",
-                    PhoneNumber = user.PhoneNumber ?? "0000000000",
-                    Email = user.Email ?? "noemail@example.com",
+                    PhoneNumber = user.PhoneNumber ?? "",
                     IsActive = true,
                     Status = StatusEnum.Active,
                     CreatedAt = DateTime.Now
                 };
 
-                await writeRepo.Add(customer);
+                await writeRepo.Add(member);
                 await _unitOfWork.SaveChangesAsync();
             }
-
 
             return new CurrentUserViewModel
             {
                 UserId = user.Id,
-                CustomerId = customer.Id,       // <-- BẮT BUỘC PHẢI GÁN
+                CustomerId = member.Id,
                 UserName = user.UserName,
-                FirstName = customer.FirstName,
-                LastName = customer.LastName,
-                Email = customer.Email,
-                PhoneNumber = customer.PhoneNumber,
-                Address = customer.Address,
+
+                // --- DỮ LIỆU LẤY TỪ MEMBER ---
+                FirstName = member.FirstName,
+                LastName = member.LastName,
+                PhoneNumber = member.PhoneNumber,
+                Address = member.Address,
+
+                // --- EMAIL LẤY TỪ ASPNETUSERS ---
+                Email = user.Email,
+
                 IsAdmin = user.IsAdmin
             };
         }
@@ -97,10 +100,16 @@ namespace FBS.Internal.Controllers
         // CHẠY TRƯỚC MỖI ACTION
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            // Reset cache user để luôn lấy dữ liệu mới nhất
+            // Nếu controller yêu cầu reset cache (sau khi sửa thông tin)
+            if (TempData.ContainsKey("ResetUserCache"))
+            {
+                _currentUser = null;
+            }
+
+            // Reset cache mỗi request
             _currentUser = null;
 
-            // Load lại thông tin user
+            // Load user
             ViewBag.CurrentUser = CurrentUser;
 
             // Load Cart

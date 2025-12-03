@@ -13,5 +13,6 @@ namespace FBS.Application.DataTranferObjects.Blog
         public string? Thumbnail { get; set; }
         public string? Content { get; set; }
         public string? Author { get; set; }
+        public List<string> Images { get; set; }
     }
 }

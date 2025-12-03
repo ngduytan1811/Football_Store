@@ -18,7 +18,7 @@ else
         <table class="table table-hover align-middle order-table shadow-sm">
             <thead class="table-light">
                 <tr>
-                    <th class="fw-bold">Mã đơn</th>
+                    <th class="fw-bold">#</th>
                     <th class="fw-bold">Ngày đặt</th>
                     <th class="fw-bold">Tên khách</th>
                     <th class="fw-bold">SĐT</th>
@@ -28,10 +28,13 @@ else
             </thead>
 
             <tbody>
+                @{
+                    int index = 1;
+                }
                 @foreach (var order in Model)
                 {
                     <tr>
-                        <td>@order.Id</td>
+                        <td>@index</td>
                         <td>@order.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
                         <td>@order.CustomerName</td>
                         <td>@order.CustomerPhone</td>

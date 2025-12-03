@@ -96,7 +96,26 @@ namespace FBS.Application.Services
                 queryProduct = queryProduct.Where(x => x.Price <= search.ToPrice);
 
             if (search.CategoryId.HasValue)
-                queryProduct = queryProduct.Where(x => x.CategoryId == search.CategoryId);
+            {
+                // Lấy tất cả danh mục con trực tiếp
+                var queryCategories = await _unitOfWork
+                    .GetRepositoryReadOnlyAsync<Category>()
+                    .QueryAll();
+
+                // Danh sách ID danh mục con
+                var childIds = queryCategories
+                    .Where(c => c.ParentId == search.CategoryId)
+                    .Select(c => c.Id)
+                    .ToList();
+
+                // Thêm ID của danh mục CHA vào luôn
+                childIds.Add(search.CategoryId.Value);
+
+                // Lọc sản phẩm theo CHA hoặc CON
+                queryProduct = queryProduct.Where(x => childIds.Contains(x.CategoryId.Value));
+            }
+
+
 
             result.Total = queryProduct.Count();
 

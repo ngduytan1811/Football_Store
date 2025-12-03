@@ -1,32 +1,52 @@
-﻿
+﻿@model List<FBS.Infrastructure.Entities.Order>
+
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản lý đơn hàng";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-
 
 <div class="container-fluid basic_table">
     <div class="row">
         <div class="col-sm-12">
-            <div class="card px-4 ">
+            <div class="card px-4">
                 <div class="table-responsive theme-scrollbar py-4">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">Id</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Signal Name	</th>
-                                <th scope="col">Security</th>
-                                <th scope="col">Stage</th>
-                                <th scope="col">Schedule</th>
-                                <th scope="col">Team Lead</th>
+                                <th scope="col">Mã</th>
+                                <th scope="col">Trạng thái</th>
+                                <th scope="col">Tên</th>
+                                <th scope="col">Số điện thoại</th>
+                                <th scope="col">Địa Chỉ</th>
+                                <th scope="col">Ngày đặt</th>
+                                <th scope="col">Chi tiết</th>
                             </tr>
                         </thead>
-                    
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.Status</td>
+                                    <td>@item.CustomerName</td>
+                                    <td>@item.CustomerPhone</td>
+                                    <td>@item.CustomerAddress</td>
+                                    <td>@item.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
+
+                                    <td>
+                                        <a class="btn btn-primary btn-sm"
+                                           href="/admin/Order/Detail/@item.Id">
+                                            Xem
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
                     </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
