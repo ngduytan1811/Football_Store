@@ -1,4 +1,5 @@
 ﻿@model List<FBS.Infrastructure.Entities.Order>
+@using FBS.Shared.Helpers
 
 @{
     ViewData["Title"] = "Quản lý đơn hàng";
@@ -8,45 +9,120 @@
 <div class="container-fluid basic_table">
     <div class="row">
         <div class="col-sm-12">
-            <div class="card px-4">
+
+            <div class="card shadow-sm border-0 px-4">
+
+                <h4 class="fw-bold py-3 mb-0 border-bottom">
+                     Quản lý đơn hàng
+                </h4>
+
                 <div class="table-responsive theme-scrollbar py-4">
-                    <table class="table table-hover">
-                        <thead>
+
+                    <table class="table table-hover table-borderless align-middle">
+                        <thead class="table-light border-bottom">
                             <tr>
-                                <th scope="col">Mã</th>
-                                <th scope="col">Trạng thái</th>
-                                <th scope="col">Tên</th>
-                                <th scope="col">Số điện thoại</th>
-                                <th scope="col">Địa Chỉ</th>
-                                <th scope="col">Ngày đặt</th>
-                                <th scope="col">Chi tiết</th>
+                                <th>Mã</th>
+                                <th>Trạng thái</th>
+                                <th>Tên</th>
+                                <th>Số điện thoại</th>
+                                <th>Địa Chỉ</th>
+                                <th>Ngày đặt</th>
+                                <th>Chi tiết</th>
+                              
                             </tr>
                         </thead>
 
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr>
-                                    <td>@item.Id</td>
-                                    <td>@item.Status</td>
+                                <tr class="border-bottom">
+
+                                    <td class="fw-semibold text-primary">
+                                        @item.Id
+                                    </td>
+
+                                    <td>
+                                        @switch (item.Status?.ToString())
+                                        {
+                                            case "Inactive":
+                                                <span class="badge bg-secondary">Chờ Xác Nhận</span>
+                                                ;
+                                                break;
+
+                                            case "Active":
+                                                <span class="badge bg-info text-dark">Đang Xử Lý</span>
+                                                ;
+                                                break;
+
+                                            case "InHandler":
+                                                <span class="badge bg-primary">Đang Giao</span>
+                                                ;
+                                                break;
+
+                                            case "Cancel":
+                                                <span class="badge bg-danger">Giao Thành Công</span>
+                                                ;
+                                                break;
+
+                                            case "WaitingApproval":
+                                                <span class="badge bg-warning text-dark">Đã Hủy</span>
+                                                ;
+                                                break;
+
+                                            case "NotSeen":
+                                                <span class="badge bg-secondary">Trả Hàng</span>
+                                                ;
+                                                break;
+
+                                            case "Watched":
+                                                <span class="badge bg-success">Thất Bại</span>
+                                                ;
+                                                break;
+
+                                            default:
+                                                <span class="badge bg-light text-dark">@item.Status</span>
+                                                ;
+                                                
+                                                break;
+                                        }
+                                    </td>
+
+
                                     <td>@item.CustomerName</td>
                                     <td>@item.CustomerPhone</td>
                                     <td>@item.CustomerAddress</td>
                                     <td>@item.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
 
                                     <td>
-                                        <a class="btn btn-primary btn-sm"
+                                        <a class="btn btn-sm btn-outline-primary"
                                            href="/admin/Order/Detail/@item.Id">
-                                            Xem
+                                            Xem →
                                         </a>
                                     </td>
+                                   
+
                                 </tr>
                             }
                         </tbody>
 
                     </table>
+
                 </div>
             </div>
+
         </div>
     </div>
 </div>
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: #f5f8ff !important;
+        transition: 0.2s;
+    }
+
+    .badge {
+        padding: 6px 10px;
+        font-size: 13px;
+        border-radius: 6px;
+    }
+</style>

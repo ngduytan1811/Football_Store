@@ -1,14 +1,27 @@
 ﻿@model FBS.Infrastructure.Entities.Order
 
+@using FBS.Shared.Enums
+@using FBS.Shared.Helpers
+
 @{
     ViewData["Title"] = "Chi tiết đơn hàng";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container-fluid">
-    <div class="card p-4">
+    <div class="card p-4 shadow-sm">
 
         <h3 class="fw-bold mb-3">Chi tiết đơn hàng</h3>
+
+        <!-- Thông báo -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
 
         <!-- Thông tin khách hàng -->
         <div class="mb-4">
@@ -21,10 +34,34 @@
 
         <hr />
 
-        <!-- Sản phẩm -->
+        <!-- Đổi trạng thái đơn hàng -->
+        <h5 class="fw-bold mb-3">Trạng thái đơn hàng</h5>
+
+        <form asp-action="UpdateStatus" asp-controller="Order" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+
+            <div class="d-flex gap-3 align-items-center">
+                <select name="status" class="form-select" style="width:250px;">
+                    @foreach (StatusEnum st in Enum.GetValues(typeof(StatusEnum)))
+                    {
+                        <option value="@st" selected="@(Model.Status == st)">
+                            @st.GetDisplayName()
+                        </option>
+                    }
+                </select>
+
+                <button type="submit" class="btn btn-primary">
+                    Cập nhật
+                </button>
+            </div>
+        </form>
+
+        <hr />
+
+        <!-- Danh sách sản phẩm -->
         <h5 class="fw-bold mb-3">Danh sách sản phẩm</h5>
 
-        <table class="table table-bordered table-hover">
+        <table class="table table-bordered table-hover align-middle">
             <thead class="table-light">
                 <tr>
                     <th>Ảnh</th>
@@ -42,9 +79,8 @@
                     var sub = (item.Price ?? 0) * (item.Quantity ?? 0);
                     <tr>
                         <td>
-                            <img src="~/uploads/products/@item.Product?.Image"
-                                 style="width:70px; height:70px; object-fit:cover"
-                                 class="rounded border" />
+                            <img src="@Url.Content("~/theme/client/img/product/" + item.Product.Image)"
+                                 style="width:80px;height:80px;object-fit:cover;border-radius:6px;" />
                         </td>
                         <td>@item.Product?.Name</td>
                         <td>@item.ProductSize</td>
@@ -60,7 +96,8 @@
         <!-- Tổng tiền -->
         <div class="text-end mt-3">
             <h4 class="fw-bold text-primary">
-                Tổng tiền: @Model.OrderItems.Sum(x => (x.Price ?? 0) * (x.Quantity ?? 0)).ToString("N0") đ
+                Tổng tiền: @(Model.OrderItems.Sum(x => (x.Price ?? 0) * (x.Quantity ?? 0)).ToString("N0")) đ
+
             </h4>
         </div>
 

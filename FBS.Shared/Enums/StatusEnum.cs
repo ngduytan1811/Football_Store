@@ -11,43 +11,43 @@ namespace FBS.Shared.Enums
         /// <summary>
         /// In active
         /// </summary>
-        [Display(Name = "Không kích hoạt", Order = 1)]
+        [Display(Name = "Chờ Xác Nhận", Order = 1)]
         Inactive = 0,
 
         /// <summary>
         /// Active
         /// </summary>
-        [Display(Name = "Hoạt động", Order = 2)]
+        [Display(Name = "Đang Xử Lý", Order = 2)]
         Active = 1,
 
         /// <summary>
         /// In Handler
         /// </summary>
-        [Display(Name = "Đang xử lý", Order = 3)]
+        [Display(Name = "Đang Giao", Order = 3)]
         InHandler = 2,
 
         /// <summary>
         /// Cancel
         /// </summary>
-        [Display(Name = "Hủy bỏ", Order = 4)]
+        [Display(Name = "Giao Thành Công", Order = 4)]
         Cancel = 3,
 
         /// <summary>
-        /// Waiting Approval
+        /// Wợi xác nhận
         /// </summary>
-        [Display(Name = "Đợi xác nhận", Order = 5)]
+        [Display(Name = "Đã Hủy", Order = 5)]
         WaitingApproval = 4,
 
         /// <summary>
         /// Not seen
         /// </summary>
-        [Display(Name = "Chưa xem", Order = 6)]
+        [Display(Name = "Trả Hàng", Order = 6)]
         NotSeen = 5,
 
         /// <summary>
         /// Watched
         /// </summary>
-        [Display(Name = "Đã xem", Order = 7)]
+        [Display(Name = "Thất Bại", Order = 7)]
         Watched = 6,
     }
 }

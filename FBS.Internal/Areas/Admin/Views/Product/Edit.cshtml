@@ -133,46 +133,42 @@
 
                         <hr />
 
-                        <!-- Ảnh phụ hiện có -->
                         <label class="form-label fw-bold">Ảnh phụ hiện có</label>
 
                         @for (var i = 0; i < 3; i++)
-{
-    var oldImage = Model.SubImages != null && Model.SubImages.Count > i 
-                   ? Model.SubImages[i] 
-                   : null;
+                        {
+                            var oldImage = Model.SubImages != null && Model.SubImages.Count > i
+                            ? Model.SubImages[i]
+                            : null;
 
-    <div class="mb-3">
+                            <div class="mb-3">
 
-        <label class="form-label fw-bold">Ảnh phụ @(i+1)</label>
+                                <label class="form-label fw-bold">Ảnh phụ @(i + 1)</label>
 
-        <!-- Ảnh cũ -->
-        @if (oldImage != null)
-        {
+                                <!-- Ảnh cũ -->
+                                @if (oldImage != null)
+                                {
                                     <img src="@Url.Content("~/theme/client/img/product/" + oldImage)"
                                          style="width:120px;height:120px;object-fit:cover;border-radius:8px;margin-bottom:10px" />
-        }
-        else
-        {
-            <p class="text-muted">Chưa có ảnh</p>
-        }
+                                }
 
-        <!-- Input upload ảnh mới -->
-        <input type="file"
-               name="SubImageFiles"
-               accept="image/*"
-               onchange="previewEditSub(@i, event)"
-               style="border:1px solid #ddd;padding:6px" />
+                                <!-- Input upload ảnh mới -->
+                                <input type="file"
+                                       name="SubImageFiles[@i]"
+                                       accept="image/*"
+                                       onchange="previewEditSub(@i, event)"
+                                       class="form-control" />
 
-        <!-- Hidden giữ ảnh cũ -->
-        <input type="hidden" name="OldSubImages" value="@oldImage" />
+                                <!-- Giữ ảnh cũ -->
+                                <input type="hidden" name="OldSubImages[@i]" value="@oldImage" />
 
-        <!-- Preview ảnh mới -->
-        <div id="previewEditSub@(i)" class="mt-2"></div>
+                                <!-- Preview ảnh mới -->
+                                <div id="previewEditSub@(i)" class="mt-2"></div>
 
-    </div>}
+                            </div>
+                        }
 
-                        <div id="subImagePreview" class="mt-2 d-flex flex-wrap"></div>
+
 
                         <h5 class="mt-4">Kích thước</h5>
 
@@ -237,6 +233,19 @@
         reader.readAsDataURL(file);
     }
 
+        function previewEditSub(index, event) {
+        const div = document.getElementById("previewEditSub" + index);
+        div.innerHTML = "";
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = e => {
+            div.innerHTML = `<img src="${e.target.result}"
+                style="width:120px;height:120px;border-radius:6px;object-fit:cover"/>`;
+        };
+        reader.readAsDataURL(file);
+    }
     function previewSubImages(event) {
         const container = document.getElementById("subImagePreview");
         container.innerHTML = "";

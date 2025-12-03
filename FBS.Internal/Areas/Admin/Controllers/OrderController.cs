@@ -56,7 +56,15 @@ namespace FootballShop.Areas.Admin.Controllers
             if (order == null)
                 return NotFound();
 
-            order.Status = Enum.Parse<StatusEnum>(status);
+            if (Enum.TryParse<StatusEnum>(status, out var newStatus))
+            {
+                order.Status = newStatus;
+            }
+            else
+            {
+                TempData["Error"] = "Trạng thái không hợp lệ!";
+                return RedirectToAction("Detail", new { id });
+            }
 
 
             await repo.Update(order);

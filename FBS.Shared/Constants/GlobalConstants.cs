@@ -47,6 +47,8 @@ namespace FBS.Shared.Constants
             "Trắng",
             "Tím",
             "Vàng",
+            "Hồng",
+
             
 
         };

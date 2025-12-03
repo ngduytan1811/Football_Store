@@ -181,60 +181,50 @@ namespace FBS.Internal.Areas.Admin.Controllers
             if (current.Data == null)
                 return RedirectToAction("Index");
 
-            // ====== ẢNH CHÍNH ======
-            if (request.ImageFile != null)
+            // ===== XỬ LÝ ẢNH PHỤ =====
+            // ===== XỬ LÝ ẢNH PHỤ =====
+            var finalImages = new List<string>();
+
+            request.SubImageFiles = request.SubImageFiles ?? new List<IFormFile>();
+            request.OldSubImages = request.OldSubImages ?? new List<string>();
+
+            for (int i = 0; i < 3; i++)
             {
-                var fileName = Guid.NewGuid() + Path.GetExtension(request.ImageFile.FileName);
+                var oldImg = request.OldSubImages.Count > i ? request.OldSubImages[i] : null;
+                var newFile = request.SubImageFiles.Count > i ? request.SubImageFiles[i] : null;
 
-                var folder = Path.Combine(Directory.GetCurrentDirectory(),
-                                          "wwwroot", "theme", "client", "img", "product");
-
-                var fullPath = Path.Combine(folder, fileName);
-
-                using (var stream = new FileStream(fullPath, FileMode.Create))
+                if (newFile != null)
                 {
-                    await request.ImageFile.CopyToAsync(stream);
-                }
-
-                request.Image = fileName;
-            }
-            else
-            {
-                request.Image = current.Data.Image; // giữ ảnh cũ
-            }
-
-            // ====== ẢNH PHỤ ======
-            var newImages = new List<string>();
-
-            if (request.SubImageFiles != null && request.SubImageFiles.Count > 0)
-            {
-                foreach (var file in request.SubImageFiles)
-                {
-                    var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
-
+                    var fileName = Guid.NewGuid() + Path.GetExtension(newFile.FileName);
                     var path = Path.Combine(Directory.GetCurrentDirectory(),
                                             "wwwroot", "theme", "client", "img", "product",
                                             fileName);
 
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
-                        await file.CopyToAsync(stream);
+                        await newFile.CopyToAsync(stream);
                     }
 
-                    newImages.Add(fileName);
+                    finalImages.Add(fileName);
+                }
+                else
+                {
+                    finalImages.Add(oldImg);
                 }
             }
-            request.SubImages = newImages; 
-            request.OldSubImages = request.OldSubImages ?? new List<string>();
 
-            var result = await _productService.UpdateProduct(id, request, newImages);
 
+            request.SubImages = finalImages;
+
+            // ===== UPDATE PRODUCT =====
+            var result = await _productService.UpdateProduct(id, request, finalImages);
 
             if (result.Type == GlobalConstants.ResponseType.Success)
                 return RedirectToAction("Index");
 
             return RedirectToAction("Edit", new { id });
         }
+
 
         // ============================
         // DELETE

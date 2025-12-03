@@ -194,7 +194,8 @@ namespace FBS.Application.Services
                     Price = i.Price,
                     Quantity = i.Quantity,
                     ProductColor = i.ProductColor,
-                    ProductSize = i.ProductSize
+                    ProductSize = i.ProductSize,
+                    ProductImage = i.Product.Image
                 }).ToList()
             };
         }

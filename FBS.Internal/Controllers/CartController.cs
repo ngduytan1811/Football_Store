@@ -60,12 +60,14 @@ namespace FBS.Internal.Controllers
             var newItem = new CartItemDto
             {
                 ProductId = request.ProductId,
+                
                 ProductName = productData?.Data?.Name,
                 Price = productData?.Data?.Price,
                 Color = productData?.Data?.Color,
                 Size = request.Size,
+                Image = productData?.Data?.Image,
                 Quantity = request.Quantity
-               
+                
             };
 
             // Tìm item theo product + size
@@ -144,7 +146,8 @@ namespace FBS.Internal.Controllers
                 Quantity = x.Quantity,
                 Price = x.Price,
                 Size = x.Size,
-                Color = x.Color
+                Color = x.Color,
+                Image = x.Image
                
             }).ToList();
 

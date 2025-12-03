@@ -118,26 +118,41 @@
                                             @product.Description
                                         </div>
                                         <form asp-action="AddToCart" asp-controller="Cart" method="post" class="">
+                                          
                                             <div class="mn-pro-variation mb-0">
                                                 <div class="mn-pro-variation-inner mn-pro-variation-size m-b-24">
                                                     <span>Size</span>
                                                     <div class="mn-pro-variation-content">
                                                         <div class="size-list">
-                                                            @foreach (var s in product.Sizes)
+                                                            @{
+                                                                // Thứ tự size bạn muốn
+                                                                var sizeOrder = new List<string> { "S", "M", "L", "XL", "2XL" };
+
+                                                                // Sắp xếp lại size theo thứ tự trên
+                                                                var orderedSizes = product.Sizes
+                                                                .OrderBy(s => sizeOrder.IndexOf(s))
+                                                                .ToList();
+                                                            }
+
+                                                            @foreach (var s in orderedSizes)
                                                             {
                                                                 <label class="size-item">
-                                                                    <input type="radio" asp-for="Size" value="@s" class="size-radio" style="display:none;" />
+                                                                    <input type="radio" asp-for="Size" value="@s"
+                                                                           class="size-radio" style="display:none;" />
 
                                                                     <span class="size-text">@s</span>
                                                                 </label>
                                                             }
+
                                                         </div>
+
                                                         <span id="sizeError" class="text-danger" style="display:none;">
                                                             Vui lòng chọn size!
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
+
 
                                             <div class="w-100 mn-single-qty ">
                                                 <input type="hidden" asp-for="ProductId"

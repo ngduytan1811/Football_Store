@@ -17,7 +17,7 @@ namespace FBS.Application.DataTranferObjects.Orders
         public string? ProductSize { get; set; }
 
         public Guid? ProductColorId { get; set; }
-
+      
         public string? ProductColor { get; set; }
 
         public decimal? Price { get; set; }

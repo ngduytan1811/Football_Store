@@ -89,7 +89,9 @@
                     @foreach (var item in cart)
                     {
                         <div class="d-flex mb-3 pb-3 border-bottom">
-                            <img src="~/theme/client/img/giay/29.jpg" class="rounded me-3" width="70" height="70">
+                            <img src="@Url.Content("~/theme/client/img/product/" + item.Image)"
+                                 alt="@item.ProductName"
+                                 style="width:60px;height:60px;object-fit:cover;border-radius:6px" />
 
                             <div class="flex-grow-1">
                                 <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.ProductId"
