@@ -147,6 +147,8 @@ namespace FBS.Application.Services
                 CustomerAddress = order.CustomerAddress,
                 Note = order.Note,
                 CreatedAt = order.CreatedAt,
+                Status = order.Status,
+                
 
                 OrderItems = order.OrderItems.Select(i => new OrderItemDto
                 {
@@ -186,6 +188,7 @@ namespace FBS.Application.Services
                 CustomerAddress = order.CustomerAddress,
                 Note = order.Note,
                 CreatedAt = order.CreatedAt,
+                Status = order.Status,
 
                 OrderItems = order.OrderItems.Select(i => new OrderItemDto
                 {

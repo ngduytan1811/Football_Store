@@ -1,4 +1,5 @@
 ﻿@model List<FBS.Infrastructure.Entities.Order>
+@using FBS.Shared.Enums
 @using FBS.Shared.Helpers
 
 @{
@@ -12,11 +13,94 @@
 
             <div class="card shadow-sm border-0 px-4">
 
-                <h4 class="fw-bold py-3 mb-0 border-bottom">
-                     Quản lý đơn hàng
-                </h4>
+                <div class="d-flex justify-content-between align-items-center py-3 mb-3 border-bottom">
+                    <h4 class="fw-bold mb-0" style="cursor:pointer;" onclick="window.location.href='/admin/Order'">
+                        Quản lý đơn hàng
+                    </h4>
+
+
+
+    <form method="get" class="d-flex align-items-center gap-2">
+
+        <!-- Lọc trạng thái -->
+        <select name="status" class="form-select" style="width: 170px;">
+            <option value="">Tất cả trạng thái</option>
+            @foreach (StatusEnum st in Enum.GetValues(typeof(StatusEnum)))
+            {
+                                <option value="@st" selected="@(ViewBag.Status != null && ViewBag.Status.ToString() == st.ToString())">
+                                    @st.GetDisplayName()
+                                </option>
+
+            }
+        </select>
+
+        <!-- Từ ngày -->
+        <input type="date" name="fromDate" value="@ViewBag.FromDate"
+               class="form-control" style="width: 180px;" />
+
+        <!-- Đến ngày -->
+        <input type="date" name="toDate" value="@ViewBag.ToDate"
+               class="form-control" style="width: 180px;" />
+
+        <!-- Từ khóa -->
+        <input type="text" name="keyword" value="@ViewBag.Keyword"
+               class="form-control" style="width: 230px;"
+               placeholder="Tên, SĐT, mã đơn..." />
+
+        <button class="btn btn-primary px-3">Tìm</button>
+
+    </form>
+                   
+
+</div>
+                <div class="d-flex gap-3 mt-3 mb-4">
+
+                    <div class="p-3 rounded-3 shadow-sm text-center" style="width:160px; background:#eef3ff;">
+                        <div class="fw-bold" style="font-size:22px;">@ViewBag.TotalOrders</div>
+                        <small class="text-muted">Tổng đơn</small>
+                    </div>
+
+                    <div class="p-3 rounded-3 shadow-sm text-center" style="width:160px; background:#fff7e6;">
+                        <div class="fw-bold" style="font-size:22px;">@ViewBag.TotalPending</div>
+                        <small class="text-muted">Chờ xác nhận</small>
+                    </div>
+
+                    <div class="p-3 rounded-3 shadow-sm text-center" style="width:160px; background:#f3e8ff;">
+                        <div class="fw-bold" style="font-size:22px;">@ViewBag.TotalProcessing</div>
+                        <small class="text-muted">Đang xử lý</small>
+                    </div>
+
+                    <div class="p-3 rounded-3 shadow-sm text-center" style="width:160px; background:#e6fffb;">
+                        <div class="fw-bold" style="font-size:22px;">@ViewBag.TotalShipping</div>
+                        <small class="text-muted">Đang giao</small>
+                    </div>
+
+                    <div class="p-3 rounded-3 shadow-sm text-center" style="width:160px; background:#ffe7eb;">
+                        <div class="fw-bold" style="font-size:22px;">@ViewBag.TotalSuccess</div>
+                        <small class="text-muted">Giao thành công</small>
+                    </div>
+
+                    <div class="p-3 rounded-3 shadow-sm text-center" style="width:160px; background:#fff1f0;">
+                        <div class="fw-bold" style="font-size:22px;">@ViewBag.TotalCanceled</div>
+                        <small class="text-muted">Đã hủy</small>
+                    </div>
+
+                </div>
+
+
+
+
+                @if (TempData["SearchError"] != null)
+                {
+                    <div class="alert alert-warning mt-3 fw-semibold" style="border-radius:8px;">
+                        @TempData["SearchError"]
+                    </div>
+                }
+
+
 
                 <div class="table-responsive theme-scrollbar py-4">
+                   
 
                     <table class="table table-hover table-borderless align-middle">
                         <thead class="table-light border-bottom">
@@ -42,49 +126,49 @@
                                     </td>
 
                                     <td>
-                                        @switch (item.Status?.ToString())
+                                        @switch (item.Status.ToString())
                                         {
                                             case "Inactive":
-                                                <span class="badge bg-secondary">Chờ Xác Nhận</span>
+                                                <span class="badge" style="background:#fff7e6; color:#000;">Chờ Xác Nhận</span>
                                                 ;
                                                 break;
 
                                             case "Active":
-                                                <span class="badge bg-info text-dark">Đang Xử Lý</span>
+                                                <span class="badge" style="background:#f3e8ff; color:#000;">Đang Xử Lý</span>
                                                 ;
                                                 break;
 
                                             case "InHandler":
-                                                <span class="badge bg-primary">Đang Giao</span>
+                                                <span class="badge" style="background:#e6fffb; color:#000;">Đang Giao</span>
                                                 ;
                                                 break;
 
                                             case "Cancel":
-                                                <span class="badge bg-danger">Giao Thành Công</span>
+                                                <span class="badge" style="background:#ffe7eb; color:#000;">Giao Thành Công</span>
                                                 ;
                                                 break;
 
                                             case "WaitingApproval":
-                                                <span class="badge bg-warning text-dark">Đã Hủy</span>
+                                                <span class="badge" style="background:#fff1f0; color:#000;">Đã Hủy</span>
                                                 ;
                                                 break;
 
                                             case "NotSeen":
-                                                <span class="badge bg-secondary">Trả Hàng</span>
+                                                <span class="badge" style="background:#e2e3e5; color:#000;">Trả hàng</span>
                                                 ;
                                                 break;
 
                                             case "Watched":
-                                                <span class="badge bg-success">Thất Bại</span>
+                                                <span class="badge" style="background:#d4edda; color:#000;">Thất Bại</span>
                                                 ;
                                                 break;
 
                                             default:
                                                 <span class="badge bg-light text-dark">@item.Status</span>
                                                 ;
-                                                
                                                 break;
                                         }
+
                                     </td>
 
 
@@ -125,4 +209,14 @@
         font-size: 13px;
         border-radius: 6px;
     }
+
+    .stats-card {
+        transition: 0.3s;
+        cursor: pointer;
+    }
+
+        .stats-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1) !important;
+        }
 </style>

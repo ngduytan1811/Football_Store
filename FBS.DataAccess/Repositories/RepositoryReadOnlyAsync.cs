@@ -24,7 +24,11 @@ namespace FBS.Infrastructure.Repositories
 
         public async Task<IQueryable<T>> QueryAll() => await Task.Run(() => DbSet.AsNoTracking());
 
-        public async Task<IQueryable<T>> QueryCondition(Expression<Func<T, bool>> expression) => await Task.Run(() => DbSet.Where(expression).AsNoTracking());
+        public Task<IQueryable<T>> QueryCondition(Expression<Func<T, bool>> expression)
+        {
+            return Task.FromResult(DbSet.Where(expression).AsNoTracking());
+        }
+
 
         public async Task<IQueryable<T>> QueryRaw(string sql, params object[] parameters) => await Task.Run(() => DbSet.FromSqlRaw(sql, parameters));
 

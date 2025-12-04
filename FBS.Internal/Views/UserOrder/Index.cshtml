@@ -1,4 +1,5 @@
-﻿@model List<FBS.Application.DataTranferObjects.Orders.OrderDto>
+﻿@using FBS.Shared.Helpers
+@model List<FBS.Application.DataTranferObjects.Orders.OrderDto>
 
 @{
     ViewData["Title"] = "Đơn hàng của tôi";
@@ -41,9 +42,10 @@ else
 
                         <td class="text-center">
                             <span class="badge status-badge">
-                                Chờ xác nhận
+                                @order.Status?.GetDisplayName()
                             </span>
                         </td>
+
 
                         <td class="text-center">
                             <a href="/UserOrder/Detail/@order.Id"

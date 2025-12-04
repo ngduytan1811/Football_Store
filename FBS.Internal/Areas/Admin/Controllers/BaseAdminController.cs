@@ -38,6 +38,7 @@ namespace FootballShop.Areas.Admin.Controllers
             }
         }
 
+
         protected async Task<CurrentUserViewModel?> GetCurrentUserAsync()
         {
             if (User.Identity.IsAuthenticated)

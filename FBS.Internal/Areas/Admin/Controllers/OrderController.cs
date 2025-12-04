@@ -16,17 +16,73 @@ namespace FootballShop.Areas.Admin.Controllers
         }
 
         // 📌 DANH SÁCH ĐƠN HÀNG
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? keyword, DateTime? fromDate, DateTime? toDate, StatusEnum? status)
         {
             var repo = _unitOfWork.GetRepositoryReadOnlyAsync<Order>();
-            var query = await repo.QueryAll();
+            var query = await repo.QueryAll();   // IQueryable
 
+            // =============================
+            // 1️⃣ Lọc trạng thái đơn hàng
+            // =============================
+            if (status.HasValue)
+            {
+                query = query.Where(o => o.Status == status.Value);
+            }
+
+            // =============================
+            // 2️⃣ Lọc theo từ khóa
+            // =============================
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                keyword = keyword.Trim().ToLower();
+
+                query = query.Where(o =>
+                    (o.CustomerName != null && o.CustomerName.ToLower().Contains(keyword)) ||
+                    (o.CustomerPhone != null && o.CustomerPhone.Contains(keyword)) ||
+                    (o.CustomerAddress != null && o.CustomerAddress.ToLower().Contains(keyword)) ||
+                    o.Id.ToString().Contains(keyword)
+                );
+            }
+
+            // =============================
+            // 3️⃣ Lọc theo ngày
+            // =============================
+            if (fromDate.HasValue)
+                query = query.Where(o => o.CreatedAt >= fromDate);
+
+            if (toDate.HasValue)
+                query = query.Where(o => o.CreatedAt < toDate.Value.AddDays(1));
+
+            // =============================
+            // 4️⃣ Trả kết quả
+            // =============================
             var orders = query
-                .OrderByDescending(x => x.CreatedAt)
+                .OrderByDescending(o => o.CreatedAt)
                 .ToList();
+            ViewBag.TotalOrders = orders.Count();
+            ViewBag.TotalPending = orders.Count(o => o.Status == StatusEnum.Inactive);        
+            ViewBag.TotalProcessing = orders.Count(o => o.Status == StatusEnum.Active);          
+            ViewBag.TotalShipping = orders.Count(o => o.Status == StatusEnum.InHandler);       
+            ViewBag.TotalSuccess = orders.Count(o => o.Status == StatusEnum.Cancel);         
+            ViewBag.TotalCanceled = orders.Count(o => o.Status == StatusEnum.WaitingApproval); 
+
+            if (!orders.Any())
+            {
+                TempData["SearchError"] = "Không tìm thấy đơn hàng phù hợp!";
+            }
+           
+
+            ViewBag.Keyword = keyword;
+            ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+            ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+            ViewBag.Status = status;
 
             return View(orders);
         }
+
+
+
+
 
         // 📌 CHI TIẾT ĐƠN HÀNG
         public async Task<IActionResult> Detail(Guid id)
