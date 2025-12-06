@@ -9,6 +9,7 @@ namespace FBS.Infrastructure.Repositories.Interfaces
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+    using FBS.Infrastructure.Entities;
     using Microsoft.EntityFrameworkCore.Query;
 
     public interface IRepositoryAsync<T> : IDisposable
@@ -44,6 +45,6 @@ namespace FBS.Infrastructure.Repositories.Interfaces
 
         Task<IQueryable<T>> QueryCondition(Expression<Func<T, bool>> expression);
         Task<List<T>> FindByAsync(Expression<Func<T, bool>> predicate);
-
+      
     }
 }

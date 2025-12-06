@@ -41,5 +41,6 @@ namespace FBS.Infrastructure.Entities
         public virtual ICollection<UserToken> UserTokens { get; set; }
 
         public virtual ICollection<UserRole> UserRoles { get; set; }
+       
     }
 }

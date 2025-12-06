@@ -4,15 +4,12 @@
 @{
     ViewData["Title"] = "Detail";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
-    var product = (ProductDto)ViewData["Product"] ?? new ProductDto();
-
-    
+    var fullName = User.Identity.IsAuthenticated ? User.Identity.Name : "";
+    var productData = (ProductDto)ViewData["Product"] ?? new ProductDto();
     var randomProducts = (List<ProductDto>)ViewData["RandomProducts"] ?? new List<ProductDto>();
 }
 
 @model CartItemDto
-
 
 <div class="mn-breadcrumb m-b-30">
     <div class="row">
@@ -37,56 +34,55 @@
         <section class="mn-single-product">
             <div class="row">
                 <div class="mn-pro-rightside mn-common-rightside col-lg-9 col-md-12 m-b-15">
+
                     <div class="single-pro-block">
                         <div class="single-pro-inner">
                             <div class="row">
+
+                                <!-- Ảnh sản phẩm -->
                                 <div class="single-pro-img">
                                     <div class="single-product-scroll">
 
-                                        <!-- ẢNH CHÍNH (SLIDER) -->
+                                        <!-- ẢNH CHÍNH -->
                                         <div class="single-product-cover">
 
-                                            <!-- Ảnh chính -->
                                             <div class="single-slide zoom-image-hover">
                                                 <img class="img-responsive"
-                                                     src="/theme/client/img/product/@product.Image"
-                                                     alt="@product.Name" />
+                                                     src="/theme/client/img/product/@productData.Image"
+                                                     alt="@productData.Name" />
                                             </div>
 
                                             <!-- Ảnh phụ -->
-                                            @if (product.SubImages != null)
+                                            @if (productData.SubImages != null)
                                             {
-                                                foreach (var img in product.SubImages)
+                                                foreach (var img in productData.SubImages)
                                                 {
                                                     <div class="single-slide zoom-image-hover">
                                                         <img class="img-responsive"
                                                              src="/theme/client/img/product/@img"
-                                                             alt="@product.Name" />
+                                                             alt="@productData.Name" />
                                                     </div>
                                                 }
                                             }
                                         </div>
 
-
                                         <!-- THUMBNAIL DƯỚI -->
                                         <div class="single-nav-thumb">
 
-                                            <!-- Thumbnail ảnh chính -->
                                             <div class="single-slide">
                                                 <img class="img-responsive"
-                                                     src="/theme/client/img/product/@product.Image"
-                                                     alt="@product.Name" />
+                                                     src="/theme/client/img/product/@productData.Image"
+                                                     alt="@productData.Name" />
                                             </div>
 
-                                            <!-- Thumbnail ảnh phụ -->
-                                            @if (product.SubImages != null)
+                                            @if (productData.SubImages != null)
                                             {
-                                                foreach (var img in product.SubImages)
+                                                foreach (var img in productData.SubImages)
                                                 {
                                                     <div class="single-slide">
                                                         <img class="img-responsive"
                                                              src="/theme/client/img/product/@img"
-                                                             alt="@product.Name" />
+                                                             alt="@productData.Name" />
                                                     </div>
                                                 }
                                             }
@@ -94,52 +90,49 @@
                                         </div>
 
                                     </div>
-
                                 </div>
+
+                                <!-- Thông tin sản phẩm -->
                                 <div class="single-pro-desc m-t-991">
                                     <div class="single-pro-content">
+
                                         <h5 class="mn-single-title">
-                                            @product.Name
+                                            @productData.Name
                                         </h5>
 
                                         <div class="mn-single-price-stoke">
                                             <div class="mn-single-price">
                                                 <div class="final-price">
-                                                    @product.PriceString
-                                                    @if (product.Discount > 0)
+                                                    @productData.PriceString
+                                                    @if (productData.Discount > 0)
                                                     {
-                                                        <span class="price-des">-@product.Discount%</span>
+                                                        <span class="price-des">-@productData.Discount%</span>
                                                     }
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="mn-single-desc">
-                                            @product.Description
+                                            @productData.Description
                                         </div>
+
+                                        <!-- FORM ADD TO CART -->
                                         <form asp-action="AddToCart" asp-controller="Cart" method="post" class="">
-                                          
                                             <div class="mn-pro-variation mb-0">
                                                 <div class="mn-pro-variation-inner mn-pro-variation-size m-b-24">
                                                     <span>Size</span>
                                                     <div class="mn-pro-variation-content">
                                                         <div class="size-list">
-                                                            @{
-                                                                // Thứ tự size bạn muốn
-                                                                var sizeOrder = new List<string> { "S", "M", "L", "XL", "2XL" };
 
-                                                                // Sắp xếp lại size theo thứ tự trên
-                                                                var orderedSizes = product.Sizes
-                                                                .OrderBy(s => sizeOrder.IndexOf(s))
-                                                                .ToList();
+                                                            @{
+                                                                var sizeOrder = new List<string> { "S", "M", "L", "XL", "2XL" };
+                                                                var orderedSizes = productData.Sizes.OrderBy(s => sizeOrder.IndexOf(s)).ToList();
                                                             }
 
                                                             @foreach (var s in orderedSizes)
                                                             {
                                                                 <label class="size-item">
-                                                                    <input type="radio" asp-for="Size" value="@s"
-                                                                           class="size-radio" style="display:none;" />
-
+                                                                    <input type="radio" asp-for="Size" value="@s" class="size-radio" style="display:none;" />
                                                                     <span class="size-text">@s</span>
                                                                 </label>
                                                             }
@@ -153,159 +146,188 @@
                                                 </div>
                                             </div>
 
-
                                             <div class="w-100 mn-single-qty ">
-                                                <input type="hidden" asp-for="ProductId"
-                                                       value="@product.Id">
+                                                <input type="hidden" asp-for="ProductId" value="@productData.Id">
+
                                                 <div class="qty-plus-minus">
-                                                    <input class="qty-input" type="text" asp-for="Quantity"
-                                                           value="1">
+                                                    <input class="qty-input" type="text" asp-for="Quantity" value="1">
                                                 </div>
+
                                                 <div class="mn-btns">
                                                     <div class="mn-single-cart">
                                                         <button type="submit" class="btn btn-primary mn-btn-2 mn-add-cart">
-                                                            <span>
-                                                                Thêm vào giỏ
-                                                            </span>
+                                                            <span>Thêm vào giỏ</span>
                                                         </button>
                                                     </div>
                                                 </div>
                                             </div>
                                         </form>
+
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
 
+                    <!-- TAB chi tiết & đánh giá -->
                     <div class="mn-single-pro-tab">
                         <div class="mn-single-pro-tab-wrapper">
+
                             <div class="mn-single-pro-tab-nav">
                                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link active" id="details-tab"
                                                 data-bs-toggle="tab" data-bs-target="#mn-spt-nav-details"
-                                                type="button" role="tab" aria-controls="mn-spt-nav-details"
-                                                aria-selected="true">
+                                                type="button" role="tab">
                                             Thông tin chi tiết
                                         </button>
                                     </li>
 
                                     <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="review-tab" data-bs-toggle="tab"
-                                                data-bs-target="#mn-spt-nav-review" type="button" role="tab"
-                                                aria-controls="mn-spt-nav-review"
-                                                aria-selected="false">
+                                        <button class="nav-link" id="review-tab"
+                                                data-bs-toggle="tab" data-bs-target="#mn-spt-nav-review"
+                                                type="button" role="tab">
                                             Đánh giá
                                         </button>
                                     </li>
                                 </ul>
-
                             </div>
-                            <div class="tab-content  mn-single-pro-tab-content">
+
+                            <div class="tab-content mn-single-pro-tab-content">
+
                                 <div id="mn-spt-nav-details" class="tab-pane fade show active">
                                     <div class="mn-single-pro-tab-desc">
-                                        @Html.Raw(product.Detail)
+                                        @Html.Raw(productData.Detail)
                                     </div>
                                 </div>
 
                                 <div id="mn-spt-nav-review" class="tab-pane fade">
                                     <div class="row">
+
+                                        <!-- DANH SÁCH REVIEW -->
                                         <div class="mn-t-review-wrapper mt-0">
-                                            @foreach (var review in product.Reviews)
+                                            @foreach (var review in productData.Reviews)
                                             {
                                                 <div class="mn-t-review-item">
-                                                    <div class="mn-t-review-avtar">
-                                                        <img src="~/theme/client/img/user/1.jpg" alt="user">
-                                                    </div>
                                                     <div class="mn-t-review-content">
                                                         <div class="mn-t-review-top">
                                                             <div class="mn-t-review-name">@review.FullName</div>
-
                                                         </div>
+
                                                         <div class="mn-t-review-bottom">
-                                                            <p>
-                                                                @review.Message
-                                                            </p>
+                                                            <p>@review.Message</p>
                                                         </div>
                                                     </div>
                                                 </div>
                                             }
                                         </div>
+
+                                        <!-- FORM THÊM REVIEW -->
                                         <div class="mn-ratting-content">
                                             <h3>Thêm đánh giá</h3>
+
                                             <div class="mn-ratting-form">
                                                 <form asp-action="Review" asp-controller="Product" method="post">
-                                                    <input type="hidden" name="ProductId" value="@product.Id" />
+
+                                                    <input type="hidden" name="ProductId" value="@productData.Id" />
+
                                                     <div class="mn-ratting-input">
-                                                        <input name="FullName" placeholder="Họ tên"
-                                                               type="text">
+                                                        @if (User.Identity.IsAuthenticated)
+                                                        {
+                                                            <!-- ĐÃ ĐĂNG NHẬP → TỰ ĐIỀN TÊN -->
+                                                            <input name="FullName" type="text" value="@fullName" readonly />
+                                                        }
+                                                        else
+                                                        {
+                                                            <!-- CHƯA ĐĂNG NHẬP → BẮT NHẬP TÊN -->
+                                                            <input name="FullName" placeholder="Họ tên" type="text" />
+                                                        }
                                                     </div>
 
                                                     <div class="mn-ratting-input form-submit">
-                                                        <textarea name="Message"
-                                                                  placeholder="Nội dung"></textarea>
-                                                        <button class="mn-btn-2" type="submit"
-                                                                value="Submit">
+                                                        <textarea name="Message" placeholder="Nội dung"></textarea>
+
+                                                        <button class="mn-btn-2" type="submit">
                                                             <span>Gửi đánh giá</span>
                                                         </button>
                                                     </div>
+
                                                 </form>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
+
                         </div>
                     </div>
+
+                    <!-- SẢN PHẨM MỚI -->
                     <section class="mn-new-product p-tb-15">
                         <div class="mn-title">
                             <h2>Sản Phẩm Mới</h2>
                         </div>
+
                         <div class="mn-product owl-carousel">
+
                             @foreach (var item in randomProducts)
                             {
                                 <div class="mn-product-card">
+
                                     <div class="mn-product-img">
-                                        <div class="lbl">
-                                            <span class="trending">Mới</span>
-                                        </div>
+                                        <div class="lbl"><span class="trending">Mới</span></div>
+
                                         <div class="mn-img">
-                                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id" class="image">
+                                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id">
                                                 <img class="main-img" src="@item.Image" alt="@item.Name">
                                                 <img class="hover-img" src="@item.Image" alt="@item.Name">
                                             </a>
                                         </div>
                                     </div>
+
                                     <div class="mn-product-detail">
                                         <div class="cat">
-                                            <a asp-controller="Product" asp-action="List" asp-route-categoryId="@product.CategoryId">@product.CategoryName</a>
+                                            <a asp-controller="Product" asp-action="List"
+                                               asp-route-categoryId="@productData.CategoryId">
+                                                @productData.CategoryName
+                                            </a>
+
                                             <ul>
                                                 <li>Size: @string.Join(", ", item.Sizes)</li>
                                             </ul>
                                         </div>
+
                                         <h5>
                                             <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id">
                                                 @item.Name
                                             </a>
                                         </h5>
+
                                         <div class="mn-price">
                                             <div class="mn-price-new">@item.PriceString</div>
                                             <div class="mn-price-old">@item.PriceString</div>
                                         </div>
                                     </div>
+
                                 </div>
                             }
+
                         </div>
                     </section>
 
                 </div>
-                <!-- Sidebar Area Start -->
-               @Html.Partial("_SidebarProduct")
+
+                <!-- Sidebar -->
+                @Html.Partial("_SidebarProduct")
+
             </div>
         </section>
     </div>
 </div>
+
 @section Scripts {
     <script>
         const sizeItems = document.querySelectorAll(".size-item");
@@ -316,21 +338,11 @@
             item.addEventListener("click", () => {
 
                 sizeItems.forEach(i => i.classList.remove("active"));
-
                 item.classList.add("active");
-
                 hiddenSize.value = item.querySelector(".size-radio").value;
-
                 sizeError.style.display = "none";
-            });
-        });
 
-        document.getElementById("cartForm")?.addEventListener("submit", e => {
-            if (!hiddenSize.value) {
-                e.preventDefault();
-                sizeError.style.display = "block";
-            }
+            });
         });
     </script>
 }
-

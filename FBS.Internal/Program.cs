@@ -1,4 +1,6 @@
-﻿using FBS.Infrastructure.Configuration;
+﻿using FBS.Application.Services.Interfaces;
+using FBS.Application.Services;
+using FBS.Infrastructure.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;

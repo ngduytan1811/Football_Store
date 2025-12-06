@@ -1,0 +1,78 @@
+﻿@model List<FBS.Internal.Areas.Models.ProductReviewViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý đánh giá";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="mb-4">Quản lý đánh giá sản phẩm</h2>
+
+<form class="row mb-4" method="get">
+    <div class="col-md-4">
+        <input type="text" name="keyword"
+               value="@Context.Request.Query["keyword"]"
+               class="form-control"
+               placeholder="Tìm theo tên hoặc nội dung..." />
+    </div>
+
+    <div class="col-md-4">
+        <select name="productId" class="form-control">
+            <option value="">-- Lọc theo sản phẩm --</option>
+            @foreach (var p in (List<FBS.Infrastructure.Entities.Product>)ViewBag.Products)
+            {
+                <option value="@p.Id"
+                        selected="@(p.Id.ToString() == Context.Request.Query["productId"] ? "selected" : null)">
+                    @p.Name
+                </option>
+            }
+
+        </select>
+    </div>
+
+    <div class="col-md-4">
+        <button class="btn btn-primary">Tìm kiếm</button>
+        <a href="/Admin/ReviewAdmin" class="btn btn-secondary">Reset</a>
+    </div>
+</form>
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th style="width: 200px;">Sản phẩm</th>
+            <th style="width: 180px;">Họ và tên</th>
+            <th>Nội dung đánh giá</th>
+            <th style="width: 160px;">Ngày tạo</th>
+            <th style="width: 120px;">Hành động</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@item.FullName</td>
+                    <td>@item.Message</td>
+                    <td>@item.CreatedDate?.ToString("dd/MM/yyyy HH:mm")</td>
+
+                    <td>
+                        <a class="btn btn-danger btn-sm"
+                           href="@Url.Action("Delete", "ReviewAdmin", new { area = "Admin", id = item.Id })"
+                           onclick="return confirm('Bạn có chắc muốn xóa đánh giá này?')">
+                            Xóa
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center text-muted py-3">
+                    Chưa có đánh giá nào.
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
