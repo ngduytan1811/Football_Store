@@ -17,6 +17,10 @@ namespace FBS.Application.DataTranferObjects.Cart
         public decimal? Price { get; set; }
         public string? Description { get; set; }
         public string? Avatar { get; set; }
+        public List<string> SubImages { get; set; } = new();
+
+
+
 
         public string? PriceString => Price.HasValue ? Price.Value.ToString("C", new CultureInfo("vi-VN")) : string.Empty;
         public int Quantity { get; set; }

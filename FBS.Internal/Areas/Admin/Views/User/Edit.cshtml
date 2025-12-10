@@ -12,7 +12,8 @@
             <div class="card-header pb-0">
                 <h4>Cập nhật tài khoản</h4>
             </div>
-            <form class="form theme-form" asp-action="Edit" asp-route-userId="@Model.Id" asp-controller="User" method="post" novalidate>
+            <form asp-action="Update" asp-route-userId="@Model.Id" asp-controller="User" method="post">
+
                 <div class="card-body">
                     <div class="row">
                         <div class="col">
@@ -39,6 +40,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label class="form-label" asp-for="IsActive">Trạng thái tài khoản</label>
+                                <select class="form-select" asp-for="IsActive">
+                                    <option value="true">Hoạt động</option>
+                                    <option value="false">Bị khóa</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="card-footer text-end">
                     <button class="btn btn-primary" type="submit">Lưu</button>

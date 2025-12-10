@@ -170,122 +170,146 @@
                         </div>
                     </div>
 
+                   
                     <!-- TAB chi tiết & đánh giá -->
                     <div class="mn-single-pro-tab">
                         <div class="mn-single-pro-tab-wrapper">
 
-                            <div class="mn-single-pro-tab-nav">
-                                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                    <div class="tab-pane fade show active" id="mn-spt-nav-details" role="tabpanel">
+                            <ul class="nav nav-tabs" id="productTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="details-tab"
+                                            data-bs-toggle="tab" data-bs-target="#details-pane"
+                                            type="button" role="tab">
+                                        Thông Tin Chi Tiết
+                                    </button>
+                                </li>
 
-                                        <!-- Mô tả chi tiết -->
-                                        <div class="product-description mb-4">
-                                            @Html.Raw(Model.Description)
-                                        </div>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="review-tab"
+                                            data-bs-toggle="tab" data-bs-target="#review-pane"
+                                            type="button" role="tab">
+                                        Đánh Giá
+                                    </button>
+                                </li>
+                            </ul>
 
-                                        <!-- Hình ảnh chi tiết -->
-                                        <h5 class="mb-3 fw-bold">Hình ảnh chi tiết</h5>
+                            <div class="tab-content mt-4">
 
-                                        <div class="row">
-                                            <!-- Ảnh chính -->
-                                            <div class="col-md-4 mb-3">
-                                                <img src="@Model.Avatar"
-                                                     class="img-fluid rounded shadow-sm detail-image" />
-                                            </div>
+                                <!-- TAB: Thông Tin Chi Tiết -->
+                                <div class="tab-pane fade show active" id="details-pane" role="tabpanel">
 
-                                            <!-- Ảnh phụ -->
-                                            @foreach (var img in Model.SubImages)
-                                            {
-                                                <div class="col-md-4 mb-3">
-                                                    <img src="@img"
-                                                         class="img-fluid rounded shadow-sm detail-image" />
-                                                </div>
-                                            }
-                                        </div>
-
+                                    <!-- Mô tả nội dung -->
+                                    <div class="product-description mb-4">
+                                        @Html.Raw((productData.Detail ?? "").Replace("\n", "<br />"))
                                     </div>
 
 
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" id="review-tab"
-                                                data-bs-toggle="tab" data-bs-target="#mn-spt-nav-review"
-                                                type="button" role="tab">
-                                            Đánh giá
-                                        </button>
-                                    </li>
-                                </ul>
-                            </div>
+                                    <!-- Hình ảnh chi tiết -->
+                                    <h5 class="mb-3 fw-bold">Hình ảnh chi tiết</h5>
 
-                            <div class="tab-content mn-single-pro-tab-content">
-
-                                <div id="mn-spt-nav-details" class="tab-pane fade show active">
-                                    <div class="mn-single-pro-tab-desc">
-                                        @Html.Raw(productData.Detail)
-                                    </div>
-                                </div>
-
-                                <div id="mn-spt-nav-review" class="tab-pane fade">
                                     <div class="row">
 
-                                        <!-- DANH SÁCH REVIEW -->
-                                        <div class="mn-t-review-wrapper mt-0">
-                                            @foreach (var review in productData.Reviews)
-                                            {
-                                                <div class="mn-t-review-item">
-                                                    <div class="mn-t-review-content">
-                                                        <div class="mn-t-review-top">
-                                                            <div class="mn-t-review-name">@review.FullName</div>
-                                                        </div>
+                                     
 
-                                                        <div class="mn-t-review-bottom">
-                                                            <p>@review.Message</p>
-                                                        </div>
-                                                    </div>
+                                       
+                                        @if (productData.SubImages != null)
+                                        {
+
+
+                                            foreach (var img in productData.SubImages.Distinct().Take(4))
+
+                                            {
+                                                <div class="col-md-6 mb-3">
+                                                    <img src="/theme/client/img/product/@img"
+                                                         class="img-fluid rounded shadow-sm w-100" />
                                                 </div>
+                                            }
+                                        }
+
+                                    </div>
+
+
+                                </div>
+
+                                <!-- TAB: Đánh Giá -->
+                                <!-- TAB: Đánh Giá -->
+                                <div class="tab-pane fade" id="review-pane" role="tabpanel">
+                                    <div class="row p-3">
+
+                                        <!-- DANH SÁCH REVIEW -->
+                                        <div class="mn-t-review-wrapper mb-4">
+                                            @if (productData.Reviews.Any())
+                                            {
+                                                @foreach (var review in productData.Reviews)
+                                                {
+                                                    <div class="p-3 mb-3 bg-white rounded shadow-sm border">
+                                                        <div class="d-flex justify-content-between">
+                                                            <div class="fw-bold text-primary">@review.FullName</div>
+                                                        </div>
+                                                        <div class="text-muted mt-1">@review.Message</div>
+                                                    </div>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <p class="text-muted">Chưa có đánh giá nào.</p>
                                             }
                                         </div>
 
                                         <!-- FORM THÊM REVIEW -->
-                                        <div class="mn-ratting-content">
-                                            <h3>Thêm đánh giá</h3>
+                                        <div class="mn-ratting-content p-4 bg-white rounded shadow-sm border">
+                                            <h4 class="fw-bold mb-3">Thêm đánh giá</h4>
 
-                                            <div class="mn-ratting-form">
-                                                <form asp-action="Review" asp-controller="Product" method="post">
+                                            <form asp-action="Review" asp-controller="Product" method="post">
+                                                <input type="hidden" name="ProductId" value="@productData.Id" />
 
-                                                    <input type="hidden" name="ProductId" value="@productData.Id" />
+                                                <!-- Họ tên -->
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Họ tên</label>
 
-                                                    <div class="mn-ratting-input">
-                                                        @if (User.Identity.IsAuthenticated)
-                                                        {
-                                                            <!-- ĐÃ ĐĂNG NHẬP → TỰ ĐIỀN TÊN -->
-                                                            <input name="FullName" type="text" value="@fullName" readonly />
-                                                        }
-                                                        else
-                                                        {
-                                                            <!-- CHƯA ĐĂNG NHẬP → BẮT NHẬP TÊN -->
-                                                            <input name="FullName" placeholder="Họ tên" type="text" />
-                                                        }
-                                                    </div>
+                                                    @if (User.Identity.IsAuthenticated)
+                                                    {
+                                                        <input name="FullName"
+                                                               type="text"
+                                                               value="@fullName"
+                                                               class="form-control rounded-pill"
+                                                               readonly />
+                                                    }
+                                                    else
+                                                    {
+                                                        <input name="FullName"
+                                                               type="text"
+                                                               placeholder="Nhập họ tên"
+                                                               class="form-control rounded-pill" />
+                                                    }
+                                                </div>
 
-                                                    <div class="mn-ratting-input form-submit">
-                                                        <textarea name="Message" placeholder="Nội dung"></textarea>
+                                                <!-- Nội dung -->
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">Nội dung</label>
+                                                    <textarea name="Message"
+                                                              class="form-control rounded-4"
+                                                              rows="4"
+                                                              placeholder="Viết nội dung đánh giá..."></textarea>
+                                                </div>
 
-                                                        <button class="mn-btn-2" type="submit">
-                                                            <span>Gửi đánh giá</span>
-                                                        </button>
-                                                    </div>
+                                                <!-- Button -->
+                                                <button class="btn btn-primary rounded-pill px-4 py-2 fw-bold" type="submit">
+                                                    Gửi đánh giá
+                                                </button>
 
-                                                </form>
-                                            </div>
-
+                                            </form>
                                         </div>
+
                                     </div>
                                 </div>
 
-                            </div>
 
+
+                            </div>
                         </div>
                     </div>
+
 
                     <!-- SẢN PHẨM MỚI -->
                     <section class="mn-new-product p-tb-15">
@@ -368,3 +392,23 @@
         });
     </script>
 }
+
+    <style >
+    .mn-ratting-content input,
+    .mn-ratting-content textarea {
+        font-size: 15px;
+        border: 1px solid #ddd;
+    }
+
+    .mn-t-review-wrapper .bg-white {
+        transition: 0.2s;
+    }
+
+        .mn-t-review-wrapper .bg-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+</style>
+
+
+

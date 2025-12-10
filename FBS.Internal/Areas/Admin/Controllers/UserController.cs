@@ -78,6 +78,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 UserName = user.Data.Username,
                 PhoneNumber = user.Data.PhoneNumber,
                 Email = user.Data.Email,
+                IsActive = user.Data.IsActive
             };
 
             return View(model);

@@ -22,6 +22,7 @@ namespace FBS.Application.DataTranferObjects.Users
         public string? PhoneNumber { get; set; }
 
         public string? Address { get; set; }
+        public bool IsActive { get; set; }
 
         // ================================
         // Thêm trường mật khẩu

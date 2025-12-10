@@ -226,11 +226,18 @@ namespace FBS.Application.Services
                 Name = dto.Name?.Trim(),
                 CategoryId = dto.CategoryId,
                 Description = dto.Description,
-                Detail = dto.Detail,
+                
                 Brand = dto.Brand,
                 Price = dto.Price,
                 Status = StatusEnum.Active,
-                Image = dto.Image
+                Image = dto.Image,
+                Detail = string.Join(
+    "\n\n",
+    new[] { dto.DetailPart1, dto.DetailPart2 }
+        .Where(s => !string.IsNullOrWhiteSpace(s))
+),
+
+
             };
 
             await productRep.Add(product);
@@ -321,7 +328,13 @@ namespace FBS.Application.Services
             product.Status = dto.Status;
             product.Image = dto.Image;
             productColor.Color = dto.Color;
-            product.Detail = dto.Detail;
+            product.Detail = string.Join(
+    "\n\n",
+    new[] { dto.DetailPart1, dto.DetailPart2 }
+        .Where(s => !string.IsNullOrWhiteSpace(s))
+);
+
+
 
             // =============== UPDATE SIZE ===========================
             var oldSizes = await (await productSizeRep.QueryCondition(x => x.ProductId == id)).ToListAsync();

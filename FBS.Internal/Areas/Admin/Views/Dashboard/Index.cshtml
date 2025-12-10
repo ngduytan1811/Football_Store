@@ -105,13 +105,27 @@
 
 @if (ViewBag.RevenueInRange != null)
 {
-    <h4 class="fw-bold mb-4">
-        Doanh thu từ @ViewBag.FromDate → @ViewBag.ToDate :
-        <span class="text-success">@string.Format("{0:N0} đ", ViewBag.RevenueInRange)</span>
-    </h4>
+    @if (ViewBag.DateError == null && ViewBag.RevenueInRange != null)
+    {
+        <h3>
+            Doanh thu từ @ViewBag.FromDate → @ViewBag.ToDate :
+            <span class="text-success fw-bold">
+                @string.Format(new System.Globalization.CultureInfo("vi-VN"), "{0:N0}", ViewBag.RevenueInRange) đ
+            </span>
+        </h3>
+    }
+
+
 
     <canvas id="rangeChart" height="80"></canvas>
 }
+@if (ViewBag.DateError != null)
+{
+    <div class="text-danger fw-bold">
+        @ViewBag.DateError
+    </div>
+}
+
 
 <hr />
 

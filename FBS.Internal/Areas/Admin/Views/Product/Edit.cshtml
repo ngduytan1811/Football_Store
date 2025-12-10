@@ -97,9 +97,16 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Thông tin chi tiết</label>
-                    <textarea asp-for="Detail" class="form-control" rows="5"></textarea>
+                    <label class="form-label">Thông tin chi tiết (phần 1)</label>
+                    <textarea asp-for="DetailPart1" class="form-control" rows="4"></textarea>
                 </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Thông tin chi tiết (phần 2)</label>
+                    <textarea asp-for="DetailPart2" class="form-control" rows="4"></textarea>
+                </div>
+
+              
             </div>
            
 
@@ -145,28 +152,29 @@
 
                                 <label class="form-label fw-bold">Ảnh phụ @(i + 1)</label>
 
-                                <!-- Ảnh cũ -->
                                 @if (oldImage != null)
                                 {
                                     <img src="@Url.Content("~/theme/client/img/product/" + oldImage)"
                                          style="width:120px;height:120px;object-fit:cover;border-radius:8px;margin-bottom:10px" />
                                 }
 
-                                <!-- Input upload ảnh mới -->
+                                <!-- Upload ảnh mới -->
                                 <input type="file"
-                                       name="SubImageFiles[@i]"
+                                       name="SubImageFiles"
                                        accept="image/*"
                                        onchange="previewEditSub(@i, event)"
                                        class="form-control" />
 
                                 <!-- Giữ ảnh cũ -->
-                                <input type="hidden" name="OldSubImages[@i]" value="@oldImage" />
+                                <input type="hidden"
+                                       name="OldSubImages"
+                                       value="@oldImage" />
 
-                                <!-- Preview ảnh mới -->
+                                <!-- Preview -->
                                 <div id="previewEditSub@(i)" class="mt-2"></div>
-
                             </div>
                         }
+
 
 
 

@@ -131,6 +131,16 @@ namespace FootballShop.Areas.Admin.Controllers
             }
             else
             {
+                // ⭐ KIỂM TRA: ngày bắt đầu không được lớn hơn ngày kết thúc
+                if (fromDate.Value.Date > toDate.Value.Date)
+                {
+                    ViewBag.DateError = "Ngày bắt đầu không được lớn hơn ngày kết thúc!";
+                    ViewBag.RevenueInRange = 0;
+                    ViewBag.RangeChartData = new List<RevenueChartDto>();
+                    return View();
+                }
+
+                // ⭐ TÍNH DOANH THU TRONG KHOẢNG NGÀY
                 var revenueInRange = orders
                     .Where(o => o.CreatedAt.HasValue &&
                                 o.CreatedAt.Value.Date >= fromDate.Value.Date &&
@@ -139,6 +149,7 @@ namespace FootballShop.Areas.Admin.Controllers
 
                 ViewBag.RevenueInRange = revenueInRange;
 
+                // ⭐ TẠO DANH SÁCH CÁC NGÀY TRONG KHOẢNG
                 var daysRange = Enumerable.Range(0, (toDate.Value - fromDate.Value).Days + 1)
                     .Select(i => fromDate.Value.AddDays(i))
                     .ToList();
@@ -154,6 +165,7 @@ namespace FootballShop.Areas.Admin.Controllers
 
                 ViewBag.RangeChartData = rangeChartData;
             }
+
 
             return View();
         }

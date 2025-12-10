@@ -68,9 +68,11 @@ namespace FBS.Application.Services
                 Username = x.UserName,
                 Email = x.Email,
                 PhoneNumber = x.PhoneNumber,
-                Status = x.Status,
+             
                 CreatedAt = x.CreatedAt,
                 FullName = x.IsAdmin ? "Admin" : $"{x.Member.FirstName} {x.Member.LastName}",
+                IsActive = x.IsActive
+
             });
 
             query = dto.ColumnSort switch
@@ -106,6 +108,7 @@ namespace FBS.Application.Services
                 PhoneNumber = user.PhoneNumber,
                 Email = user.Email,
                 Status = user.Status,
+                IsActive = user.IsActive
             };
 
             result.Data = data;
@@ -202,7 +205,9 @@ namespace FBS.Application.Services
             user.Email = dto.Email;
             user.PhoneNumber = dto.PhoneNumber;
             user.UpdatedAt = DateTime.Now;
-            user.Status = dto.Status;
+           
+            user.IsActive = dto.IsActive;
+
 
             var resultUpdate = await _userManager.UpdateAsync(user);
             await _unitOfWork.SaveChangesAsync();

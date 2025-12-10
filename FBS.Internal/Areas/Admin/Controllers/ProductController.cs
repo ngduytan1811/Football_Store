@@ -167,6 +167,17 @@ namespace FBS.Internal.Areas.Admin.Controllers
            
                 
             };
+            if (!string.IsNullOrEmpty(res.Data.Detail))
+            {
+                // bạn đang join bằng "\n\n" khi lưu → tách theo "\n\n"
+                var parts = res.Data.Detail.Split(
+                    new[] { "\n\n" },
+                    StringSplitOptions.None
+                );
+
+                dto.DetailPart1 = parts.Length > 0 ? parts[0] : null;
+                dto.DetailPart2 = parts.Length > 1 ? parts[1] : null;
+            }
 
             return View(dto);
         }
