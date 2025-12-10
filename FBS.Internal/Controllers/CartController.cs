@@ -66,7 +66,9 @@ namespace FBS.Internal.Controllers
                 Color = productData?.Data?.Color,
                 Size = request.Size,
                 Image = productData?.Data?.Image,
-                Quantity = request.Quantity
+                Quantity = request.Quantity,
+                 Description = productData?.Data?.Description,
+                 Avatar = request.Avatar
                 
             };
 

@@ -1,4 +1,4 @@
-using FBS.Application.Services;
+﻿using FBS.Application.Services;
 using FBS.Application.Services.Interfaces;
 using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories;
@@ -34,10 +34,63 @@ namespace FootballShop.Controllers
             return View();
         }
 
-        public IActionResult Contact()
+        public async Task<IActionResult> Contact()
         {
-            return View();
+            var model = new ContactViewModel();
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var user = await _userManager.GetUserAsync(User);
+
+                if (user != null)
+                {
+                    model.FullName = user.UserName;       
+                    model.Email = user.Email;
+                    model.Phone = user.PhoneNumber;
+                }
+            }
+
+            return View(model);
         }
+       [HttpPost]
+        [HttpPost]
+        public async Task<IActionResult> Contact(ContactViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var repo = _unitOfWork.GetRepositoryAsync<Contact>();
+
+            string firstName = "";
+            string lastName = "";
+
+            if (!string.IsNullOrWhiteSpace(model.FullName))
+            {
+                var parts = model.FullName.Trim().Split(' ', 2);
+                firstName = parts[0];
+                lastName = parts.Length > 1 ? parts[1] : "";
+            }
+
+            var contact = new Contact
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Phone = model.Phone,
+                Email = model.Email,
+                Message = model.Message,
+                IsDeleted = false
+            };
+
+            await repo.Add(contact);
+            await _unitOfWork.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Bạn đã gửi liên hệ thành công!";
+            return RedirectToAction("Contact");
+        }
+
+
+
+
 
         public IActionResult Privacy()
         {

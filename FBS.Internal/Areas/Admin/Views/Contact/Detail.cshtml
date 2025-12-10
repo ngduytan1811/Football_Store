@@ -1,0 +1,106 @@
+﻿@model FBS.Infrastructure.Entities.Contact
+
+@{
+    ViewData["Title"] = "Chi tiết liên hệ";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card p-4">
+
+                <h3 class="mb-4 fw-bold">Chi tiết liên hệ</h3>
+
+                <table class="table table-bordered">
+                    <tr>
+                        <th style="width: 180px;">Họ tên</th>
+                        <td>@($"{Model.FirstName} {Model.LastName}".Trim())</td>
+                    </tr>
+
+                    <tr>
+                        <th>Email</th>
+                        <td>@Model.Email</td>
+                    </tr>
+
+                    <tr>
+                        <th>Số điện thoại</th>
+                        <td>@Model.Phone</td>
+                    </tr>
+
+                    <tr>
+                        <th>Nội dung</th>
+                        <td>@Model.Message</td>
+                    </tr>
+
+                    <tr>
+                        <th>Ngày gửi</th>
+                        <td>@Model.CreatedAt?.ToString("dd/MM/yyyy HH:mm")</td>
+                    </tr>
+                </table>
+
+                <div class="mt-4 d-flex gap-3">
+
+                    <!-- Quay lại -->
+                    <a asp-action="Index" class="action-btn btn-back">
+                        <i class="ri-arrow-left-line"></i>
+                        <span>Quay lại</span>
+                    </a>
+
+                    <!-- Xóa -->
+                    <a asp-action="Delete"
+                       asp-route-id="@Model.Id"
+                       class="action-btn btn-delete"
+                       onclick="return confirm('Bạn có chắc muốn xóa liên hệ này?')">
+                        <i class="ri-delete-bin-line"></i>
+                        <span>Xóa</span>
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 24px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: 0.25s;
+        color: #fff !important;
+        text-decoration: none !important;
+    }
+
+    .btn-back {
+        background: #6366f1;
+        box-shadow: 0px 4px 12px rgba(99,102,241,0.35);
+    }
+
+        .btn-back:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 16px rgba(99,102,241,0.55);
+        }
+
+    .btn-delete {
+        background: #ef4444;
+        box-shadow: 0px 4px 12px rgba(239,68,68,0.35);
+    }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 16px rgba(239,68,68,0.55);
+        }
+
+    .action-btn i {
+        font-size: 18px;
+        margin-right: 4px;
+    }
+</style>

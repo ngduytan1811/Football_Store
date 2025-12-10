@@ -54,23 +54,62 @@
 			</div>
 		</div>
 		<div class="col-md-6 m-t-767">
-			<form>
-				<div class="form-group">
-					<input type="text" class="form-control" id="fname" placeholder="Họ tên">
+
+			@* THÔNG BÁO SAU KHI GỬI *@
+			@if (TempData["SuccessMessage"] != null)
+			{
+				<div class="alert alert-success">
+					@TempData["SuccessMessage"]
 				</div>
+			}
+
+			<form asp-action="Contact" method="post">
+
 				<div class="form-group">
-					<input type="email" class="form-control" id="umail" placeholder="Địa chỉ email">
+					<input type="text" class="form-control" name="FullName"
+						   placeholder="Họ tên" value="@Model.FullName" />
 				</div>
+
 				<div class="form-group">
-					<input type="text" class="form-control" id="phone" placeholder="Số điện thoại">
+					<input type="email" class="form-control" name="Email"
+						   placeholder="Địa chỉ email" value="@Model.Email" />
 				</div>
+
 				<div class="form-group">
-					<textarea class="form-control" id="message" rows="5"
-							  placeholder="Nội dung"></textarea>
+					<input type="text" class="form-control" name="Phone"
+						   placeholder="Số điện thoại" value="@Model.Phone" />
 				</div>
-				<button type="submit" class="mn-btn-2"><span>Gửi liên hệ</span></button>
+
+				<div class="form-group">
+					<textarea class="form-control" name="Message" rows="5"
+							  placeholder="Nội dung">@Model.Message</textarea>
+				</div>
+
+				<button type="submit" class="mn-btn-2">
+					<span>Gửi liên hệ</span>
+				</button>
+
 			</form>
+
 		</div>
+
+		<script>
+			function sendContact(e) {
+				e.preventDefault(); // Không reload trang
+
+				// Hiện thông báo
+				document.getElementById("alertBox").style.display = "block";
+
+				// Ẩn sau 3 giây
+				setTimeout(() => {
+					document.getElementById("alertBox").style.display = "none";
+				}, 3000);
+
+				// Reset form
+				document.getElementById("message").value = "";
+			}
+		</script>
+
 	</div>
 </section>
 

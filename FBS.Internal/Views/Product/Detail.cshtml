@@ -176,13 +176,35 @@
 
                             <div class="mn-single-pro-tab-nav">
                                 <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link active" id="details-tab"
-                                                data-bs-toggle="tab" data-bs-target="#mn-spt-nav-details"
-                                                type="button" role="tab">
-                                            Thông tin chi tiết
-                                        </button>
-                                    </li>
+                                    <div class="tab-pane fade show active" id="mn-spt-nav-details" role="tabpanel">
+
+                                        <!-- Mô tả chi tiết -->
+                                        <div class="product-description mb-4">
+                                            @Html.Raw(Model.Description)
+                                        </div>
+
+                                        <!-- Hình ảnh chi tiết -->
+                                        <h5 class="mb-3 fw-bold">Hình ảnh chi tiết</h5>
+
+                                        <div class="row">
+                                            <!-- Ảnh chính -->
+                                            <div class="col-md-4 mb-3">
+                                                <img src="@Model.Avatar"
+                                                     class="img-fluid rounded shadow-sm detail-image" />
+                                            </div>
+
+                                            <!-- Ảnh phụ -->
+                                            @foreach (var img in Model.SubImages)
+                                            {
+                                                <div class="col-md-4 mb-3">
+                                                    <img src="@img"
+                                                         class="img-fluid rounded shadow-sm detail-image" />
+                                                </div>
+                                            }
+                                        </div>
+
+                                    </div>
+
 
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link" id="review-tab"

@@ -1,81 +1,125 @@
-﻿
-@{
-    ViewData["Title"] = "Index";
-    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-}
-
+﻿@model IEnumerable<FBS.Infrastructure.Entities.Contact>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản lý liên hệ";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
-
 
 <div class="container-fluid basic_table">
     <div class="row">
         <div class="col-sm-12">
-            <div class="card px-4 ">
+
+            <div class="card px-4">
+
+                <!-- FORM TÌM KIẾM -->
+                <form method="get" class="mt-4 mb-3">
+                    <div class="row g-2">
+
+                        <div class="col-md-4">
+                            <input type="text"
+                                   name="keyword"
+                                   value="@ViewBag.Keyword"
+                                   class="form-control"
+                                   placeholder="Tìm theo tên hoặc số điện thoại..." />
+                        </div>
+
+                        <div class="col-md-2">
+                            <button type="submit" class="action-btn btn-search w-100">
+                                <i class="ri-search-line"></i> Tìm kiếm
+                            </button>
+                        </div>
+
+                        <div class="col-md-2">
+                            <a href="/Admin/Contact"
+                               class="action-btn btn-reset w-100">
+                                <i class="ri-refresh-line"></i> Làm mới
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- THÔNG BÁO -->
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                }
+
+                <!-- THÔNG BÁO KHÔNG TÌM THẤY -->
+                @if (ViewBag.Empty == true)
+                {
+                    <div class="alert alert-warning d-flex align-items-center" role="alert"
+                         style="border-radius: 10px; font-size: 16px;">
+                        <i class="ri-error-warning-line me-2" style="font-size: 20px;"></i>
+                        Không tìm thấy liên hệ nào phù hợp!
+                    </div>
+                }
+
                 <div class="table-responsive theme-scrollbar py-4">
+
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">Id</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Signal Name	</th>
-                                <th scope="col">Security</th>
-                                <th scope="col">Stage</th>
-                                <th scope="col">Schedule</th>
-                                <th scope="col">Team Lead</th>
+                                <th>STT</th>
+                                <th>Họ tên</th>
+                                <th>Email</th>
+                                <th>Điện thoại</th>
+                                <th>Nội dung</th>
+                                <th>Ngày gửi</th>
+                                <th class="text-center">Hành động</th>
                             </tr>
                         </thead>
+
                         <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td class="d-flex align-items-center"><i class="bg-light-success font-success" data-feather="alert-triangle"></i><span class="font-success">No Signal</span></td>
-                                <td>Astrid: NE Shared managed</td>
-                                <td>Medium</td>
-                                <td>Triaged</td>
-                                <td>0.33	</td>
-                                <td>Chase Nguyen	</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td class="d-flex align-items-center"><i class="bg-light-danger font-danger" data-feather="alert-triangle"></i><span class="font-danger">Offline</span></td>
-                                <td>Cosmo: prod shared ares	</td>
-                                <td>Huge</td>
-                                <td>Triaged</td>
-                                <td>0.39</td>
-                                <td>Brie Furman</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td class="d-flex align-items-center"> <i class="bg-light-primary font-primary" data-feather="alert-circle"></i><span class="font-primary">Online</span></td>
-                                <td>Phoenix: prod shared lyra-lists	</td>
-                                <td>Minor</td>
-                                <td>No Triaged</td>
-                                <td>3.12	</td>
-                                <td>Jeremy Lake</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">4</th>
-                                <td class="d-flex align-items-center"> <i class="bg-light-success font-success" data-feather="check-circle"></i><span class="font-success">No Signal</span></td>
-                                <td>Astrid: NE Shared managed</td>
-                                <td>Negligible</td>
-                                <td>Triaged</td>
-                                <td>13.18</td>
-                                <td>Angelica Howards</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">5</th>
-                                <td class="d-flex align-items-center"> <i class="bg-light-danger font-danger" data-feather="check-circle"></i><span class="font-danger">Online</span></td>
-                                <td>Astrid: NE Shared managed</td>
-                                <td>Medium</td>
-                                <td>No Triaged</td>
-                                <td>5.33		</td>
-                                <td>Diane Okuma</td>
-                            </tr>
+                            @{
+                                int stt = 1;
+                            }
+
+                            @foreach (var c in Model)
+                            {
+                                string firstName = c?.FirstName ?? "";
+                                string lastName = c?.LastName ?? "";
+                                string email = c?.Email ?? "—";
+                                string phone = c?.Phone ?? "—";
+                                string msg = c?.Message ?? "";
+                                string created = c?.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "—";
+
+                                if (msg.Length > 40)
+                                    msg = msg.Substring(0, 40) + "...";
+
+                                <tr>
+                                    <td>@stt</td>
+                                    <td>@($"{firstName} {lastName}".Trim())</td>
+                                    <td>@email</td>
+                                    <td>@phone</td>
+                                    <td>@msg</td>
+                                    <td>@created</td>
+
+                                    <td class="text-center">
+
+                                        <!-- Nút xem -->
+                                        <a asp-action="Detail"
+                                           asp-route-id="@c.Id"
+                                           class="action-btn btn-view">
+                                            <i class="ri-eye-line"></i> Xem
+                                        </a>
+
+                                        <!-- Nút xóa -->
+                                        <a asp-action="Delete"
+                                           asp-route-id="@c.Id"
+                                           class="action-btn btn-delete"
+                                           onclick="return confirm('Bạn có chắc muốn xóa liên hệ này?')">
+                                            <i class="ri-delete-bin-line"></i> Xóa
+                                        </a>
+
+                                    </td>
+                                </tr>
+
+                                stt++;
+                            }
                         </tbody>
+
                     </table>
+
                 </div>
             </div>
         </div>
@@ -83,4 +127,67 @@
 </div>
 
 
+<style>
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 22px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none !important;
+        transition: .25s;
+        color: #fff !important;
+    }
 
+    .btn-view {
+        background: #6366f1;
+        box-shadow: 0px 4px 12px rgba(99,102,241,0.35);
+    }
+
+        .btn-view:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 16px rgba(99,102,241,0.55);
+        }
+
+    .btn-delete {
+        background: #ef4444;
+        box-shadow: 0px 4px 12px rgba(239,68,68,0.35);
+        margin-left: 10px;
+    }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 16px rgba(239,68,68,0.55);
+        }
+
+    .btn-search {
+        background: #3b82f6;
+        box-shadow: 0px 4px 12px rgba(59,130,246,0.35);
+    }
+
+        .btn-search:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 16px rgba(59,130,246,0.55);
+        }
+
+    .btn-reset {
+        background: #6b7280;
+        box-shadow: 0px 4px 12px rgba(107,114,128,0.35);
+    }
+
+        .btn-reset:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+            box-shadow: 0px 6px 16px rgba(107,114,128,0.55);
+        }
+
+    .action-btn i {
+        font-size: 18px;
+    }
+</style>
