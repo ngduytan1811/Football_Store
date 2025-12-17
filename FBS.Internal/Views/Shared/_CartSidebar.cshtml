@@ -1,72 +1,270 @@
 ﻿@using FBS.Application.DataTranferObjects.Cart
 @using System.Globalization
+
 @{
-	var cart = (List<CartItemDto>)ViewData["Cart"] ?? new List<CartItemDto>();
-	var subTotal = cart.Any() ? cart.Sum(x => x.Price) : 0;
+    var cart = (List<CartItemDto>)ViewData["Cart"] ?? new List<CartItemDto>();
+
+    decimal subTotal = cart.Any()
+        ? cart.Sum(x => (x.Price ?? 0m) * x.Quantity)
+        : 0m;
 }
+
+<!-- OVERLAY -->
 <div class="mn-side-cart-overlay"></div>
+
+<!-- SIDEBAR -->
 <div id="mn-side-cart" class="mn-side-cart">
-	<div class="mn-cart-inner">
-		<div class="mn-cart-top">
-			<div class="mn-cart-title">
-				<span class="cart_title">Giỏ hàng</span>
-				<a href="javascript:void(0)" class="mn-cart-close">
-					<i class="ri-close-line"></i>
-				</a>
-			</div>
-			<ul class="mn-cart-pro-items">
-				@foreach(var item in cart)
-				{
-					<li class="cart-sidebar-list">
-						<a asp-action="Detail" asp-controller="Product" asp-route-id="@item.ProductId" class="mn-pro-img">
-							<img src="@Url.Content("~/theme/client/img/product/" + item.Image)"
-								 alt="@item.ProductName"
-								 style="width:60px;height:60px;object-fit:cover;border-radius:6px">
+    <div class="mn-cart-inner">
 
-						</a>
-						<div class="mn-pro-content">
-							<a asp-action="Detail" asp-controller="Product" asp-route-id="@item.ProductId" class="cart-pro-title">@item.ProductName x @item.Quantity</a>
-							<span class="cart-price"><span>@item.PriceString</span> </span>
-						</div>
-					</li>
-				}
-			</ul>
-		</div>
-		<div class="mn-cart-bottom">
-			<div class="cart-sub-total">
-				<table class="table cart-table">
-					<tbody>
-						<tr>
-							<td class="text-left">Tạm tính :</td>
-							<td class="text-right">@subTotal.Value.ToString("C", new CultureInfo("vi-VN"))</td>
-						</tr>
-						<tr>
-							<td class="text-left">Tổng tiền :</td>
-							<td class="text-right primary-color">@subTotal.Value.ToString("C", new CultureInfo("vi-VN"))</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="cart_btn">
-				<a asp-action="Index" asp-controller="Cart" class="mn-btn-1"><span>Giỏ hàng<i class="ri-arrow-right-s-line"></i></span></a>
-				<a asp-action="Checkout"
-				   asp-controller="Cart"
-				   class="mn-btn-2 @(cart.Any() ? "" : "disabled")">
-					<span>
-						THANH TOÁN
-						<i class="ri-arrow-right-s-line"></i>
-					</span>
-				</a>
+        <!-- HEADER -->
+        <div class="mn-cart-top">
+            <div class="mn-cart-title">
+                <span class="cart_title">Giỏ hàng</span>
+                <a href="javascript:void(0)" class="mn-cart-close">
+                    <i class="ri-close-line"></i>
+                </a>
+            </div>
 
-			</div>
-		</div>
-	</div>
+            <!-- LIST -->
+            <ul class="mn-cart-pro-items">
+                @if (cart.Any())
+                {
+                    foreach (var item in cart)
+                    {
+                        <li class="cart-sidebar-item"
+                            data-product-id="@item.ProductId"
+                            data-size="@item.Size">
+
+                            <div class="cart-thumb">
+                                <img src="@Url.Content("~/theme/client/img/product/" + item.Image)"
+                                     alt="@item.ProductName" />
+                            </div>
+
+                            <div class="cart-info">
+                                <div class="cart-name">@item.ProductName</div>
+
+                                <div class="cart-meta">
+                                    Size: <b>@item.Size</b> · SL: <b>@item.Quantity</b>
+                                </div>
+
+                                <div class="cart-price">@item.PriceString</div>
+                            </div>
+
+                            <button type="button"
+                                    class="cart-remove-btn"
+                                    title="Xóa">
+                                ✕
+                            </button>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="text-center text-muted p-3">
+                        Giỏ hàng trống
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="mn-cart-bottom">
+            <div class="cart-sub-total">
+                <table class="table cart-table">
+                    <tr>
+                        <td>Tạm tính :</td>
+                        <td class="text-end">
+                            <span id="cartSubTotal">
+                                @subTotal.ToString("N0", new CultureInfo("vi-VN")) đ
+                            </span>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td><b>Tổng tiền :</b></td>
+                        <td class="text-end primary-color">
+                            <b>
+                                <span id="cartTotal">
+                                    @subTotal.ToString("N0", new CultureInfo("vi-VN")) đ
+                                </span>
+                            </b>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+
+            <div class="cart_btn">
+                <a asp-action="Index" asp-controller="Cart" class="mn-btn-1">
+                    Giỏ hàng
+                </a>
+
+                <a asp-action="Checkout"
+                   asp-controller="Cart"
+                   class="mn-btn-2 @(cart.Any() ? "" : "disabled")">
+                    Thanh toán
+                </a>
+
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<form style="display:none">
+    @Html.AntiForgeryToken()
+</form>
+
+<script>
+    document.addEventListener("click", function (e) {
+
+        // CLOSE CART
+        if (e.target.closest(".mn-cart-close") ||
+            e.target.classList.contains("mn-side-cart-overlay")) {
+            e.preventDefault();
+            closeSideCart();
+            return;
+        }
+
+        // REMOVE ITEM
+        const removeBtn = e.target.closest(".cart-remove-btn");
+        if (!removeBtn) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const item = removeBtn.closest(".cart-sidebar-item");
+        if (!item) return;
+
+        const productId = item.dataset.productId;
+        const size = item.dataset.size;
+        const token = document.querySelector("input[name='__RequestVerificationToken']")?.value;
+
+        fetch("/Cart/RemoveFromCart", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "RequestVerificationToken": token,
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            body: new URLSearchParams({ productId, size })
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (!data.success) return;
+
+            item.remove();
+            document.getElementById("cartCount").innerText = data.count;
+            updateCartMoney(data.subTotal);
+
+            if (data.count === 0) {
+                document.querySelector(".mn-cart-pro-items").innerHTML =
+                    `<li class="text-center text-muted p-3">Giỏ hàng trống</li>`;
+            }
+        });
+    });
+
+    function closeSideCart() {
+        document.querySelector(".mn-side-cart")?.classList.remove("active");
+        document.querySelector(".mn-side-cart-overlay")?.classList.remove("active");
+    }
+
+    function updateCartMoney(n) {
+        document.getElementById("cartSubTotal").innerText =
+            Number(n).toLocaleString("vi-VN") + " đ";
+        document.getElementById("cartTotal").innerText =
+            Number(n).toLocaleString("vi-VN") + " đ";
+    }
+</script>
+
+
+
+
 <style>
-	.mn-btn-2.disabled {
-		pointer-events: none; 
-		opacity: 0.5; 
-		cursor: not-allowed;
-	}
+    /* ===== LAYER FIX (RẤT QUAN TRỌNG) ===== */
+    .mn-side-cart {
+        position: fixed;
+        z-index: 9999;
+    }
+
+    .mn-side-cart-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+    }
+
+    /* ===== LIST & ITEM ===== */
+    .mn-cart-pro-items {
+        position: relative;
+        z-index: 10000;
+    }
+
+    .cart-sidebar-item {
+        position: relative;
+        z-index: 10001;
+        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 6px 18px rgba(0,0,0,.06);
+    }
+
+    /* ===== IMAGE WRAPPER ===== */
+    .cart-thumb {
+        width: 72px;
+        height: 72px;
+        min-width: 72px;
+        min-height: 72px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #f3f4f6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        /* ===== IMAGE ===== */
+        .cart-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            transition: transform .25s ease;
+        }
+
+    .cart-sidebar-item:hover .cart-thumb img {
+        transform: scale(1.05);
+    }
+
+    /* ===== REMOVE BUTTON ===== */
+    .cart-remove-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 10002;
+        pointer-events: auto;
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        background: #fff;
+        cursor: pointer;
+    }
+
+    /* 🚫 TẮT CLICK LỚP TRANG TRÍ (NẾU CÓ) */
+    .mn-side-cart::before,
+    .mn-side-cart::after,
+    .mn-cart-inner::before,
+    .mn-cart-inner::after,
+    .mn-side-cart svg,
+    .mn-side-cart .bg,
+    .mn-side-cart .shape,
+    .mn-side-cart .wave {
+        pointer-events: none !important;
+    }
+
 
 </style>

@@ -26,9 +26,7 @@ namespace FBS.Internal.Controllers
             _orderService = orderService;
         }
 
-        // ============================================
-        // 🛒 TRANG GIỎ HÀNG
-        // ============================================
+       
         public IActionResult Index()
         {
             var cart = GetCart();
@@ -36,9 +34,7 @@ namespace FBS.Internal.Controllers
             return View();
         }
 
-        // ============================================
-        // 🟦 TRANG CHECKOUT
-        // ============================================
+      
         [HttpGet]
         public IActionResult Checkout()
         {
@@ -55,14 +51,22 @@ namespace FBS.Internal.Controllers
         {
             if (string.IsNullOrWhiteSpace(request.Size))
             {
+                // ❌ AJAX thì trả JSON lỗi
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return Json(new { success = false, message = "Vui lòng chọn size" });
+
                 TempData["SizeError"] = "Vui lòng chọn size";
                 return RedirectToAction("Detail", "Product", new { id = request.ProductId });
             }
+
             var cart = GetCart();
 
             var productData = await _productService.FindById(request.ProductId);
             if (productData?.Data == null)
             {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return Json(new { success = false, message = "Sản phẩm không tồn tại" });
+
                 TempData["Error"] = "Sản phẩm không tồn tại";
                 return RedirectToAction("Index", "Product");
             }
@@ -80,7 +84,7 @@ namespace FBS.Internal.Controllers
                 {
                     ProductId = request.ProductId,
                     ProductName = productData.Data.Name,
-                    Price = productData.Data.Price??0m,
+                    Price = productData.Data.Price ?? 0m,
                     Color = productData.Data.Color,
                     Size = request.Size,
                     Image = productData.Data.Image,
@@ -90,8 +94,22 @@ namespace FBS.Internal.Controllers
             }
 
             SaveCart(cart);
+
+          
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Json(new
+                {
+                    success = true,
+                    count = cart.Sum(x => x.Quantity),
+                    subTotal = cart.Sum(x => (x.Price ?? 0m) * x.Quantity)
+                });
+            }
+
+            // ✅ Form submit → redirect như cũ
             return RedirectToAction("Index");
         }
+
 
 
         [HttpPost]
@@ -100,20 +118,33 @@ namespace FBS.Internal.Controllers
         {
             var cart = GetCart();
 
-            var item = cart.FirstOrDefault(i =>
-                i.ProductId == productId && i.Size == size);
+            var item = cart.FirstOrDefault(x =>
+                x.ProductId == productId &&
+                x.Size == size
+            );
 
-            if (item != null)
+            if (item == null)
             {
-                cart.Remove(item);
-                SaveCart(cart);
+                return Json(new { success = false });
             }
+
+            cart.Remove(item);
+            SaveCart(cart);
+
+            return Json(new
+            {
+                success = true,
+                count = cart.Sum(x => x.Quantity),
+                subTotal = cart.Sum(x => (x.Price ?? 0m) * x.Quantity)
+            });
+
 
             return RedirectToAction("Index");
         }
 
 
-        
+
+
         [HttpPost]
         public IActionResult UpdateQuantity(Guid productId, string size, int quantity)
         {
@@ -132,9 +163,7 @@ namespace FBS.Internal.Controllers
         }
 
 
-        // ============================================
-        // ✔ HOÀN TẤT ĐẶT HÀNG
-        // ============================================
+       
         [HttpPost]
         public async Task<IActionResult> Checkout(CheckoutDto request)
         {
@@ -173,6 +202,21 @@ namespace FBS.Internal.Controllers
 
             return RedirectToAction("Index", "Cart");
         }
+
+        [HttpGet]
+        public IActionResult GetCartCount()
+        {
+            var cart = GetCart();
+            var count = cart.Sum(x => x.Quantity);
+            return Json(new { count });
+        }
+        [HttpGet]
+        public IActionResult SideCart()
+        {
+            ViewData["Cart"] = GetCart();
+            return PartialView("_CartSidebar");
+        }
+       
 
     }
 }

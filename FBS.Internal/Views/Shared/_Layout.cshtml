@@ -65,7 +65,35 @@
 		.size-radio {
 			display: none !important;
 		}
+
+		
+		.cart-toast {
+			position: fixed;
+			bottom: 30px;
+			right: 30px;
+			background: #16a34a;
+			color: #fff;
+			padding: 14px 20px;
+			border-radius: 10px;
+			font-size: 14px;
+			opacity: 0;
+			transform: translateY(20px);
+			transition: .3s ease;
+			z-index: 9999;
+		}
+
+			.cart-toast.show {
+				opacity: 1;
+				transform: translateY(0);
+			}
+
+			.cart-toast.error {
+				background: #dc2626;
+			}
+
 	</style>
+
+	
 
 	
 </head>
@@ -97,9 +125,7 @@
 		<!-- Footer -->
 		@Html.Partial("_Footer")
 		<!-- Cart sidebar Start -->
-		@Html.Partial("_CartSidebar")
-		
-		
+	
 
 
 	</main>
@@ -118,6 +144,24 @@
 
 	<script src="~/theme/client/js/main.js"></script>
 	@RenderSection("Scripts", required: false)
+	
+	<div id="cart-toast" class="cart-toast">
+		<span></span>
+	</div>
+
+	<script>
+		function showToast(message, success = true) {
+			const toast = document.getElementById("cart-toast");
+			if (!toast) return;
+
+			toast.querySelector("span").innerText = message;
+			toast.classList.remove("error");
+			if (!success) toast.classList.add("error");
+
+			toast.classList.add("show");
+			setTimeout(() => toast.classList.remove("show"), 2500);
+		}
+	</script>
 
 </body>
 

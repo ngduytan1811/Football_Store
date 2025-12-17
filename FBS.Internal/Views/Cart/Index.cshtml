@@ -76,9 +76,10 @@
                                                     @Html.AntiForgeryToken()
                                                     <input type="hidden" name="productId" value="@item.ProductId" />
                                                     <input type="hidden" name="size" value="@item.Size" />
-                                                    <button type="submit" class="btn-remove">
+                                                    <button type="button" class="btn-remove">
                                                         <i class="ri-delete-bin-line text-danger"></i>
                                                     </button>
+
                                                 </form>
                                             </td>
                                         </tr>
@@ -224,6 +225,33 @@
                 });
             });
         });
+                document.querySelectorAll(".btn-remove").forEach(btn => {
+            btn.addEventListener("click", function () {
+
+                const row = this.closest(".mn-cart-product");
+                const productId = row.dataset.productId;
+                const size = row.dataset.size;
+
+                const token = document.querySelector("input[name='__RequestVerificationToken']").value;
+
+                fetch("/Cart/RemoveFromCart", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "RequestVerificationToken": token
+                    },
+                    body: `productId=${productId}&size=${size}`
+                })
+                .then(() => {
+                    row.remove();
+
+                    if (document.querySelectorAll(".mn-cart-product").length === 0) {
+                        location.reload();
+                    }
+                });
+            });
+        });
+
     </script>
 }
 
