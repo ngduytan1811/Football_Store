@@ -53,26 +53,20 @@ namespace FBS.Internal.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToCart(CartItemDto request)
         {
+            if (string.IsNullOrWhiteSpace(request.Size))
+            {
+                TempData["SizeError"] = "Vui lòng chọn size";
+                return RedirectToAction("Detail", "Product", new { id = request.ProductId });
+            }
             var cart = GetCart();
 
             var productData = await _productService.FindById(request.ProductId);
-
-            var newItem = new CartItemDto
+            if (productData?.Data == null)
             {
-                ProductId = request.ProductId,
-                
-                ProductName = productData?.Data?.Name,
-                Price = productData?.Data?.Price,
-                Color = productData?.Data?.Color,
-                Size = request.Size,
-                Image = productData?.Data?.Image,
-                Quantity = request.Quantity,
-                 Description = productData?.Data?.Description,
-                 Avatar = request.Avatar
-                
-            };
+                TempData["Error"] = "Sản phẩm không tồn tại";
+                return RedirectToAction("Index", "Product");
+            }
 
-            // Tìm item theo product + size
             var existingItem = cart.FirstOrDefault(i =>
                 i.ProductId == request.ProductId && i.Size == request.Size);
 
@@ -82,21 +76,33 @@ namespace FBS.Internal.Controllers
             }
             else
             {
-                cart.Add(newItem);
+                cart.Add(new CartItemDto
+                {
+                    ProductId = request.ProductId,
+                    ProductName = productData.Data.Name,
+                    Price = productData.Data.Price??0m,
+                    Color = productData.Data.Color,
+                    Size = request.Size,
+                    Image = productData.Data.Image,
+                    Quantity = request.Quantity,
+                    Description = productData.Data.Description
+                });
             }
 
             SaveCart(cart);
             return RedirectToAction("Index");
         }
 
-        // ============================================
-        // ❌ XÓA SP KHỎI GIỎ
-        // ============================================
-        public IActionResult RemoveFromCart(Guid productId)
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult RemoveFromCart(Guid productId, string size)
         {
             var cart = GetCart();
 
-            var item = cart.FirstOrDefault(i => i.ProductId == productId);
+            var item = cart.FirstOrDefault(i =>
+                i.ProductId == productId && i.Size == size);
+
             if (item != null)
             {
                 cart.Remove(item);
@@ -106,16 +112,17 @@ namespace FBS.Internal.Controllers
             return RedirectToAction("Index");
         }
 
-        // ============================================
-        // 🔄 CẬP NHẬT SỐ LƯỢNG (ĐÃ FIX CHUẨN)
-        // ============================================
+
+        
         [HttpPost]
-        public IActionResult UpdateQuantity(Guid productId, int quantity)
+        public IActionResult UpdateQuantity(Guid productId, string size, int quantity)
         {
             var cart = GetCart();
 
-            var item = cart.FirstOrDefault(x => x.ProductId == productId);
-            if (item != null && quantity > 0)
+            var item = cart.FirstOrDefault(x =>
+                x.ProductId == productId && x.Size == size);
+
+            if (item != null && quantity > 0 && quantity <= 20)
             {
                 item.Quantity = quantity;
                 SaveCart(cart);
@@ -123,6 +130,7 @@ namespace FBS.Internal.Controllers
 
             return Json(new { success = true });
         }
+
 
         // ============================================
         // ✔ HOÀN TẤT ĐẶT HÀNG
@@ -137,6 +145,11 @@ namespace FBS.Internal.Controllers
             }
 
             var cart = GetCart();
+            if (!cart.Any())
+            {
+                TempData["Error"] = "Giỏ hàng trống";
+                return RedirectToAction("Index");
+            }
 
             // 🔥 GÁN CUSTOMER ID VÀ EMAIL TỪ USER ĐANG ĐĂNG NHẬP
             request.CustomerId = CurrentUser.CustomerId;

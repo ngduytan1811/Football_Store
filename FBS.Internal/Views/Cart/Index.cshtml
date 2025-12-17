@@ -1,126 +1,129 @@
 ﻿@using FBS.Application.DataTranferObjects.Cart
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Giỏ hàng";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var cart = (List<CartItemDto>)ViewData["Cart"];
-}
-
-<!-- THÔNG BÁO ĐẶT HÀNG THÀNH CÔNG -->
-@if (TempData["OrderSuccess"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert" style="font-size:16px;">
-        <strong>@TempData["OrderSuccess"]</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
+    var cart = (List<CartItemDto>)ViewData["Cart"] ?? new List<CartItemDto>();
 }
 
 <div class="mn-breadcrumb m-b-30">
-    <div class="row">
-        <div class="col-12">
-            <div class="row gi_breadcrumb_inner">
-                <div class="col-md-6 col-sm-12">
-                    <h2 class="mn-breadcrumb-title">Giỏ hàng</h2>
-                </div>
-                <div class="col-md-6 col-sm-12">
-                    <ul class="mn-breadcrumb-list">
-                        <li class="mn-breadcrumb-item"><a asp-action="Index" asp-controller="Home">Trang chủ</a></li>
-                        <li class="mn-breadcrumb-item active">Giỏ hàng</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+    <h2 class="mn-breadcrumb-title">Giỏ hàng</h2>
 </div>
 
 <section class="mn-cart-section p-b-15">
-    <h2 class="d-none">Giỏ hàng</h2>
     <div class="row">
-        <div class="mn-cart-leftside col-lg-12 col-md-12">
+        <div class="col-lg-12">
             <div class="mn-cart-content">
                 <div class="mn-cart-inner cart_list">
-                    <div class="row">
-                        <form method="post">
-                            @Html.AntiForgeryToken()
 
-                            <div class="table-content cart-table-content">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Sản phẩm</th>
-                                            <th>Size</th>
-                                            <th>Giá</th>
-                                            <th style="text-align: center;">Số lượng</th>
-                                            <th>Thành tiền</th>
-                                            <th></th>
+                    <div class="table-content cart-table-content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Size</th>
+                                    <th>Giá</th>
+                                    <th style="text-align:center;">Số lượng</th>
+                                    <th>Thành tiền</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @if (cart.Any())
+                                {
+                                    foreach (var item in cart)
+                                    {
+                                        <tr class="mn-cart-product"
+                                            data-product-id="@item.ProductId"
+                                            data-size="@item.Size">
+
+                                            <td>
+                                                <img src="@Url.Content("~/theme/client/img/product/" + item.Image)"
+                                                     style="width:60px;height:60px;border-radius:6px;margin-right:6px" />
+                                                @item.ProductName
+                                            </td>
+
+                                            <td>@item.Size</td>
+
+                                            <!-- PRICE -->
+                                            <td class="mn-cart-pro-price">
+                                                <span class="amount">@item.PriceString</span>
+                                            </td>
+
+                                            <!-- QTY -->
+                                            <td style="text-align:center;">
+                                                <div class="quantity-box">
+                                                    <button type="button" class="qty-btn minus">−</button>
+                                                    <input class="qty-input" value="@item.Quantity" readonly />
+                                                    <button type="button" class="qty-btn plus">+</button>
+                                                </div>
+                                               
+                                                <div class="qty-warning text-danger mt-1"
+                                                     style="display:none;font-size:13px;">
+                                                     Số lượng lớn hơn 10 sản phẩm.<br />
+                                                    Vui lòng <b>liên hệ shop</b>.
+                                                </div>
+                                            </td>
+                                        
+                                            <td class="mn-cart-pro-subtotal">
+                                                @item.SubPriceString
+                                            </td>
+
+                                            <!-- REMOVE -->
+                                            <td>
+                                                <form asp-action="RemoveFromCart" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="productId" value="@item.ProductId" />
+                                                    <input type="hidden" name="size" value="@item.Size" />
+                                                    <button type="submit" class="btn-remove">
+                                                        <i class="ri-delete-bin-line text-danger"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
                                         </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        @foreach (var item in cart)
-                                        {
-                                            <tr class="mn-cart-product" data-product-id="@item.ProductId">
-
-                                                <td class="mn-cart-pro-name">
-                                                   
-                                                    <a>
-                                                        <img src="@Url.Content("~/theme/client/img/product/" + item.Image)"
-                                                             alt="@item.ProductName"
-                                                             style="width:60px;height:60px;object-fit:cover;border-radius:6px" />
-                                                        @item.ProductName
-                                                    </a>
-                                                </td>
-
-                                                <td><strong>@item.Size</strong></td>
-
-                                                <td class="mn-cart-pro-price">
-                                                    <span class="amount">@item.PriceString</span>
-                                                </td>
-
-                                                <td class="mn-cart-pro-qty" style="text-align:center;">
-                                                    <div class="quantity-box">
-                                                        <button type="button" class="qty-btn minus">−</button>
-                                                        <input class="qty-input" type="text" value="@item.Quantity" readonly />
-                                                        <button type="button" class="qty-btn plus">+</button>
-                                                    </div>
-                                                </td>
-
-                                                <td class="mn-cart-pro-subtotal">
-                                                    @item.SubPriceString
-                                                </td>
-
-                                                <td>
-                                                    <a asp-action="RemoveFromCart"
-                                                       asp-controller="Cart"
-                                                       asp-route-productId="@item.ProductId">
-                                                        <i class="ri-delete-bin-line"></i>
-                                                    </a>
-                                                </td>
-
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="col-lg-12">
-                                <div class="mn-cart-update-bottom">
-                                    <a asp-action="List" asp-controller="Product">Tiếp tục mua sắm</a>
-                                    <a asp-action="Checkout" asp-controller="Cart" class="mn-btn-2">
-                                        <span>Thanh toán</span>
-                                    </a>
-                                </div>
-                            </div>
-
-                        </form>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4 text-muted">
+                                            Giỏ hàng của bạn hiện chưa có sản phẩm
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
+
+                    <div class="mn-cart-update-bottom">
+                        <a asp-action="List" asp-controller="Product">
+                            Tiếp tục mua sắm
+                        </a>
+
+                        <a asp-action="Checkout"
+                           asp-controller="Cart"
+                           class="mn-btn-2 @(cart.Any() ? "" : "disabled")">
+                            Thanh toán
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+
+
+
+
 <style>
+    .mn-btn-2.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
+
     .quantity-box {
         display: flex;
         gap: 6px;
@@ -136,12 +139,7 @@
         background: #f3f3f3;
         font-size: 18px;
         cursor: pointer;
-        transition: .15s;
     }
-
-        .qty-btn:hover {
-            background: #e0e0e0;
-        }
 
     .qty-input {
         width: 45px;
@@ -150,53 +148,84 @@
         border-radius: 6px;
         text-align: center;
     }
+
+    .btn-remove {
+        background: none;
+        border: none;
+        color: #ef4444;
+        font-size: 18px;
+        cursor: pointer;
+    }
 </style>
 
 @section Scripts {
     <script>
-        function formatMoney(n) {
-            return n.toLocaleString("vi-VN") + " đ";
-        }
+        document.addEventListener("DOMContentLoaded", function () {
 
-        function updateServerQuantity(productId, quantity) {
-            const token = document.querySelector("input[name='__RequestVerificationToken']").value;
+            function formatMoney(n) {
+                return n.toLocaleString("vi-VN") + " đ";
+            }
 
-            fetch("/Cart/UpdateQuantity", {
-                method: "POST",
-                headers: { "RequestVerificationToken": token },
-                body: new URLSearchParams({
-                    productId: productId,
-                    quantity: quantity
-                })
-            });
-        }
+            function updateServerQuantity(productId, size, quantity) {
+                const token = document.querySelector("input[name='__RequestVerificationToken']")?.value;
 
-        document.querySelectorAll("tr.mn-cart-product").forEach(row => {
-            const btnPlus = row.querySelector(".qty-btn.plus");
-            const btnMinus = row.querySelector(".qty-btn.minus");
-            const input = row.querySelector(".qty-input");
-            const subtotalCell = row.querySelector(".mn-cart-pro-subtotal");
-            const priceText = row.querySelector(".mn-cart-pro-price .amount").innerText;
+                fetch("/Cart/UpdateQuantity", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "RequestVerificationToken": token
+                    },
+                    body: `productId=${productId}&size=${size}&quantity=${quantity}`
+                });
+            }
 
-            const productId = row.dataset.productId;
-            const price = parseInt(priceText.replace(/\D/g, ""));
+            document.querySelectorAll(".mn-cart-product").forEach(row => {
 
-            btnPlus.addEventListener("click", function () {
-                let qty = parseInt(input.value) + 1;
-                input.value = qty;
-                subtotalCell.innerText = formatMoney(price * qty);
-                updateServerQuantity(productId, qty);
-            });
+                const plusBtn = row.querySelector(".plus");
+                const minusBtn = row.querySelector(".minus");
+                const qtyInput = row.querySelector(".qty-input");
+                const subtotalCell = row.querySelector(".mn-cart-pro-subtotal");
+                const warning = row.querySelector(".qty-warning");
 
-            btnMinus.addEventListener("click", function () {
-                let qty = parseInt(input.value);
-                if (qty > 1) {
-                    qty -= 1;
-                    input.value = qty;
+                const priceText = row.querySelector(".amount").innerText;
+                const price = parseInt(priceText.replace(/\D/g, ""));
+
+                const productId = row.dataset.productId;
+                const size = row.dataset.size;
+
+                plusBtn.addEventListener("click", () => {
+                    let qty = parseInt(qtyInput.value);
+
+                    // ❌ CHẶN > 10
+                    if (qty >= 10) {
+                        warning.style.display = "block";
+                        return;
+                    }
+
+                    qty++;
+                    qtyInput.value = qty;
+                    warning.style.display = "none";
+
                     subtotalCell.innerText = formatMoney(price * qty);
-                    updateServerQuantity(productId, qty);
-                }
+                    updateServerQuantity(productId, size, qty);
+                });
+
+                minusBtn.addEventListener("click", () => {
+                    let qty = parseInt(qtyInput.value);
+
+                    if (qty > 1) {
+                        qty--;
+                        qtyInput.value = qty;
+                        warning.style.display = "none";
+
+                        subtotalCell.innerText = formatMoney(price * qty);
+                        updateServerQuantity(productId, size, qty);
+                    }
+                });
             });
         });
     </script>
 }
+
+
+

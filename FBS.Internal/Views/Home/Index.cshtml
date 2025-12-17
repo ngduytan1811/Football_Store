@@ -72,8 +72,13 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="javascript:void(0)" data-tooltip title="Thêm vào giỏ"
-                                               class="mn-add-cart"><i class="ri-shopping-cart-line"></i></a>
+                                            <a href="javascript:void(0)"
+                                               data-tooltip
+                                               title="Thêm vào giỏ"
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#quickview_modal_@product.Id">
+                                                <i class="ri-shopping-cart-line"></i>
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -267,9 +272,9 @@
                             <div class="single-pro-img single-pro-img-no-sidebar">
                                 <div class="single-product-scroll">
                                     <div class="single-slide-quickview owl-carousel">
-                                        <img class="img-responsive" src="~/theme/client/img/product/@ranProduct.Image" alt="@ranProduct.Name">
-                                        <img class="img-responsive" src="~/theme/client/img/product/@ranProduct.Image" alt="@ranProduct.Name">
-                                        <img class="img-responsive" src="~/theme/client/img/product/@ranProduct.Image" alt="@ranProduct.Name">
+                                        <img class="img-responsive"
+                                             src="@ranProduct.Image"
+                                             alt="@ranProduct.Name">
 
                                     </div>
 
@@ -298,35 +303,64 @@
                                     <span class="old-price">@ranProduct.PriceString</span>
                                 </div>
                                 <div class="mn-pro-variations">
-                                    <ul>
-                                        <li class="active">
-                                            <a href="javascript:void(0)" class="mn-opt-sz"
-                                               data-tooltip="Small">s</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)" class="mn-opt-sz"
-                                               data-tooltip="Medium">m</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)" class="mn-opt-sz"
-                                               data-tooltip="Large">l</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0)" class="mn-opt-sz"
-                                               data-tooltip="Extra Large">xl</a>
-                                        </li>
+                                    <ul class="quickview-size-list">
+                                        @for (int i = 0; i < ranProduct.Sizes.Count; i++)
+                                        {
+                                            var size = ranProduct.Sizes[i];
+                                            <li class="@(i == 0 ? "active" : "")">
+                                                <a href="javascript:void(0)"
+                                                   class="mn-opt-sz"
+                                                   data-size="@size">
+                                                    @size
+                                                </a>
+                                            </li>
+                                        }
                                     </ul>
                                 </div>
+
                                 <div class="mn-quickview-qty">
-                                    <div class="qty-plus-minus">
-                                        <input class="qty-input" type="text" name="mn-qtybtn" value="1">
+
+                                  
+                                    <div class="quickview-qty-left">
+
+                                        <div class="qty-plus-minus">
+                                            <input class="qty-input" type="text" name="mn-qtybtn" value="1">
+                                        </div>
+
+                                       
+                                        <div class="quickview-warning alert alert-warning mt-2">
+                                             Số lượng lớn hơn <b>10 sản phẩm</b>.<br />
+                                            Vui lòng <b>liên hệ shop</b> để được hỗ trợ.
+                                        </div>
+
                                     </div>
+
+
                                     <div class="mn-quickview-cart">
-                                        <a href="cart.html" class="mn-btn-1">
-                                            <span><i class="ri-shopping-bag-line"></i>Thêm vào giỏ</span>
-                                        </a>
+                                        <form asp-action="AddToCart"
+                                              asp-controller="Cart"
+                                              method="post"
+                                              class="quickview-add-form">
+
+                                            <input type="hidden" name="ProductId" value="@ranProduct.Id" />
+                                            <input type="hidden" name="Quantity" value="1" class="quickview-qty-hidden" />
+                                            <input type="hidden" name="Size" value="" class="quickview-size-hidden" />
+
+                                            <button type="button"
+                                                    class="mn-btn-1 quickview-add-cart">
+                                                <span>
+                                                    <i class="ri-shopping-bag-line"></i>
+                                                    Thêm vào giỏ
+                                                </span>
+                                            </button>
+
+                                        </form>
                                     </div>
+
+
                                 </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -335,3 +369,158 @@
         </div>
     </div>
 }
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // ===== HANDLE QUICKVIEW MODAL =====
+        document.querySelectorAll(".quickview-modal").forEach(modal => {
+
+            // ===== CHỌN SIZE =====
+            modal.querySelectorAll(".mn-opt-sz").forEach(sizeBtn => {
+                sizeBtn.addEventListener("click", function () {
+
+                    modal.querySelectorAll(".mn-opt-sz").forEach(x =>
+                        x.parentElement.classList.remove("active")
+                    );
+
+                    this.parentElement.classList.add("active");
+
+                    modal.querySelector(".quickview-size-hidden").value =
+                        this.dataset.size || this.textContent.trim();
+                });
+            });
+
+            // ===== GIỚI HẠN SỐ LƯỢNG =====
+            const qtyInput = modal.querySelector(".qty-input");
+            const warning = modal.querySelector(".quickview-warning");
+            const addBtn = modal.querySelector(".quickview-add-cart");
+
+            if (qtyInput) {
+                qtyInput.addEventListener("input", () => {
+                    const qty = parseInt(qtyInput.value || 1);
+
+                    if (qty > 10) {
+                        warning.style.display = "block";
+                        addBtn.disabled = true;
+                        addBtn.style.opacity = "0.6";
+                    } else {
+                        warning.style.display = "none";
+                        addBtn.disabled = false;
+                        addBtn.style.opacity = "1";
+                    }
+                });
+            }
+        });
+
+        // ===== ADD TO CART (AJAX) =====
+        document.addEventListener("click", function (e) {
+
+            const btn = e.target.closest(".quickview-add-cart");
+            if (!btn) return;
+
+            e.preventDefault();
+
+            const modal = btn.closest(".quickview-modal");
+
+            const productId = modal.querySelector("input[name='ProductId']").value;
+            const size = modal.querySelector(".quickview-size-hidden").value;
+            const qty = modal.querySelector(".qty-input")?.value || 1;
+
+            if (!size) {
+                alert("Vui lòng chọn size");
+                return;
+            }
+
+            fetch("/Cart/AddToCart", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "RequestVerificationToken":
+                        document.querySelector("input[name='__RequestVerificationToken']")?.value
+                },
+                body: `ProductId=${productId}&Size=${size}&Quantity=${qty}`
+            })
+            .then(res => {
+                if (!res.ok) throw new Error("Add to cart failed");
+                return res.text();
+            })
+            .then(() => {
+                // đóng modal
+                bootstrap.Modal.getInstance(modal)?.hide();
+
+                // mở side cart
+                document.querySelector(".mn-side-cart")?.classList.add("active");
+                document.querySelector(".mn-side-cart-overlay")?.classList.add("active");
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Có lỗi xảy ra, vui lòng thử lại");
+            });
+        });
+
+    });
+</script>
+
+
+
+<style>
+    .mn-product .owl-stage {
+        display: flex;
+    }
+
+    .mn-product-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .mn-product-img {
+        height: 260px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .mn-product-img img {
+            max-height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+    .mn-product-detail {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .mn-product-detail h5 a {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 48px;
+        }
+
+    .mn-price {
+        margin-top: auto;
+    }
+    /* ===== FIX QUICK VIEW QTY LAYOUT ===== */
+    .mn-quickview-qty {
+        display: flex;
+        align-items: flex-start; /* QUAN TRỌNG */
+        gap: 16px;
+    }
+
+    .quickview-qty-left {
+        display: flex;
+        flex-direction: column; /* ÉP XUỐNG DƯỚI */
+    }
+
+    .quickview-warning {
+        display: none; /* mặc định ẩn */
+        max-width: 260px;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+</style>

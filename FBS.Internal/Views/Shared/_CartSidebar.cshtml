@@ -19,8 +19,10 @@
 				{
 					<li class="cart-sidebar-list">
 						<a asp-action="Detail" asp-controller="Product" asp-route-id="@item.ProductId" class="mn-pro-img">
-							<img src="~/theme/client/img/product/29.jpg"
-								 alt="product">
+							<img src="@Url.Content("~/theme/client/img/product/" + item.Image)"
+								 alt="@item.ProductName"
+								 style="width:60px;height:60px;object-fit:cover;border-radius:6px">
+
 						</a>
 						<div class="mn-pro-content">
 							<a asp-action="Detail" asp-controller="Product" asp-route-id="@item.ProductId" class="cart-pro-title">@item.ProductName x @item.Quantity</a>
@@ -47,12 +49,24 @@
 			</div>
 			<div class="cart_btn">
 				<a asp-action="Index" asp-controller="Cart" class="mn-btn-1"><span>Giỏ hàng<i class="ri-arrow-right-s-line"></i></span></a>
-				<a asp-action="Checkout" asp-controller="Cart" class="mn-btn-2">
+				<a asp-action="Checkout"
+				   asp-controller="Cart"
+				   class="mn-btn-2 @(cart.Any() ? "" : "disabled")">
 					<span>
-						Thanh toán<i class="ri-arrow-right-s-line"></i>
+						THANH TOÁN
+						<i class="ri-arrow-right-s-line"></i>
 					</span>
 				</a>
+
 			</div>
 		</div>
 	</div>
 </div>
+<style>
+	.mn-btn-2.disabled {
+		pointer-events: none; 
+		opacity: 0.5; 
+		cursor: not-allowed;
+	}
+
+</style>

@@ -125,42 +125,101 @@
                                                         <div class="size-list">
 
                                                             @{
-                                                                var sizeOrder = new List<string> { "S", "M", "L", "XL", "2XL" };
-                                                                var orderedSizes = productData.Sizes.OrderBy(s => sizeOrder.IndexOf(s)).ToList();
-                                                            }
+                                                                var sizeOrder = new List<string> { "XS", "S", "M", "L", "XL", "2XL", "3XL" };
 
+                                                                var orderedSizes = productData.Sizes
+                                                                .Where(s => !string.IsNullOrWhiteSpace(s))
+                                                                .OrderBy(s =>
+                                                                {
+                                                                    // size số: 39, 40, 41...
+                                                                    if (int.TryParse(s, out var num))
+                                                                        return num;
+
+                                                                    // size chữ: S, M, L...
+                                                                    var index = sizeOrder.IndexOf(s.ToUpper());
+                                                                    return index >= 0 ? 1000 + index : 2000;
+                                                                })
+                                                                .ToList();
+                                                            }
                                                             @foreach (var s in orderedSizes)
                                                             {
                                                                 <label class="size-item">
-                                                                    <input type="radio" asp-for="Size" value="@s" class="size-radio" style="display:none;" />
+                                                                    <input type="radio"
+                                                                           asp-for="Size"
+                                                                           value="@s"
+                                                                           class="size-radio"
+                                                                           style="display:none;" />
                                                                     <span class="size-text">@s</span>
                                                                 </label>
                                                             }
 
+
                                                         </div>
 
-                                                        <span id="sizeError" class="text-danger" style="display:none;">
-                                                            Vui lòng chọn size!
-                                                        </span>
+                                                        <div id="sizeError" class="size-error">
+                                                            <i class="ri-alert-line"></i>
+                                                            <span>Vui lòng chọn size</span>
+                                                        </div>
+
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div class="w-100 mn-single-qty ">
-                                                <input type="hidden" asp-for="ProductId" value="@productData.Id">
+                                            <div class="w-100 mn-single-qty d-flex align-items-start gap-3">
 
-                                                <div class="qty-plus-minus">
-                                                    <input class="qty-input" type="text" asp-for="Quantity" value="1">
+                                                
+                                                <div class="qty-wrapper">
+
+                                                    <div class="qty-plus-minus">
+                                                        <input class="qty-input" type="text" asp-for="Quantity" value="1">
+                                                    </div>
+
+                                                  
+                                                    <div id="contactWarning"
+                                                         class="alert alert-warning mt-2"
+                                                         style="display:none; max-width:260px;">
+                                                         Số lượng lớn hơn <b>10 sản phẩm</b>.<br />
+                                                        Vui lòng <b>liên hệ shop</b> để được hỗ trợ.
+                                                    </div>
+
                                                 </div>
+                                             
 
-                                                <div class="mn-btns">
-                                                    <div class="mn-single-cart">
-                                                        <button type="submit" class="btn btn-primary mn-btn-2 mn-add-cart">
-                                                            <span>Thêm vào giỏ</span>
+                                                <form asp-action="AddToCart"
+                                                      asp-controller="Cart"
+                                                      method="post">
+
+                                                    @Html.AntiForgeryToken()
+
+                                                    <input type="hidden" name="ProductId" value="@Model.ProductId" />
+
+                                                    <input type="hidden" name="Size" id="SelectedSize" />
+                                                    <input type="hidden" name="Quantity" id="Quantity" value="1" />
+
+                                                    <form asp-action="AddToCart"
+                                                          asp-controller="Cart"
+                                                          method="post">
+
+                                                        @Html.AntiForgeryToken()
+
+                                                      
+                                                        <input type="hidden" name="ProductId" value="@Model.ProductId" />
+
+                                                     
+                                                        <input type="hidden" name="Size" id="SelectedSize" />
+
+                                                     
+                                                        <input type="hidden" name="Quantity" id="Quantity" value="1" />
+
+                                                        <button type="submit" class="btn btn-primary mn-btn-2">
+                                                            Thêm vào giỏ
                                                         </button>
-                                                    </div>
-                                                </div>
+                                                    </form>
+                                                </form>
+
+
                                             </div>
+
                                         </form>
 
                                     </div>
@@ -171,7 +230,7 @@
                     </div>
 
                    
-                    <!-- TAB chi tiết & đánh giá -->
+                 
                     <div class="mn-single-pro-tab">
                         <div class="mn-single-pro-tab-wrapper">
 
@@ -195,16 +254,16 @@
 
                             <div class="tab-content mt-4">
 
-                                <!-- TAB: Thông Tin Chi Tiết -->
+                              
                                 <div class="tab-pane fade show active" id="details-pane" role="tabpanel">
 
-                                    <!-- Mô tả nội dung -->
+                                 
                                     <div class="product-description mb-4">
                                         @Html.Raw((productData.Detail ?? "").Replace("\n", "<br />"))
                                     </div>
 
 
-                                    <!-- Hình ảnh chi tiết -->
+                               
                                     <h5 class="mb-3 fw-bold">Hình ảnh chi tiết</h5>
 
                                     <div class="row">
@@ -231,7 +290,7 @@
 
                                 </div>
 
-                                <!-- TAB: Đánh Giá -->
+                              
                                 <!-- TAB: Đánh Giá -->
                                 <div class="tab-pane fade" id="review-pane" role="tabpanel">
                                     <div class="row p-3">
@@ -256,7 +315,7 @@
                                             }
                                         </div>
 
-                                        <!-- FORM THÊM REVIEW -->
+                                      
                                         <div class="mn-ratting-content p-4 bg-white rounded shadow-sm border">
                                             <h4 class="fw-bold mb-3">Thêm đánh giá</h4>
 
@@ -284,7 +343,7 @@
                                                     }
                                                 </div>
 
-                                                <!-- Nội dung -->
+                                              
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Nội dung</label>
                                                     <textarea name="Message"
@@ -293,7 +352,7 @@
                                                               placeholder="Viết nội dung đánh giá..."></textarea>
                                                 </div>
 
-                                                <!-- Button -->
+                                            
                                                 <button class="btn btn-primary rounded-pill px-4 py-2 fw-bold" type="submit">
                                                     Gửi đánh giá
                                                 </button>
@@ -311,7 +370,7 @@
                     </div>
 
 
-                    <!-- SẢN PHẨM MỚI -->
+                    
                     <section class="mn-new-product p-tb-15">
                         <div class="mn-title">
                             <h2>Sản Phẩm Mới</h2>
@@ -336,10 +395,12 @@
 
                                     <div class="mn-product-detail">
                                         <div class="cat">
-                                            <a asp-controller="Product" asp-action="List"
-                                               asp-route-categoryId="@productData.CategoryId">
-                                                @productData.CategoryName
+                                            <a asp-controller="Product"
+                                               asp-action="List"
+                                               asp-route-categoryId="@item.CategoryId">
+                                                @item.CategoryName
                                             </a>
+
 
                                             <ul>
                                                 <li>Size: @string.Join(", ", item.Sizes)</li>
@@ -376,38 +437,264 @@
 
 @section Scripts {
     <script>
-        const sizeItems = document.querySelectorAll(".size-item");
-        const hiddenSize = document.getElementById("SelectedSize");
-        const sizeError = document.getElementById("sizeError");
+        document.addEventListener("DOMContentLoaded", function () {
 
-        sizeItems.forEach(item => {
-            item.addEventListener("click", () => {
+            /* ===== ELEMENTS ===== */
+            const form = document.getElementById("addToCartForm");
+            const sizeItems = document.querySelectorAll(".size-item");
+            const hiddenSize = document.getElementById("SelectedSize");
+            const sizeError = document.getElementById("sizeError");
 
-                sizeItems.forEach(i => i.classList.remove("active"));
-                item.classList.add("active");
-                hiddenSize.value = item.querySelector(".size-radio").value;
-                sizeError.style.display = "none";
+            const qtyInput = document.querySelector(".qty-input");
+            const addToCartBtn = document.querySelector(".mn-add-cart");
+            const warningBox = document.getElementById("contactWarning");
 
+            /* ===== SIZE SELECT ===== */
+            sizeItems.forEach(item => {
+                item.addEventListener("click", () => {
+                    sizeItems.forEach(i => i.classList.remove("active"));
+                    item.classList.add("active");
+
+                    hiddenSize.value = item.querySelector("input").value;
+
+                    sizeError.style.display = "none";
+                    sizeError.classList.remove("shake");
+                });
             });
+
+            /* ===== CHECK QUANTITY ===== */
+            function checkQuantity() {
+                const qty = parseInt(qtyInput.value || 0);
+
+                if (qty > 10) {
+                    warningBox.style.display = "block";
+                    addToCartBtn.disabled = true;
+                    addToCartBtn.classList.add("disabled");
+                } else {
+                    warningBox.style.display = "none";
+                    addToCartBtn.disabled = false;
+                    addToCartBtn.classList.remove("disabled");
+                }
+            }
+
+            if (qtyInput) {
+                qtyInput.addEventListener("input", checkQuantity);
+            }
+
+            /* ===== FORM SUBMIT ===== */
+            if (form) {
+                form.addEventListener("submit", function (e) {
+
+                    // ❌ CHƯA CHỌN SIZE
+                    if (!hiddenSize.value) {
+                        e.preventDefault();
+
+                        sizeError.style.display = "flex";
+                        sizeError.classList.add("shake");
+
+                        sizeError.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center"
+                        });
+                        return;
+                    }
+
+                    // ❌ SỐ LƯỢNG > 10
+                    const qty = parseInt(qtyInput.value || 0);
+                    if (qty > 10) {
+                        e.preventDefault();
+                        alert("Đơn hàng trên 10 sản phẩm. Vui lòng liên hệ shop.");
+                        return;
+                    }
+                });
+            }
+
         });
     </script>
 }
 
-    <style >
-    .mn-ratting-content input,
-    .mn-ratting-content textarea {
-        font-size: 15px;
-        border: 1px solid #ddd;
+
+
+
+<style>
+    .size-error {
+        display: none;
+        margin-top: 12px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: #fff1f2;
+        color: #dc2626;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        box-shadow: 0 4px 12px rgba(220,38,38,0.15);
+        animation: shake 0.25s ease-in-out;
     }
 
-    .mn-t-review-wrapper .bg-white {
-        transition: 0.2s;
-    }
-
-        .mn-t-review-wrapper .bg-white:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        .size-error i {
+            font-size: 18px;
         }
+
+    @@keyframes shake {
+        0%
+
+    {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-4px);
+    }
+
+    50% {
+        transform: translateX(4px);
+    }
+
+    75% {
+        transform: translateX(-4px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+
+    }
+
+    /* =====================================================
+       1. OWL CAROUSEL – ÉP STRETCH
+    ===================================================== */
+    .mn-product.owl-carousel .owl-stage {
+        display: flex;
+        align-items: stretch;
+    }
+
+    /* mỗi item của owl */
+    .mn-product.owl-carousel .owl-item {
+        display: flex;
+    }
+
+    /* =====================================================
+       2. CARD – CAO BẰNG NHAU
+    ===================================================== */
+    .mn-product-card {
+        background: #fff;
+        border-radius: 18px;
+        padding: 14px;
+        box-shadow: 0 6px 18px rgba(0,0,0,.06);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+    }
+
+    /* =====================================================
+       3. KHUNG ẢNH – CỐ ĐỊNH
+    ===================================================== */
+    .mn-product-img {
+        position: relative;
+        padding: 8px;
+    }
+
+    /* khung ảnh vuông */
+    .mn-img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background: #f4f6f8;
+        border-radius: 14px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        /* ảnh không làm đổi chiều cao */
+        .mn-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+    /* =====================================================
+       4. PHẦN TEXT – GIÃN ĐỀU
+    ===================================================== */
+    .mn-product-detail {
+        flex: 1; /* QUAN TRỌNG */
+        display: flex;
+        flex-direction: column;
+        padding-top: 8px;
+    }
+
+        /* giới hạn tên */
+        .mn-product-detail h5 a {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 44px;
+        }
+
+    /* =====================================================
+       5. GIÁ LUÔN NẰM DƯỚI
+    ===================================================== */
+    .mn-price {
+        margin-top: auto; /* ĐẨY XUỐNG CUỐI */
+        display: flex;
+        gap: 10px;
+    }
+    /* =====================================
+       FIX GIÁ + Đ (CÙNG 1 DÒNG)
+    ===================================== */
+    .mn-price,
+    .mn-price-new,
+    .mn-price-old {
+        display: flex;
+        align-items: baseline; /* căn chữ đẹp */
+        gap: 2px;
+    }
+
+    /* số tiền */
+    .mn-price-new {
+        font-size: 17px;
+        font-weight: 800;
+        color: #111827;
+        white-space: nowrap; /* KHÔNG XUỐNG DÒNG */
+    }
+
+        /* chữ đ */
+        .mn-price-new::after {
+            content: "đ";
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 2px;
+        }
+
+    /* giá cũ */
+    .mn-price-old {
+        font-size: 13px;
+        color: #9ca3af;
+        text-decoration: line-through;
+        white-space: nowrap;
+    }
+
+        .mn-price-old::after {
+            content: "đ";
+            font-size: 11px;
+            margin-left: 2px;
+        }
+
+    .qty-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #contactWarning {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
 </style>
 
 

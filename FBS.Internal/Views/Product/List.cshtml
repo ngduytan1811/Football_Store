@@ -162,5 +162,60 @@
     });
 
 </script>
+<style>
+    /* GRID */
+.shop-pro-inner .row {
+    display: flex;
+    flex-wrap: wrap;
+}
 
+.mn-product-box {
+    display: flex;
+}
+
+/* CARD */
+.mn-product-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+/* IMAGE FIX (QUAN TRỌNG) */
+.mn-img {
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.mn-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* đổi cover nếu muốn đầy khung */
+}
+
+/* CONTENT */
+.mn-product-detail {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* TITLE */
+.mn-product-detail h5 a {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 48px;
+}
+
+/* PRICE */
+.mn-price {
+    margin-top: auto;
+}
+
+</style>
 

@@ -24,9 +24,7 @@ namespace FBS.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        // ======================
-        // RANDOM PRODUCTS
-        // ======================
+       
         public async Task<List<ProductDto>> GetRandomProducts()
         {
             var repo = _unitOfWork.GetRepositoryReadOnlyAsync<Product>();
@@ -48,7 +46,9 @@ namespace FBS.Application.Services
                 Price = product.Price,
                 Name = product.Name,
                 Color = product.ProductColor?.Color,
-                Sizes = product.ProductSizes.Select(ps => ps.Size).ToList(),
+                Sizes = SortSizes(
+            product.ProductSizes.Select(ps => ps.Size)
+        ),
                 Image = !string.IsNullOrEmpty(product.Image)
                         ? "/theme/client/img/product/" + product.Image
                         : string.Empty,
@@ -57,9 +57,29 @@ namespace FBS.Application.Services
             }).ToList();
         }
 
-        // ======================
-        // LIST PRODUCTS
-        // ======================
+        private static readonly List<string> SizeOrder = new()
+{
+    "XS", "S", "M", "L", "XL", "2XL", "3XL"
+};
+
+        private List<string> SortSizes(IEnumerable<string> sizes)
+        {
+            return sizes
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .OrderBy(s =>
+                {
+                    // SIZE SỐ
+                    if (int.TryParse(s, out int number))
+                        return number;
+
+                    // SIZE CHỮ → đẩy sau size số
+                    var index = SizeOrder.IndexOf(s.ToUpper());
+                    return index >= 0 ? 1000 + index : 2000;
+                })
+                .ToList();
+        }
+
+
         public async Task<BaseTableResponse<ProductDto>> GetProducts(BaseSearchDto<ProductSearchDto> dto)
         {
             var result = new BaseTableResponse<ProductDto>();
@@ -97,23 +117,23 @@ namespace FBS.Application.Services
 
             if (search.CategoryId.HasValue)
             {
-                // Lấy tất cả danh mục con trực tiếp
+                var parentId = search.CategoryId.Value;
+
                 var queryCategories = await _unitOfWork
                     .GetRepositoryReadOnlyAsync<Category>()
                     .QueryAll();
 
-                // Danh sách ID danh mục con
-                var childIds = queryCategories
-                    .Where(c => c.ParentId == search.CategoryId)
+                // Lấy CHA + CON
+                var categoryIds = queryCategories
+                    .Where(c => c.Id == parentId || c.ParentId == parentId)
                     .Select(c => c.Id)
                     .ToList();
 
-                // Thêm ID của danh mục CHA vào luôn
-                childIds.Add(search.CategoryId.Value);
-
-                // Lọc sản phẩm theo CHA hoặc CON
-                queryProduct = queryProduct.Where(x => childIds.Contains(x.CategoryId.Value));
+                queryProduct = queryProduct.Where(x =>
+                    x.CategoryId.HasValue &&
+                    categoryIds.Contains(x.CategoryId.Value));
             }
+
 
 
 

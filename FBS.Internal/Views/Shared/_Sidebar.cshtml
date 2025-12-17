@@ -4,6 +4,7 @@
 		<button type="button" class="side-close" title="Close"></button>
 		<ul class="mn-sb-list">
 			<li class="mn-sb-title condense"><span>Danh mục</span></li>
+			
 			@foreach (var item in ViewBag.Categories)
 			{
 				<li class="mn-sb-item sb-drop-item">
@@ -11,6 +12,14 @@
 						<span class="condense">@item.Name<i class="drop-arrow ri-arrow-down-s-line"></i></span>
 					</a>
 					<ul class="mn-sb-drop">
+						<li class="list">
+							<a asp-action="List"
+							   asp-controller="Product"
+							   asp-route-categoryId="@item.Id"
+							   class="mn-page-link drop">
+								Tất Cả
+							</a>
+						</li>
 						@foreach (var subItem in item.Items)
 						{
 							<li class="list">
