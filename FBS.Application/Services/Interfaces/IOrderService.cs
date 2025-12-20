@@ -17,5 +17,9 @@ namespace FBS.Application.Services.Interfaces
         // User
         Task<List<OrderDto>> GetOrdersByCustomer(Guid customerId);
         Task<OrderDto?> GetOrderDetail(Guid orderId, Guid customerId);
+    
+        Task<BaseResponse<string>> CancelOrder(Guid orderId, Guid customerId);
+        Task<BaseResponse<string>> UpdateOrderInfo(Guid orderId,Guid customerId,UpdateOrderInfoDto dto);
+
     }
 }

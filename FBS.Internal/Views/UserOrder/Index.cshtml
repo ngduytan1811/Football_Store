@@ -1,4 +1,5 @@
 ﻿@using FBS.Shared.Helpers
+@using FBS.Shared.Enums
 @model List<FBS.Application.DataTranferObjects.Orders.OrderDto>
 
 @{
@@ -7,7 +8,17 @@
 
 <h2 class="fw-bold mb-4">Đơn hàng của tôi</h2>
 
-@if (!Model.Any())
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (Model == null || !Model.Any())
 {
     <div class="alert alert-info shadow-sm">
         Bạn chưa có đơn hàng nào.
@@ -19,12 +30,12 @@ else
         <table class="table table-hover align-middle order-table shadow-sm">
             <thead class="table-light">
                 <tr>
-                    <th class="fw-bold">#</th>
-                    <th class="fw-bold">Ngày đặt</th>
-                    <th class="fw-bold">Tên khách</th>
-                    <th class="fw-bold">SĐT</th>
-                    <th class="fw-bold text-center">Trạng thái</th>
-                    <th class="fw-bold text-center">Thao tác</th>
+                    <th>#</th>
+                    <th>Ngày đặt</th>
+                    <th>Tên khách</th>
+                    <th>SĐT</th>
+                    <th class="text-center">Trạng thái</th>
+                    <th class="text-center">Thao tác</th>
                 </tr>
             </thead>
 
@@ -32,6 +43,7 @@ else
                 @{
                     int index = 1;
                 }
+
                 @foreach (var order in Model)
                 {
                     <tr>
@@ -40,20 +52,51 @@ else
                         <td>@order.CustomerName</td>
                         <td>@order.CustomerPhone</td>
 
+                        <!-- ===== TRẠNG THÁI ===== -->
                         <td class="text-center">
-                            <span class="badge status-badge">
+                            <span class="badge
+                                @(order.Status == StatusEnum.Cancel ? "bg-secondary" :
+                                  order.Status == StatusEnum.InHandler ? "bg-info" :
+                                  order.Status == StatusEnum.Active ? "bg-danger" :
+                                  "bg-success")">
                                 @order.Status?.GetDisplayName()
                             </span>
                         </td>
 
-
+                        <!-- ===== THAO TÁC ===== -->
                         <td class="text-center">
-                            <a href="/UserOrder/Detail/@order.Id"
+                            <a asp-action="Detail"
+                               asp-route-id="@order.Id"
                                class="btn btn-primary btn-sm px-3">
                                 Xem chi tiết
                             </a>
+
+                            @* CHỈ CHO HỦY KHI:
+                               - KHÔNG phải Đang giao
+                               - KHÔNG phải Giao thành công
+                               - KHÔNG phải Đã hủy *@
+                            @if (order.Status == StatusEnum.Inactive ||
+                           order.Status == StatusEnum.Active)
+                            {
+                                <form asp-action="Cancel"
+                                      asp-controller="UserOrder"
+                                      method="post"
+                                      style="display:inline;"
+                                      onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
+
+                                    <input type="hidden" name="id" value="@order.Id" />
+
+                                    <button type="submit"
+                                            class="btn btn-danger btn-sm ms-2">
+                                        Hủy đơn
+                                    </button>
+                                </form>
+                            }
+
                         </td>
                     </tr>
+
+                    index++;
                 }
             </tbody>
         </table>
@@ -69,11 +112,9 @@ else
 
         .order-table tbody tr:hover {
             background: #f8f9fa !important;
-            cursor: pointer;
         }
 
-    .status-badge {
-        background: #007bff;
+    .badge {
         padding: 6px 12px;
         border-radius: 20px;
         font-size: 0.85rem;
@@ -81,13 +122,9 @@ else
         color: white;
     }
 
-    .btn-primary {
+    .btn-primary, .btn-danger {
         border-radius: 6px;
         font-size: 0.85rem;
         font-weight: 600;
-    }
-
-    h2 {
-        color: #333;
     }
 </style>

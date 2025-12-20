@@ -30,13 +30,13 @@ namespace FBS.Shared.Enums
         /// Cancel
         /// </summary>
         [Display(Name = "Giao Thành Công", Order = 4)]
-        Cancel = 3,
+        WaitingApproval = 3,
 
         /// <summary>
         /// Wợi xác nhận
         /// </summary>
         [Display(Name = "Đã Hủy", Order = 5)]
-        WaitingApproval = 4,
+         Cancel = 4,
 
         /// <summary>
         /// Not seen

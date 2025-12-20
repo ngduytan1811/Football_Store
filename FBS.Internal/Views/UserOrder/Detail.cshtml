@@ -1,4 +1,6 @@
-﻿@model FBS.Application.DataTranferObjects.Orders.OrderDto
+﻿@using FBS.Shared.Helpers
+@using FBS.Shared.Enums
+@model FBS.Application.DataTranferObjects.Orders.OrderDto
 
 @{
     ViewData["Title"] = "Chi tiết đơn hàng";
@@ -7,13 +9,63 @@
 
 <h3 class="fw-bold mb-4">Chi tiết đơn hàng</h3>
 
-<div class="card shadow-sm p-4">
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
 
+<div class="card shadow-sm p-4">
+    @if (Model.Status == StatusEnum.Inactive || Model.Status == StatusEnum.Active)
+    {
+        <form asp-action="UpdateInfo" method="post">
+            <input type="hidden" name="OrderId" value="@Model.Id" />
+
+            <div class="mb-3">
+                <label>Họ tên</label>
+                <input asp-for="CustomerName" name="CustomerName" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label>Số điện thoại</label>
+                <input asp-for="CustomerPhone" name="CustomerPhone" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label>Địa chỉ</label>
+                <input asp-for="CustomerAddress" name="CustomerAddress" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label>Ghi chú</label>
+                <textarea asp-for="Note" name="Note" class="form-control"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">
+                Cập nhật thông tin
+            </button>
+        </form>
+    }
+    else{
     <p><b>Mã đơn hàng:</b> @Model.Id</p>
     <p><b>Họ tên:</b> @Model.CustomerName</p>
     <p><b>Số điện thoại:</b> @Model.CustomerPhone</p>
     <p><b>Địa chỉ:</b> @Model.CustomerAddress</p>
     <p><b>Ghi chú:</b> @Model.Note</p>
+    }
+    <p>
+        <b>Trạng thái:</b>
+        <span class="badge
+            @(Model.Status == StatusEnum.Cancel ? "bg-secondary" :
+              Model.Status == StatusEnum.InHandler ? "bg-info" :
+              Model.Status == StatusEnum.Active ? "bg-success" :
+              "bg-warning")">
+            @Model.Status?.GetDisplayName()
+        </span>
+    </p>
 
     <hr />
 
@@ -43,7 +95,6 @@
                              class="img-thumbnail"
                              style="width:80px;height:80px;object-fit:cover;" />
                     </td>
-
                     <td>@item.ProductName</td>
                     <td>@item.ProductSize</td>
                     <td>@item.ProductColor</td>
@@ -61,6 +112,31 @@
         </h4>
     </div>
 
+    <hr />
+
+    @if (Model.Status == StatusEnum.Inactive ||
+    Model.Status == StatusEnum.Active)
+    {
+        <form asp-action="Cancel"
+              asp-controller="UserOrder"
+              method="post"
+              onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button class="btn btn-danger">Hủy đơn hàng</button>
+        </form>
+    }
+
+
 </div>
 
-<a href="/UserOrder" class="btn btn-secondary mt-3">Quay lại</a>
+<a asp-action="Index" class="btn btn-secondary mt-3">Quay lại</a>
+
+<style>
+    .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: white;
+    }
+</style>

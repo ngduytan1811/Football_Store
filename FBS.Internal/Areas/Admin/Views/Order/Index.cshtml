@@ -126,48 +126,57 @@
                                     </td>
 
                                     <td>
-                                        @switch (item.Status.ToString())
+                                        @switch (item.Status)
                                         {
-                                            case "Inactive":
-                                                <span class="badge" style="background:#fff7e6; color:#000;">Chờ Xác Nhận</span>
-                                                ;
+                                            case StatusEnum.Inactive:
+                                                <span class="badge" style="background:#fff7e6; color:#000;">
+                                                    @item.Status.GetDisplayName() @* Chờ Xác Nhận *@
+                                                </span>
                                                 break;
 
-                                            case "Active":
-                                                <span class="badge" style="background:#f3e8ff; color:#000;">Đang Xử Lý</span>
-                                                ;
+                                            case StatusEnum.Active:
+                                                <span class="badge" style="background:#f3e8ff; color:#000;">
+                                                    @item.Status.GetDisplayName() @* Đang Xử Lý *@
+                                                </span>
                                                 break;
 
-                                            case "InHandler":
-                                                <span class="badge" style="background:#e6fffb; color:#000;">Đang Giao</span>
-                                                ;
+                                            case StatusEnum.InHandler:
+                                                <span class="badge" style="background:#e6fffb; color:#000;">
+                                                    @item.Status.GetDisplayName() @* Đang Giao *@
+                                                </span>
                                                 break;
 
-                                            case "Cancel":
-                                                <span class="badge" style="background:#ffe7eb; color:#000;">Giao Thành Công</span>
-                                                ;
+                                            case StatusEnum.WaitingApproval:
+                                                <span class="badge" style="background:#d4edda; color:#000;">
+                                                    @item.Status.GetDisplayName() @* Giao Thành Công *@
+                                                </span>
                                                 break;
 
-                                            case "WaitingApproval":
-                                                <span class="badge" style="background:#fff1f0; color:#000;">Đã Hủy</span>
-                                                ;
+                                            case StatusEnum.Cancel:
+                                                <span class="badge" style="background:#fff1f0; color:#000;">
+                                                    @item.Status.GetDisplayName() @* Đã Hủy *@
+                                                </span>
                                                 break;
 
-                                            case "NotSeen":
-                                                <span class="badge" style="background:#e2e3e5; color:#000;">Trả hàng</span>
-                                                ;
+                                            case StatusEnum.NotSeen:
+                                                <span class="badge" style="background:#e2e3e5; color:#000;">
+                                                    @item.Status.GetDisplayName() @* Trả Hàng *@
+                                                </span>
                                                 break;
 
-                                            case "Watched":
-                                                <span class="badge" style="background:#d4edda; color:#000;">Thất Bại</span>
-                                                ;
+                                            case StatusEnum.Watched:
+                                                <span class="badge" style="background:#f8d7da; color:#000;">
+                                                    @item.Status.GetDisplayName() @* Thất Bại *@
+                                                </span>
                                                 break;
 
                                             default:
-                                                <span class="badge bg-light text-dark">@item.Status</span>
-                                                ;
+                                                <span class="badge bg-light text-dark">
+                                                    @item.Status
+                                                </span>
                                                 break;
                                         }
+
 
                                     </td>
 

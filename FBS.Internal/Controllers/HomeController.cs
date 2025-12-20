@@ -52,7 +52,7 @@ namespace FootballShop.Controllers
 
             return View(model);
         }
-       [HttpPost]
+      
         [HttpPost]
         public async Task<IActionResult> Contact(ContactViewModel model)
         {

@@ -1,115 +1,116 @@
-﻿
+﻿@model ContactViewModel
+
 @{
     ViewData["Title"] = "Contact";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="mn-breadcrumb m-b-30">
-	<div class="row">
-		<div class="col-12">
-			<div class="row gi_breadcrumb_inner">
-				<div class="col-md-6 col-sm-12">
-					<h2 class="mn-breadcrumb-title">Liên hệ</h2>
-				</div>
-				<div class="col-md-6 col-sm-12">
-					<ul class="mn-breadcrumb-list">
-						<li class="mn-breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
-						<li class="mn-breadcrumb-item active">Liên hệ</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="row">
+        <div class="col-12">
+            <div class="row gi_breadcrumb_inner">
+                <div class="col-md-6 col-sm-12">
+                    <h2 class="mn-breadcrumb-title">Liên hệ</h2>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <ul class="mn-breadcrumb-list">
+                        <li class="mn-breadcrumb-item">
+                            <a asp-controller="Home" asp-action="Index">Trang chủ</a>
+                        </li>
+                        <li class="mn-breadcrumb-item active">Liên hệ</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <section class="mn-contact p-b-15">
-	<div class="row p-t-80">
-		<div class="col-md-6 mn-contact-detail m-b-m-30">
-			<div class="mn-box m-b-30">
-				<div class="detail">
-					<div class="icon"><i class="ri-mail-send-line"></i></div>
-					<div class="info">
-						<h3 class="title">Email liên hệ</h3>
-						<p>ht.ntg3@gmail.com</p>
-					</div>
-				</div>
-			</div>
-			<div class="mn-box m-b-30">
-				<div class="detail">
-					<div class="icon"><i class="ri-customer-service-2-line"></i></div>
-					<div class="info">
-						<h3 class="title">Số điện thoại</h3>
-						<p>0393949866</p>
-					</div>
-				</div>
-			</div>
-			<div class="mn-box m-b-30">
-				<div class="detail">
-					<div class="icon"><i class="ri-map-pin-line"></i></div>
-					<div class="info">
-						<h3 class="title">Địa chỉ</h3>
-						<p>Ấp 9, xã Trảng Bom, tỉnh Đồng Nai.</p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-6 m-t-767">
+    <div class="row p-t-80">
 
-			@* THÔNG BÁO SAU KHI GỬI *@
-			@if (TempData["SuccessMessage"] != null)
-			{
-				<div class="alert alert-success">
-					@TempData["SuccessMessage"]
-				</div>
-			}
+        <!-- Thông tin liên hệ -->
+        <div class="col-md-6 mn-contact-detail m-b-m-30">
+            <div class="mn-box m-b-30">
+                <div class="detail">
+                    <div class="icon"><i class="ri-mail-send-line"></i></div>
+                    <div class="info">
+                        <h3 class="title">Email liên hệ</h3>
+                        <p>ht.ntg3@gmail.com</p>
+                    </div>
+                </div>
+            </div>
 
-			<form asp-action="Contact" method="post">
+            <div class="mn-box m-b-30">
+                <div class="detail">
+                    <div class="icon"><i class="ri-customer-service-2-line"></i></div>
+                    <div class="info">
+                        <h3 class="title">Số điện thoại</h3>
+                        <p>0393949866</p>
+                    </div>
+                </div>
+            </div>
 
-				<div class="form-group">
-					<input type="text" class="form-control" name="FullName"
-						   placeholder="Họ tên" value="@Model.FullName" />
-				</div>
+            <div class="mn-box m-b-30">
+                <div class="detail">
+                    <div class="icon"><i class="ri-map-pin-line"></i></div>
+                    <div class="info">
+                        <h3 class="title">Địa chỉ</h3>
+                        <p>Ấp 9, xã Trảng Bom, tỉnh Đồng Nai.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-				<div class="form-group">
-					<input type="email" class="form-control" name="Email"
-						   placeholder="Địa chỉ email" value="@Model.Email" />
-				</div>
+        <!-- Form liên hệ -->
+        <div class="col-md-6 m-t-767">
 
-				<div class="form-group">
-					<input type="text" class="form-control" name="Phone"
-						   placeholder="Số điện thoại" value="@Model.Phone" />
-				</div>
+            @* Thông báo thành công *@
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
 
-				<div class="form-group">
-					<textarea class="form-control" name="Message" rows="5"
-							  placeholder="Nội dung">@Model.Message</textarea>
-				</div>
+            <form asp-action="Contact" method="post">
 
-				<button type="submit" class="mn-btn-2">
-					<span>Gửi liên hệ</span>
-				</button>
+                @* Hidden để submit về server *@
+                <input type="hidden" asp-for="FullName" />
+                <input type="hidden" asp-for="Email" />
+                <input type="hidden" asp-for="Phone" />
 
-			</form>
+                <div class="form-group">
+                    <label>Họ tên</label>
+                    <input class="form-control" value="@Model.FullName" readonly />
+                </div>
 
-		</div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input class="form-control" value="@Model.Email" readonly />
+                </div>
 
-		<script>
-			function sendContact(e) {
-				e.preventDefault(); // Không reload trang
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input class="form-control" value="@Model.Phone" readonly />
+                </div>
 
-				// Hiện thông báo
-				document.getElementById("alertBox").style.display = "block";
+                <div class="form-group">
+                    <textarea asp-for="Message"
+                              class="form-control"
+                              rows="5"
+                              placeholder="Nội dung liên hệ"></textarea>
+                    <span asp-validation-for="Message" class="text-danger"></span>
+                </div>
 
-				// Ẩn sau 3 giây
-				setTimeout(() => {
-					document.getElementById("alertBox").style.display = "none";
-				}, 3000);
+                <button type="submit" class="mn-btn-2">
+                    <span>Gửi liên hệ</span>
+                </button>
 
-				// Reset form
-				document.getElementById("message").value = "";
-			}
-		</script>
-
-	</div>
+            </form>
+        </div>
+    </div>
 </section>
 
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -10,7 +10,9 @@ namespace FBS.Application.Services
     using FBS.Application.Services.Interfaces;
     using FBS.Infrastructure.Entities;
     using FBS.Infrastructure.Repositories.Interfaces;
+    using FBS.Shared.Constants;
     using FBS.Shared.DataTranferObjects.Base;
+    using FBS.Shared.Enums;
 
     public class OrderService : IOrderService
     {
@@ -170,12 +172,15 @@ namespace FBS.Application.Services
         // ================================
         public async Task<OrderDto?> GetOrderDetail(Guid orderId, Guid customerId)
         {
-            var repo = await _unitOfWork.GetRepositoryReadOnlyAsync<Order>().QueryAll();
+            var repo = _unitOfWork.GetRepositoryReadOnlyAsync<Order>();
+            var query = await repo.QueryAll();
 
-            var order = repo
+            var order = await query
+                .AsNoTracking() 
                 .Include(o => o.OrderItems)
                 .ThenInclude(i => i.Product)
-                .FirstOrDefault(o => o.Id == orderId && o.CustomerId == customerId);
+                .FirstOrDefaultAsync(o =>
+                    o.Id == orderId && o.CustomerId == customerId);
 
             if (order == null) return null;
 
@@ -218,5 +223,99 @@ namespace FBS.Application.Services
             await _unitOfWork.SaveChangesAsync();
             return result;
         }
+        public async Task<BaseResponse<string>> CancelOrder(Guid orderId, Guid customerId)
+        {
+            // READ
+            var orderReadRepo = _unitOfWork.GetRepositoryReadOnlyAsync<Order>();
+            var query = await orderReadRepo.QueryAll();
+
+            var order = await query.FirstOrDefaultAsync(o =>
+                o.Id == orderId && o.CustomerId == customerId);
+
+            if (order == null)
+            {
+                return new BaseResponse<string>
+                {
+                    Type = GlobalConstants.ResponseType.Error,
+                    Message = "Không tìm thấy đơn hàng"
+                };
+            }
+
+            // ❌ KHÔNG CHO HỦY KHI:
+            if (order.Status == StatusEnum.InHandler ||
+                order.Status == StatusEnum.WaitingApproval ||
+                order.Status == StatusEnum.Cancel)
+            {
+                return new BaseResponse<string>
+                {
+                    Type = GlobalConstants.ResponseType.Error,
+                    Message = "Không thể hủy đơn hàng ở trạng thái này"
+                };
+            }
+
+            // WRITE
+            var orderWriteRepo = _unitOfWork.GetRepositoryAsync<Order>();
+
+            order.Status = StatusEnum.Cancel;
+            order.UpdatedAt = DateTime.Now;
+
+            orderWriteRepo.Update(order);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new BaseResponse<string>
+            {
+                Type = GlobalConstants.ResponseType.Success,
+                Message = "Hủy đơn hàng thành công"
+            };
+        }
+
+        public async Task<BaseResponse<string>> UpdateOrderInfo(Guid orderId,Guid customerId,UpdateOrderInfoDto dto)
+        {
+            var readRepo = _unitOfWork.GetRepositoryReadOnlyAsync<Order>();
+            var query = await readRepo.QueryAll();
+
+            var order = await query.FirstOrDefaultAsync(o =>
+                o.Id == orderId && o.CustomerId == customerId);
+
+            if (order == null)
+            {
+                return new BaseResponse<string>
+                {
+                    Type = GlobalConstants.ResponseType.Error,
+                    Message = "Không tìm thấy đơn hàng"
+                };
+            }
+
+            // ❌ KHÔNG cho sửa khi đã giao / hoàn thành / hủy
+            if (order.Status == StatusEnum.InHandler ||
+                order.Status == StatusEnum.WaitingApproval ||
+                order.Status == StatusEnum.Cancel)
+            {
+                return new BaseResponse<string>
+                {
+                    Type = GlobalConstants.ResponseType.Error,
+                    Message = "Không thể chỉnh sửa đơn hàng ở trạng thái này"
+                };
+            }
+
+            // UPDATE
+            order.CustomerName = dto.CustomerName;
+            order.CustomerPhone = dto.CustomerPhone;
+            order.CustomerAddress = dto.CustomerAddress;
+            order.Note = dto.Note;
+            order.UpdatedAt = DateTime.Now;
+
+            var writeRepo = _unitOfWork.GetRepositoryAsync<Order>();
+            writeRepo.Update(order);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new BaseResponse<string>
+            {
+                Type = GlobalConstants.ResponseType.Success,
+                Message = "Cập nhật thông tin đơn hàng thành công"
+            };
+        }
+
+
     }
 }
