@@ -49,5 +49,5 @@ jobs:
           tar -xzf publish.tar.gz
           rm publish.tar.gz
 
-          sudo systemctl restart football_store
+          sudo systemctl restart fbs
           echo "🚀 Deploy Football Store Successful!"
