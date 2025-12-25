@@ -35,7 +35,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
         source: "publish.tar.gz"
-        target: "/var/www/football_store"
+        target: "/var/www/fbs"
 
     - name: SSH to VPS and deploy
       uses: appleboy/ssh-action@v1.0.0
