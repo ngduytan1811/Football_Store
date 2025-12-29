@@ -43,15 +43,13 @@ namespace FBS.Internal.Controllers
             return View(new CheckoutDto());
         }
 
-        // ============================================
-        // ➕ THÊM VÀO GIỎ HÀNG
-        // ============================================
+     
         [HttpPost]
         public async Task<IActionResult> AddToCart(CartItemDto request)
         {
             if (string.IsNullOrWhiteSpace(request.Size))
             {
-                // ❌ AJAX thì trả JSON lỗi
+              
                 if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
                     return Json(new { success = false, message = "Vui lòng chọn size" });
 
@@ -180,7 +178,7 @@ namespace FBS.Internal.Controllers
                 return RedirectToAction("Index");
             }
 
-            // 🔥 GÁN CUSTOMER ID VÀ EMAIL TỪ USER ĐANG ĐĂNG NHẬP
+            
             request.CustomerId = CurrentUser.CustomerId;
             request.Email = CurrentUser.Email;
 

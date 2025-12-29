@@ -26,9 +26,7 @@ namespace FBS.Internal.Controllers
             _signInManager = signInManager;
         }
 
-        // ============================
-        // LOGIN
-        // ============================
+      
 
         public IActionResult Login(string? returnUrl = null)
         {
@@ -75,9 +73,7 @@ namespace FBS.Internal.Controllers
             return Redirect(returnUrl ?? "/");
         }
 
-        // ============================
-        // REGISTER
-        // ============================
+      
 
         public IActionResult Register()
         {
@@ -92,7 +88,7 @@ namespace FBS.Internal.Controllers
 
             try
             {
-                // Kiểm tra trùng UserName
+                // kiểm tra trùng
                 var existingUser = await _userManager.FindByNameAsync(request.UserName);
                 if (existingUser != null)
                 {
@@ -100,7 +96,7 @@ namespace FBS.Internal.Controllers
                     return View(request);
                 }
 
-                // Kiểm tra trùng Email
+                // Kiểm tra trùng 
                 var existingEmail = await _userManager.FindByEmailAsync(request.Email);
                 if (existingEmail != null)
                 {
@@ -108,7 +104,7 @@ namespace FBS.Internal.Controllers
                     return View(request);
                 }
 
-                // Khởi tạo user
+                
                 var user = new User
                 {
                     UserName = request.UserName,
@@ -140,9 +136,7 @@ namespace FBS.Internal.Controllers
             }
         }
 
-        // ============================
-        // LOGOUT
-        // ============================
+      
 
         public async Task<IActionResult> Logout()
         {

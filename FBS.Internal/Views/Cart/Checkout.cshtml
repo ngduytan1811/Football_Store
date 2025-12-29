@@ -13,8 +13,6 @@
 }
 
 <div class="container py-4">
-
-    <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb bg-white p-3 shadow-sm rounded">
             <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
@@ -24,7 +22,7 @@
 
     <div class="row g-4">
 
-        <!-- LEFT SIDE: FORM -->
+      
         <div class="col-lg-8">
 
             <div class="card shadow-sm border-0 mb-4">
@@ -36,31 +34,31 @@
 
                     <form asp-action="Checkout" asp-controller="Cart" method="post" class="row gy-3">
 
-                        <!-- Họ tên -->
+                  
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Họ tên *</label>
                             <input asp-for="FullName" class="form-control form-control-lg" placeholder="Nhập họ tên của bạn">
                         </div>
 
-                        <!-- Số điện thoại -->
+                       
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Số điện thoại *</label>
                             <input asp-for="PhoneNumber" class="form-control form-control-lg" placeholder="Nhập số điện thoại">
                         </div>
 
-                        <!-- Địa chỉ -->
+                       
                         <div class="col-md-12">
                             <label class="form-label fw-bold">Địa chỉ *</label>
                             <input asp-for="Address" class="form-control form-control-lg" placeholder="Nhập địa chỉ nhận hàng">
                         </div>
 
-                        <!-- Ghi chú -->
+                       
                         <div class="col-md-12">
                             <label class="form-label fw-bold">Ghi chú</label>
                             <textarea asp-for="Note" class="form-control" rows="3" placeholder="Lưu ý khi giao hàng"></textarea>
                         </div>
 
-                        <!-- Submit -->
+                        
                         <div class="col-12 mt-4">
                             <button type="submit" class="btn btn-primary w-100 py-3 fw-bold fs-5">
                                  ĐẶT HÀNG NGAY
@@ -86,7 +84,7 @@
 
                    
 
-                    <!-- Danh sách sản phẩm -->
+                   
                     @foreach (var item in cart)
                     {
                         <div class="d-flex mb-3 pb-3 border-bottom">
@@ -116,7 +114,7 @@
                             </div>
                         </div>
                     }
-                    <!-- Tiền -->
+
                     <div class="d-flex justify-content-between mb-2">
                         <span class="fw-semibold">Tạm tính</span>
                         <span>@subtotal.ToString("N0") đ</span>
@@ -140,7 +138,7 @@
 
             </div>
 
-            <!-- PAYMENT METHOD -->
+           
             <div class="payment-section card shadow-sm border-0 mt-4">
                 <div class="card-header bg-secondary text-white py-3">
                     <h5 class="mb-0"><i class="ri-wallet-3-line me-1"></i> Hình thức thanh toán</h5>
@@ -148,7 +146,7 @@
 
                 <div class="card-body p-4">
 
-                    <!-- COD -->
+                   
                     <label class="payment-option">
                         <input type="radio" name="PaymentMethod" id="pay_cod" value="COD" checked>
                         <div class="payment-box">
@@ -160,7 +158,7 @@
                         </div>
                     </label>
 
-                    <!-- VISA / CARD -->
+                    
                     <label class="payment-option">
                         <input type="radio" name="PaymentMethod" id="pay_card" value="CARD">
                         <div class="payment-box">
@@ -172,7 +170,7 @@
                         </div>
                     </label>
 
-                    <!-- FORM NHẬP THẺ -->
+                 
                     <div id="card-form" class="payment-card-form">
                         <div class="row">
                             <div class="col-12 mb-3">
@@ -208,7 +206,7 @@
 
 </div>
 <style>
-    /* Bố cục từng lựa chọn */
+
     .payment-option {
         display: block;
         cursor: pointer;
@@ -219,7 +217,7 @@
             display: none;
         }
 
-    /* Khung mỗi lựa chọn */
+    
     .payment-box {
         display: flex;
         align-items: center;
@@ -242,7 +240,7 @@
         box-shadow: 0 3px 10px rgba(0,0,0,0.08);
     }
 
-    /* Icon */
+   
     .payment-icon {
         width: 45px;
         height: 45px;
@@ -263,7 +261,7 @@
             color: #ff8b2c;
         }
 
-    /* Font title/desc */
+    
     .payment-title {
         font-size: 16px;
         font-weight: 700;
@@ -275,7 +273,7 @@
         margin-top: 2px;
     }
 
-    /* Form thanh toán thẻ */
+
     .payment-card-form {
         display: none;
         border: 1px solid #d9e7ff;

@@ -22,7 +22,7 @@
 
     <form method="get" class="d-flex align-items-center gap-2">
 
-        <!-- Lọc trạng thái -->
+       
         <select name="status" class="form-select" style="width: 170px;">
             <option value="">Tất cả trạng thái</option>
             @foreach (StatusEnum st in Enum.GetValues(typeof(StatusEnum)))
@@ -34,15 +34,15 @@
             }
         </select>
 
-        <!-- Từ ngày -->
+       
         <input type="date" name="fromDate" value="@ViewBag.FromDate"
                class="form-control" style="width: 180px;" />
 
-        <!-- Đến ngày -->
+       
         <input type="date" name="toDate" value="@ViewBag.ToDate"
                class="form-control" style="width: 180px;" />
 
-        <!-- Từ khóa -->
+       
         <input type="text" name="keyword" value="@ViewBag.Keyword"
                class="form-control" style="width: 230px;"
                placeholder="Tên, SĐT, mã đơn..." />

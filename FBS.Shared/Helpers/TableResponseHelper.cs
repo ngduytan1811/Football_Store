@@ -1,8 +1,4 @@
-﻿// <copyright file=  TableResponseHelper.cs company= Giang Nguyen>
-// Copyright (c) Giang Nguyen. All rights reserved.
-// </copyright>
-
-namespace FBS.Shared.Helpers
+﻿namespace FBS.Shared.Helpers
 {
     public static class TableResponseHelper
     {

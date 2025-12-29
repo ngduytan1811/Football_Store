@@ -27,7 +27,7 @@ namespace FBS.Internal.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        // LẤY USER HIỆN TẠI (CÓ CACHE)
+       
         protected CurrentUserViewModel? CurrentUser
         {
             get
@@ -40,7 +40,7 @@ namespace FBS.Internal.Controllers
             }
         }
 
-        // LẤY DỮ LIỆU USER TỪ DB (DÙNG BẢNG MEMBER)
+        
         protected async Task<CurrentUserViewModel?> GetCurrentUserAsync()
         {
             if (!User.Identity.IsAuthenticated)
@@ -50,12 +50,12 @@ namespace FBS.Internal.Controllers
             if (user == null)
                 return null;
 
-            // Lấy Member
+            
             var memberRepo = _unitOfWork.GetRepositoryReadOnlyAsync<Member>();
             var memberQuery = await memberRepo.QueryAll();
             var member = memberQuery.FirstOrDefault(x => x.UserId == user.Id);
 
-            // Tạo Member nếu chưa có
+           
             if (member == null)
             {
                 var writeRepo = _unitOfWork.GetRepositoryAsync<Member>();
@@ -81,13 +81,13 @@ namespace FBS.Internal.Controllers
                 CustomerId = member.Id,
                 UserName = user.UserName,
 
-                // --- DỮ LIỆU LẤY TỪ MEMBER ---
+             
                 FirstName = member.FirstName,
                 LastName = member.LastName,
                 PhoneNumber = member.PhoneNumber,
                 Address = member.Address,
 
-                // --- EMAIL LẤY TỪ ASPNETUSERS ---
+                
                 Email = user.Email,
 
                 IsAdmin = user.IsAdmin
@@ -97,25 +97,25 @@ namespace FBS.Internal.Controllers
 
         protected string? CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        // CHẠY TRƯỚC MỖI ACTION
+       
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            // Nếu controller yêu cầu reset cache (sau khi sửa thông tin)
+          
             if (TempData.ContainsKey("ResetUserCache"))
             {
                 _currentUser = null;
             }
 
-            // Reset cache mỗi request
+            
             _currentUser = null;
 
-            // Load user
+         
             ViewBag.CurrentUser = CurrentUser;
 
-            // Load Cart
+           
             ViewData["Cart"] = GetCart();
 
-            // Load danh mục
+          
             var query = await _unitOfWork.GetRepositoryReadOnlyAsync<Category>().QueryAll();
             var allCategories = query.Where(x => x.IsActive).Select(x => new CategoryDto
             {
@@ -135,7 +135,7 @@ namespace FBS.Internal.Controllers
             await next();
         }
 
-        // CART FUNCTION
+        
         protected List<CartItemDto> GetCart()
         {
             var cart = HttpContext.Session.Get<List<CartItemDto>>(CartSessionKey);

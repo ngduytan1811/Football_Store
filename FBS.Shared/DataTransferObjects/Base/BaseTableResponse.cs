@@ -1,8 +1,4 @@
-﻿// <copyright file=  BaseTableResponse.cs company= Tan Nguyen>
-// Copyright (c) Tan Nguyen. All rights reserved.
-// </copyright>
-
-namespace FBS.API.Responses.Base
+﻿namespace FBS.API.Responses.Base
 {
     using System.Collections.Generic;
 

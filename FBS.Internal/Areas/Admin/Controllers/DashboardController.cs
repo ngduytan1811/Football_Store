@@ -26,7 +26,7 @@ namespace FootballShop.Areas.Admin.Controllers
                 .ThenInclude(i => i.Product)
                 .ToListAsync();
 
-            // ===================== TRÁNH LỖI KHI KHÔNG CÓ DỮ LIỆU =====================
+            //tránh lỗi khi k hiện dữ liệu
             if (!orders.Any())
             {
                 ViewBag.TotalRevenue = 0;
@@ -46,18 +46,16 @@ namespace FootballShop.Areas.Admin.Controllers
                 return View();
             }
 
-            // ===================== CHỈ LẤY ĐƠN HỢP LỆ (KHÔNG HỦY) =====================
+            // lấy đơn hợp lệ
             var validOrders = orders
                 .Where(o => o.Status != StatusEnum.Cancel && o.CreatedAt.HasValue)
                 .ToList();
 
-            // ===================== NGÀY MỚI NHẤT =====================
+            // ngày mới nhất
             var lastDate = validOrders.Max(o => o.CreatedAt!.Value.Date);
             var today = lastDate;
 
-            // =====================================================================
-            // 🟦 1. DOANH THU TỔNG QUAN
-            // =====================================================================
+           //Doanh thu tổng
 
             ViewBag.TotalRevenue = validOrders.Sum(o =>
                 o.OrderItems.Sum(i => (i.Price ?? 0) * (i.Quantity ?? 0)));
@@ -72,22 +70,17 @@ namespace FootballShop.Areas.Admin.Controllers
                             o.CreatedAt!.Value.Year == today.Year)
                 .Sum(o => o.OrderItems.Sum(i => (i.Price ?? 0) * (i.Quantity ?? 0)));
 
-            // =====================================================================
-            // 🟩 2. TRẠNG THÁI ĐƠN HÀNG (MAP ĐÚNG NGHIỆP VỤ)
-            // =====================================================================
-
+           // trạng thái đơn hàng
             ViewBag.TotalOrders = orders.Count;
 
             ViewBag.CanceledOrders = orders.Count(o => o.Status == StatusEnum.Cancel);
             ViewBag.ProcessingOrders = orders.Count(o => o.Status == StatusEnum.WaitingApproval);
             ViewBag.ShippingOrders = orders.Count(o => o.Status == StatusEnum.InHandler);
 
-            // Nếu dự án KHÔNG có Completed → dùng Active làm “hoàn tất”
+            
             ViewBag.CompletedOrders = orders.Count(o => o.Status == StatusEnum.Active);
 
-            // =====================================================================
-            // 🟧 3. BIỂU ĐỒ DOANH THU 7 NGÀY GẦN NHẤT
-            // =====================================================================
+          // biểu đồ
 
             var last7Days = Enumerable.Range(0, 7)
     .Select(i => lastDate.AddDays(-i))
@@ -104,10 +97,7 @@ namespace FootballShop.Areas.Admin.Controllers
 
             ViewBag.Last7DaysRevenue = last7Days;
 
-            // =====================================================================
-            // 🟨 4. TOP 5 SẢN PHẨM BÁN CHẠY
-            // =====================================================================
-
+            // sản phẩm bán chạy
             var top5Products = validOrders
                 .SelectMany(o => o.OrderItems)
                 .Where(i => i.Product != null)
@@ -124,10 +114,7 @@ namespace FootballShop.Areas.Admin.Controllers
 
             ViewBag.TopProducts = top5Products;
 
-            // =====================================================================
-            // 🟥 5. DOANH THU THEO KHOẢNG NGÀY
-            // =====================================================================
-
+           // doanh thu ngày
             ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
             ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
 

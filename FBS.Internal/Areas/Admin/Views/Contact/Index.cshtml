@@ -11,7 +11,7 @@
 
             <div class="card px-4">
 
-                <!-- FORM TÌM KIẾM -->
+               
                 <form method="get" class="mt-4 mb-3">
                     <div class="row g-2">
 
@@ -38,13 +38,13 @@
                     </div>
                 </form>
 
-                <!-- THÔNG BÁO -->
+            
                 @if (TempData["SuccessMessage"] != null)
                 {
                     <div class="alert alert-success">@TempData["SuccessMessage"]</div>
                 }
 
-                <!-- THÔNG BÁO KHÔNG TÌM THẤY -->
+               
                 @if (ViewBag.Empty == true)
                 {
                     <div class="alert alert-warning d-flex align-items-center" role="alert"
@@ -96,14 +96,14 @@
 
                                     <td class="text-center">
 
-                                        <!-- Nút xem -->
+                                       
                                         <a asp-action="Detail"
                                            asp-route-id="@c.Id"
                                            class="action-btn btn-view">
                                             <i class="ri-eye-line"></i> Xem
                                         </a>
 
-                                        <!-- Nút xóa -->
+                                       
                                         <a asp-action="Delete"
                                            asp-route-id="@c.Id"
                                            class="action-btn btn-delete"

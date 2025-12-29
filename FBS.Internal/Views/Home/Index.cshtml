@@ -40,7 +40,7 @@
             </div>
         </section>
        
-        <!-- New Section -->
+       
         <section class="mn-new-product p-tb-15">
             <div class="mn-title">
                 <h2>Sản Phẩm Mới</h2>
@@ -98,9 +98,29 @@
                                 </a>
                             </h5>
                             <div class="mn-price">
-                                <div class="mn-price-new"> @product.PriceString</div>
-                                <div class="mn-price-old"> @product.PriceString</div>
+                                @if (product.Price.HasValue)
+                                {
+                                    @if (product.Discount.HasValue && product.Discount.Value > 0)
+                                    {
+                                        <div class="price-row">
+                                            <span class="mn-price-old">@product.PriceString</span>
+                                            <span class="mn-price-new">@product.PriceAfterDiscountString</span>
+                                            
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="mn-price-new">@product.PriceString</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="mn-price-new">Chưa có giá</span>
+                                }
                             </div>
+
+
+
                            
                         </div>
                     </div>
@@ -108,7 +128,7 @@
             </div>
         </section>
 
-        <!-- Service Section -->
+        
         <section class="mn-service p-tb-15">
             <div class="row m-b-m-24">
                 <div class="mn-ser-content mn-ser-content-1 col-sm-6 col-xl-3 m-b-24" data-aos="fade-up"
@@ -207,7 +227,7 @@
             </div>
         </section>
 
-        <!-- Banner slider -->
+      
         <section class="mn-banner p-tb-15">
             <div class="row">
                 <div class="col-12" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
@@ -372,7 +392,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-        /* ================= QUICKVIEW: CHỌN SIZE ================= */
+       
         document.querySelectorAll(".quickview-modal").forEach(modal => {
 
             modal.querySelectorAll(".mn-opt-sz").forEach(btn => {
@@ -392,7 +412,7 @@
             });
         });
 
-        /* ================= ADD TO CART (AJAX + TOAST) ================= */
+      
         document.addEventListener("click", function (e) {
 
             const btn = e.target.closest(".quickview-add-cart");
@@ -434,14 +454,14 @@
                     return;
                 }
 
-                // ✅ update số lượng icon giỏ
+               
                 const cartCount = document.getElementById("cartCount");
                 if (cartCount) cartCount.innerText = data.count;
 
-                // ✅ thông báo thành công
+               
                 showToast("Đã thêm sản phẩm vào giỏ hàng ✔");
 
-                // ✅ đóng quickview
+              
                 const modalInstance = bootstrap.Modal.getInstance(modal);
                 if (modalInstance) modalInstance.hide();
             })
@@ -451,30 +471,31 @@
         });
     });
 </script>
-
-
-
-
-
-
-
-
 <style>
+    
     .mn-product .owl-stage {
         display: flex;
     }
 
+    
     .mn-product-card {
         display: flex;
         flex-direction: column;
         height: 100%;
+        background: #fff;
+        border: 1px solid #eee;
+        border-radius: 6px;
+        padding: 10px;
+        box-sizing: border-box;
     }
 
+   
     .mn-product-img {
         height: 260px;
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
     }
 
         .mn-product-img img {
@@ -483,10 +504,12 @@
             object-fit: contain;
         }
 
+   
     .mn-product-detail {
         flex: 1;
         display: flex;
         flex-direction: column;
+        margin-top: 10px;
     }
 
         .mn-product-detail h5 a {
@@ -495,28 +518,86 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
             min-height: 48px;
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
         }
 
+   
     .mn-price {
         margin-top: auto;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
-    /* ===== FIX QUICK VIEW QTY LAYOUT ===== */
+
+
+    .price-row {
+        display: flex;
+        align-items: center;
+        gap: 12px; 
+    }
+
+    .mn-price-old {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 0.95rem;
+    }
+
+    .mn-price-new {
+        color: #28a745; 
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .mn-discount {
+        color: #e74c3c; 
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    
     .mn-quickview-qty {
         display: flex;
-        align-items: flex-start; /* QUAN TRỌNG */
+        align-items: flex-start; 
         gap: 16px;
     }
 
     .quickview-qty-left {
         display: flex;
-        flex-direction: column; /* ÉP XUỐNG DƯỚI */
+        flex-direction: column; 
     }
 
     .quickview-warning {
-        display: none; /* mặc định ẩn */
+        display: none; 
         max-width: 260px;
         font-size: 14px;
         line-height: 1.4;
     }
 
+    
+    .mn-product-card:hover {
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+    }
+
+  
+    .lbl {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+    }
+
+        .lbl .trending {
+            background: #28a745;
+            color: #fff;
+            padding: 3px 8px;
+            font-size: 0.75rem;
+            border-radius: 3px;
+            font-weight: 600;
+        }
 </style>
+
+

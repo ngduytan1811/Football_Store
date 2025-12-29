@@ -44,6 +44,7 @@ namespace FBS.Application.Services
                 CategoryName = product.Category?.Name,
                 CategoryId = product.CategoryId,
                 Price = product.Price,
+                Discount = product.Discount,
                 Name = product.Name,
                 Color = product.ProductColor?.Color,
                 Sizes = SortSizes(
@@ -144,9 +145,10 @@ namespace FBS.Application.Services
                 Id = product.Id,
                 Status = product.Status,
                 CategoryName = product.Category != null ? product.Category.Name : null,
-
+              
                 CategoryId = product.CategoryId,
                 Price = product.Price,
+                Discount = product.Discount,
                 Name = product.Name,
                 Color = product.ProductColor.Color,
                 Brand = product.Brand,
@@ -194,7 +196,7 @@ namespace FBS.Application.Services
                 Status = product.Status,
                 Color = product.ProductColor?.Color,
                 Image = product.Image,
-
+                Discount = product.Discount,
                 Brand = product.Brand,
                 CategoryId = product.CategoryId,
                 CategoryName = product.Category?.Name,
@@ -246,7 +248,7 @@ namespace FBS.Application.Services
                 Name = dto.Name?.Trim(),
                 CategoryId = dto.CategoryId,
                 Description = dto.Description,
-                
+                Discount = dto.Discount,
                 Brand = dto.Brand,
                 Price = dto.Price,
                 Status = StatusEnum.Active,
@@ -343,6 +345,7 @@ namespace FBS.Application.Services
             product.Name = dto.Name?.Trim();
             product.CategoryId = dto.CategoryId;
             product.Description = dto.Description;
+            product.Discount = dto.Discount;
             product.Price = dto.Price;
             product.Brand = dto.Brand;
             product.Status = dto.Status;
@@ -356,7 +359,7 @@ namespace FBS.Application.Services
 
 
 
-            // =============== UPDATE SIZE ===========================
+            //  update size
             var oldSizes = await (await productSizeRep.QueryCondition(x => x.ProductId == id)).ToListAsync();
 
             foreach (var s in oldSizes)
@@ -370,11 +373,11 @@ namespace FBS.Application.Services
 
             await productSizeRep.Add(newSizes);
 
-            // =============== UPDATE PRODUCT & COLOR =================
+            //update product && color
             await productRep.Update(product);
             await productColorRep.Update(productColor);
 
-            // =============== UPDATE IMAGES =========================
+            // update iamge
             var oldImages = await (await productImageRep.QueryCondition(x => x.ProductId == id)).ToListAsync();
 
             var keepImages = dto.OldSubImages ?? new List<string>();
@@ -410,9 +413,7 @@ namespace FBS.Application.Services
 
 
 
-        // ======================
-        // DELETE SUB IMAGES
-        // ======================
+       
         public async Task RemoveProductImages(Guid productId)
         {
             var repo = _unitOfWork.GetRepositoryAsync<ProductImage>();
@@ -428,9 +429,7 @@ namespace FBS.Application.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        // ======================
-        // DELETE PRODUCT
-        // ======================
+      
         public async Task<BaseResponse<string>> DeleteProduct(Guid id)
         {
             var result = new BaseResponse<string>();

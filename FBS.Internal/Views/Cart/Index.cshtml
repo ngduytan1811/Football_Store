@@ -46,12 +46,12 @@
 
                                             <td>@item.Size</td>
 
-                                            <!-- PRICE -->
+                                           
                                             <td class="mn-cart-pro-price">
                                                 <span class="amount">@item.PriceString</span>
                                             </td>
 
-                                            <!-- QTY -->
+                                       
                                             <td style="text-align:center;">
                                                 <div class="quantity-box">
                                                     <button type="button" class="qty-btn minus">−</button>
@@ -70,7 +70,7 @@
                                                 @item.SubPriceString
                                             </td>
 
-                                            <!-- REMOVE -->
+                                        
                                             <td>
                                                 <form asp-action="RemoveFromCart" method="post">
                                                     @Html.AntiForgeryToken()
@@ -197,7 +197,7 @@
                 plusBtn.addEventListener("click", () => {
                     let qty = parseInt(qtyInput.value);
 
-                    // ❌ CHẶN > 10
+                  
                     if (qty >= 10) {
                         warning.style.display = "block";
                         return;

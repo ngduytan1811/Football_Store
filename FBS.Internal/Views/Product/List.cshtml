@@ -29,7 +29,7 @@
 
 <div class="row">
     <div class="col-xxl-12">
-        <!-- Shop section -->
+        
         <section class="mn-shop padding-tb-30">
             <div class="row">
                 <div class="mn-shop-rightside col-lg-9 col-md-12">
@@ -121,10 +121,26 @@
                                                 <p class="mn-info">
 
                                                 </p>
-                                                <div class="mn-price">
-                                                    <div class="mn-price-new">@product.PriceString</div>
-                                                    <div class="mn-price-old">@product.PriceString</div>
+                                                <div class="mn-price" style="display:flex; align-items:center; gap:8px; font-size:16px; flex-wrap:wrap;">
+                                                    @if (product.Discount.HasValue && product.Discount.Value > 0)
+                                                    {
+                                                        <!-- Giá gốc gạch ngang, mờ -->
+                                                        <span style="text-decoration:line-through; color:gray; white-space:nowrap;">
+                                                            @product.PriceString&nbsp;đ
+                                                        </span>
+                                                        <!-- Giá sau giảm -->
+                                                        <span style="color:#28a745; font-weight:bold; white-space:nowrap;">
+                                                            @product.PriceAfterDiscountString&nbsp;
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span style="font-weight:bold; white-space:nowrap;">
+                                                            @product.PriceString&nbsp;đ
+                                                        </span>
+                                                    }
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -149,7 +165,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- Sidebar Area Start -->
+                
                 @Html.Partial("_SidebarProduct")
             </div>
         </section>
@@ -163,7 +179,7 @@
 
 </script>
 <style>
-    /* GRID */
+  
 .shop-pro-inner .row {
     display: flex;
     flex-wrap: wrap;
@@ -173,7 +189,7 @@
     display: flex;
 }
 
-/* CARD */
+
 .mn-product-card {
     display: flex;
     flex-direction: column;
@@ -181,7 +197,7 @@
     width: 100%;
 }
 
-/* IMAGE FIX (QUAN TRỌNG) */
+
 .mn-img {
     height: 260px;
     display: flex;
@@ -196,14 +212,14 @@
     object-fit: contain; /* đổi cover nếu muốn đầy khung */
 }
 
-/* CONTENT */
+
 .mn-product-detail {
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 
-/* TITLE */
+
 .mn-product-detail h5 a {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -212,7 +228,7 @@
     min-height: 48px;
 }
 
-/* PRICE */
+
 .mn-price {
     margin-top: auto;
 }

@@ -39,11 +39,11 @@
                         <div class="single-pro-inner">
                             <div class="row">
 
-                                <!-- Ảnh sản phẩm -->
+                         
                                 <div class="single-pro-img">
                                     <div class="single-product-scroll">
 
-                                        <!-- ẢNH CHÍNH -->
+                                   
                                         <div class="single-product-cover">
 
                                             <div class="single-slide zoom-image-hover">
@@ -52,7 +52,7 @@
                                                      alt="@productData.Name" />
                                             </div>
 
-                                            <!-- Ảnh phụ -->
+                                          
                                             @if (productData.SubImages != null)
                                             {
                                                 foreach (var img in productData.SubImages)
@@ -66,7 +66,7 @@
                                             }
                                         </div>
 
-                                        <!-- THUMBNAIL DƯỚI -->
+                                        
                                         <div class="single-nav-thumb">
 
                                             <div class="single-slide">
@@ -92,7 +92,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Thông tin sản phẩm -->
+                              
                                 <div class="single-pro-desc m-t-991">
                                     <div class="single-pro-content">
 
@@ -102,21 +102,30 @@
 
                                         <div class="mn-single-price-stoke">
                                             <div class="mn-single-price">
-                                                <div class="final-price">
-                                                    @productData.PriceString
-                                                    @if (productData.Discount > 0)
-                                                    {
-                                                        <span class="price-des">-@productData.Discount%</span>
-                                                    }
-                                                </div>
+                                                @if (productData.Discount.HasValue && productData.Discount.Value > 0)
+                                                {
+                                                  
+                                                    <div class="price-original-row">
+                                                        <span class="price-original">@productData.PriceString&nbsp;đ</span>
+                                                        <span class="price-discount">-@productData.Discount%</span>
+                                                    </div>
+
+                                                  
+                                                    <div class="price-final">@productData.PriceAfterDiscountString&nbsp;đ</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="price-final">@productData.PriceString&nbsp;đ</div>
+                                                }
                                             </div>
                                         </div>
+
 
                                         <div class="mn-single-desc">
                                             @productData.Description
                                         </div>
 
-                                        <!-- FORM ADD TO CART -->
+                                        
                                         <form asp-action="AddToCart" asp-controller="Cart" method="post" class="">
                                             <div class="mn-pro-variation mb-0">
                                                 <div class="mn-pro-variation-inner mn-pro-variation-size m-b-24">
@@ -131,11 +140,11 @@
                                                                 .Where(s => !string.IsNullOrWhiteSpace(s))
                                                                 .OrderBy(s =>
                                                                 {
-                                                                    // size số: 39, 40, 41...
+                                                                    // size  39, 40, 41
                                                                     if (int.TryParse(s, out var num))
                                                                         return num;
 
-                                                                    // size chữ: S, M, L...
+                                                                    // size S, M, L
                                                                     var index = sizeOrder.IndexOf(s.ToUpper());
                                                                     return index >= 0 ? 1000 + index : 2000;
                                                                 })
@@ -291,11 +300,11 @@
                                 </div>
 
                               
-                                <!-- TAB: Đánh Giá -->
+                            
                                 <div class="tab-pane fade" id="review-pane" role="tabpanel">
                                     <div class="row p-3">
 
-                                        <!-- DANH SÁCH REVIEW -->
+                                        
                                         <div class="mn-t-review-wrapper mb-4">
                                             @if (productData.Reviews.Any())
                                             {
@@ -322,7 +331,7 @@
                                             <form asp-action="Review" asp-controller="Product" method="post">
                                                 <input type="hidden" name="ProductId" value="@productData.Id" />
 
-                                                <!-- Họ tên -->
+                                           
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Họ tên</label>
 
@@ -427,7 +436,7 @@
 
                 </div>
 
-                <!-- Sidebar -->
+             
                 @Html.Partial("_SidebarProduct")
 
             </div>
@@ -439,7 +448,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
-            /* ===== ELEMENTS ===== */
+            
             const form = document.getElementById("addToCartForm");
             const sizeItems = document.querySelectorAll(".size-item");
             const hiddenSize = document.getElementById("SelectedSize");
@@ -449,7 +458,7 @@
             const addToCartBtn = document.querySelector(".mn-add-cart");
             const warningBox = document.getElementById("contactWarning");
 
-            /* ===== SIZE SELECT ===== */
+           
             sizeItems.forEach(item => {
                 item.addEventListener("click", () => {
                     sizeItems.forEach(i => i.classList.remove("active"));
@@ -462,7 +471,7 @@
                 });
             });
 
-            /* ===== CHECK QUANTITY ===== */
+            
             function checkQuantity() {
                 const qty = parseInt(qtyInput.value || 0);
 
@@ -481,11 +490,11 @@
                 qtyInput.addEventListener("input", checkQuantity);
             }
 
-            /* ===== FORM SUBMIT ===== */
+          
             if (form) {
                 form.addEventListener("submit", function (e) {
 
-                    // ❌ CHƯA CHỌN SIZE
+                 
                     if (!hiddenSize.value) {
                         e.preventDefault();
 
@@ -499,7 +508,7 @@
                         return;
                     }
 
-                    // ❌ SỐ LƯỢNG > 10
+                    
                     const qty = parseInt(qtyInput.value || 0);
                     if (qty > 10) {
                         e.preventDefault();
@@ -563,22 +572,18 @@
 
     }
 
-    /* =====================================================
-       1. OWL CAROUSEL – ÉP STRETCH
-    ===================================================== */
+    
     .mn-product.owl-carousel .owl-stage {
         display: flex;
         align-items: stretch;
     }
 
-    /* mỗi item của owl */
+ 
     .mn-product.owl-carousel .owl-item {
         display: flex;
     }
 
-    /* =====================================================
-       2. CARD – CAO BẰNG NHAU
-    ===================================================== */
+   
     .mn-product-card {
         background: #fff;
         border-radius: 18px;
@@ -590,15 +595,12 @@
         width: 100%;
     }
 
-    /* =====================================================
-       3. KHUNG ẢNH – CỐ ĐỊNH
-    ===================================================== */
+    
     .mn-product-img {
         position: relative;
         padding: 8px;
     }
 
-    /* khung ảnh vuông */
     .mn-img {
         width: 100%;
         aspect-ratio: 1 / 1;
@@ -610,18 +612,16 @@
         justify-content: center;
     }
 
-        /* ảnh không làm đổi chiều cao */
+        
         .mn-img img {
             width: 100%;
             height: 100%;
             object-fit: contain;
         }
 
-    /* =====================================================
-       4. PHẦN TEXT – GIÃN ĐỀU
-    ===================================================== */
+  
     .mn-product-detail {
-        flex: 1; /* QUAN TRỌNG */
+        flex: 1; 
         display: flex;
         flex-direction: column;
         padding-top: 8px;
@@ -636,34 +636,30 @@
             min-height: 44px;
         }
 
-    /* =====================================================
-       5. GIÁ LUÔN NẰM DƯỚI
-    ===================================================== */
+   
     .mn-price {
-        margin-top: auto; /* ĐẨY XUỐNG CUỐI */
+        margin-top: auto; 
         display: flex;
         gap: 10px;
     }
-    /* =====================================
-       FIX GIÁ + Đ (CÙNG 1 DÒNG)
-    ===================================== */
+    
     .mn-price,
     .mn-price-new,
     .mn-price-old {
         display: flex;
-        align-items: baseline; /* căn chữ đẹp */
+        align-items: baseline; 
         gap: 2px;
     }
 
-    /* số tiền */
+
     .mn-price-new {
         font-size: 17px;
         font-weight: 800;
         color: #111827;
-        white-space: nowrap; /* KHÔNG XUỐNG DÒNG */
+        white-space: nowrap; 
     }
 
-        /* chữ đ */
+   
         .mn-price-new::after {
             content: "đ";
             font-size: 12px;
@@ -671,7 +667,7 @@
             margin-left: 2px;
         }
 
-    /* giá cũ */
+
     .mn-price-old {
         font-size: 13px;
         color: #9ca3af;
@@ -695,6 +691,54 @@
         line-height: 1.4;
     }
 
+    .mn-single-price {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    
+    .price-original-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 4px;
+    }
+
+    .price-original {
+        text-decoration: line-through;
+        color: #a0a0a0;
+        font-size: 1rem;
+    }
+
+    .price-discount {
+        background-color: #ff4d4f;
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.85rem;
+        padding: 2px 6px;
+        border-radius: 6px;
+        text-transform: uppercase;
+    }
+
+ 
+    .price-final {
+        color: #28a745;
+        font-weight: bold;
+        white-space: nowrap;
+        ;
+        font-weight: 700;
+        font-size: 1.4rem;
+    }
+
+ 
+    @@media (max-width: 576px) {
+        .price-original-row
+
+    {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    }
 </style>
 
 

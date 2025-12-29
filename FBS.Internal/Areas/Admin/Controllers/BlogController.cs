@@ -25,9 +25,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             _blogService = blogService;
         }
 
-        // ============================
-        // LIST
-        // ============================
+       
         public async Task<IActionResult> Index()
         {
             var data = await _blogService.GetBlogs(new BaseSearchDto<BlogSearchDto>());
@@ -35,17 +33,13 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return View();
         }
 
-        // ============================
-        // CREATE (GET)
-        // ============================
+        
         public IActionResult Create()
         {
             return View();
         }
 
-        // ============================
-        // CREATE (POST)
-        // ============================
+       
         
         [HttpPost]
         public async Task<IActionResult> Create(BlogSaveDto dto)
@@ -53,9 +47,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             // Ghép 2 đoạn nội dung vào 1 HTML
             dto.Content = $"{dto.ContentPart1}\n\n<!--IMG-BLOCK-->\n\n{dto.ContentPart2}";
 
-            // =====================
-            // XỬ LÝ ẢNH CHÍNH
-            // =====================
+            
             if (dto.ThumbnailFile != null)
             {
                 var fileName = Guid.NewGuid() + Path.GetExtension(dto.ThumbnailFile.FileName);
@@ -78,9 +70,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 dto.Thumbnail = $"uploads/blog/{fileName}";
             }
 
-            // =====================
-            // XỬ LÝ ẢNH PHỤ
-            // =====================
+           
             dto.SubImages = new List<string>();
 
             if (dto.SubImageFiles != null && dto.SubImageFiles.Count > 0)
@@ -107,15 +97,13 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 }
             }
 
-            // Lưu vào DB
+            // Lưu vào data
             await _blogService.CreateBlog(dto);
 
             return RedirectToAction("Index", "Blog", new { area = "Admin" });
         }
 
-        // ============================
-        // EDIT (GET)
-        // ============================
+        
         public async Task<IActionResult> Edit(Guid id)
         {
             var result = await _blogService.FindById(id);
@@ -125,7 +113,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
             var data = result.Data;
 
-            // TÁCH NỘI DUNG
+            // Tách nội dung
             var parts = (data.Content ?? "").Split("<!--IMG-BLOCK-->");
             string p1 = parts.Length > 0 ? parts[0] : "";
             string p2 = parts.Length > 1 ? parts[1] : "";
@@ -145,9 +133,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return View(dto);
         }
 
-        // ============================
-        // EDIT (POST)
-        // ============================
+     
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, BlogSaveDto dto)
@@ -157,14 +143,10 @@ namespace FBS.Internal.Areas.Admin.Controllers
             if (oldBlog.Data == null)
                 return RedirectToAction("Index", "Blog", new { area = "Admin" });
 
-            // ============================
-            // GHÉP CONTENT
-            // ============================
+            //ghép content
             dto.Content = $"{dto.ContentPart1}\n\n<!--IMG-BLOCK-->\n\n{dto.ContentPart2}";
 
-            // ============================
-            // XỬ LÝ THUMBNAIL
-            // ============================
+            //xử lý thumnailfile
             if (dto.ThumbnailFile == null)
             {
                 dto.Thumbnail = oldBlog.Data.Thumbnail;
@@ -183,16 +165,13 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 dto.Thumbnail = $"uploads/blog/{fileName}";
             }
 
-            // ============================
-            // XỬ LÝ ẢNH PHỤ
-            // ============================
-
-            dto.SubImages = new List<string>();   // Danh sách cuối cùng sẽ lưu vào DB
+           //xử lý ảnh phụ
+            dto.SubImages = new List<string>(); 
 
             var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/blog");
             if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 
-            // 1) Ảnh phụ mới
+            // ảnh phụ mới
             if (dto.SubImageFiles != null && dto.SubImageFiles.Count > 0)
             {
                 foreach (var file in dto.SubImageFiles)
@@ -207,31 +186,25 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 }
             }
 
-            // 2) Ảnh phụ cũ (từ hidden input)
+            // ảnh phụ cũ
             if (dto.OldSubImages != null && dto.OldSubImages.Any())
             {
                 dto.SubImages.AddRange(dto.OldSubImages);
             }
 
-            // Không được để trùng ảnh
+            // k được chùng ảnh
             dto.SubImages = dto.SubImages.Distinct().ToList();
 
-            // ============================
-            // GÁN LẠI ẢNH PHỤ CHO BLOG CŨ
-            // ============================
+           // gán ảnh phụ cho blog cũ
             oldBlog.Data.Images = dto.SubImages;
 
-            // ============================
-            // LƯU DB
-            // ============================
-            await _blogService.UpdateBlog(id, dto);
+            
+            await _blogService.UpdateBlog(id, dto);// lưu vào data
 
             return RedirectToAction("Index", "Blog", new { area = "Admin" });
         }
 
-        // ============================
-        // DELETE
-        // ============================
+        
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {

@@ -25,35 +25,32 @@ namespace FBS.Application.Services
 
         public async Task<BaseTableResponse<BlogDto>> GetBlogs(BaseSearchDto<BlogSearchDto> dto)
         {
-            // Nếu dto null => khởi tạo mặc định
+            
             dto ??= new BaseSearchDto<BlogSearchDto>();
-
-            // Nếu PageSize truyền vào <= 0 => set mặc định
+           
             if (dto.PageSize <= 0)
                 dto.PageSize = 20;
-
-            // Nếu Page truyền vào <= 0 => set mặc định
+            
             if (dto.Page <= 0)
                 dto.Page = 1;
-
-            // Start = (Page - 1) * PageSize => đã có sẵn trong BaseSearchDto
+            
             int start = dto.Start;
 
             var repo = _unitOfWork.GetRepositoryReadOnlyAsync<Blog>();
             var query = await repo.QueryAll();
 
-            // SEARCH
+            // Search
             if (!string.IsNullOrEmpty(dto.SearchParams?.Search))
             {
                 var key = dto.SearchParams.Search.ToLower();
                 query = query.Where(x => x.Title.ToLower().Contains(key));
             }
 
-            // Chuẩn bị response
+            // hiển thị tổng và tính số trang
             var result = new BaseTableResponse<BlogDto>();
             result.Total = query.Count();
 
-            // Lấy danh sách blog
+            // Lấy danh sách 
             var items = query
                 .OrderByDescending(x => x.CreatedAt)
                 .Skip(start)
@@ -121,7 +118,7 @@ namespace FBS.Application.Services
             await repoBlog.Add(blog);
             await _unitOfWork.SaveChangesAsync();
 
-            // === LƯU NHIỀU ẢNH PHỤ ===
+            // nhiều ảnh phụ
             if (dto.SubImages != null && dto.SubImages.Count > 0)
             {
                 foreach (var img in dto.SubImages)
@@ -165,10 +162,9 @@ namespace FBS.Application.Services
                 };
             }
 
-            // ============================
-            // UPDATE BLOG THÔNG THƯỜNG
-            // ============================
-
+            
+            // update blog
+            
             blog.Title = dto.Title;
             blog.Content = dto.Content;
             blog.Author = dto.Author;
@@ -177,17 +173,14 @@ namespace FBS.Application.Services
 
             await _unitOfWork.SaveChangesAsync();
 
-            // ============================
-            // UPDATE ẢNH PHỤ
-            // ============================
 
-            // Danh sách ảnh cũ trong DB
+            // Danh sách ảnh cũ ở data
             var dbImages = blog.Images.Select(x => x.Image).ToList();
 
-            // Danh sách ảnh mới (client gửi lên)
+            // Danh sách ảnh mới 
             var newList = dto.SubImages ?? new List<string>();
 
-            // XÓA ảnh không còn dùng nữa
+            // xóa ảnh k dùng
             var removeList = dbImages.Except(newList).ToList();
             foreach (var img in removeList)
             {
@@ -196,7 +189,7 @@ namespace FBS.Application.Services
                     await repoBlogImg.Delete(entity);
             }
 
-            // THÊM ảnh mới (chỉ thêm ảnh chưa có)
+            // Thêm ảnh mới (chưa có)
             var addList = newList.Except(dbImages).ToList();
             foreach (var img in addList)
             {

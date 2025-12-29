@@ -1,6 +1,4 @@
-﻿// <copyright file= Order.cs company= Giang Nguyen>
-// Copyright (c) Giang Nguyen. All rights reserved.
-// </copyright>
+﻿
 
 namespace FBS.Infrastructure.Entities
 {

@@ -19,13 +19,13 @@ namespace FBS.Internal.Controllers
             _signInManager = signInManager;
         }
 
-        // HIỂN THỊ HỒ SƠ
+        
         public IActionResult Profile()
         {
             return View(CurrentUser);
         }
 
-        // FORM EDIT
+  
         public IActionResult Edit()
         {
             return View(CurrentUser);
@@ -41,12 +41,11 @@ namespace FBS.Internal.Controllers
             if (user == null)
                 return RedirectToAction("Login", "Auth");
 
-            // Cập nhật User (Identity)
             user.Email = model.Email ?? "";
             user.PhoneNumber = model.PhoneNumber ?? "";
             await _userManager.UpdateAsync(user);
 
-            // Cập nhật Member
+         
             var repo = _unitOfWork.GetRepositoryAsync<Member>();
             var member = await repo.Single(x => x.UserId == user.Id);
 
@@ -81,7 +80,7 @@ public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
     if (user == null)
         return RedirectToAction("Login", "Auth");
 
-    // Kiểm tra mật khẩu cũ + đổi mật khẩu mới
+    
     var result = await _userManager.ChangePasswordAsync(
         user, 
         model.CurrentPassword, 
@@ -97,7 +96,7 @@ public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         return View(model);
     }
 
-    // Cập nhật phiên đăng nhập
+ 
     await _signInManager.RefreshSignInAsync(user);
 
     TempData["Success"] = "Đổi mật khẩu thành công!";

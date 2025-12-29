@@ -29,9 +29,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             _categoryService = categoryService;
         }
 
-        // ============================
-        // INDEX
-        // ============================
+       
         public async Task<IActionResult> Index(int page = 1, Guid? categoryId = null)
         {
             var dataSearch = new BaseSearchDto<ProductSearchDto>()
@@ -63,9 +61,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return View();
         }
 
-        // ============================
-        // CREATE
-        // ============================
+        
         public async Task<IActionResult> Create()
         {
             var drop = await _categoryService.GetCategoryDropdown();
@@ -85,7 +81,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             Console.WriteLine("=== DEBUG SUB IMAGES ===");
             Console.WriteLine("SubImageFiles = " + (request.SubImageFiles?.Count ?? 0));
 
-            // ====== UPLOAD ẢNH CHÍNH ======
+          // update ảnh chính
             if (request.ImageFile != null)
             {
                 var fileName = Guid.NewGuid() + Path.GetExtension(request.ImageFile.FileName);
@@ -106,7 +102,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 request.Image = fileName;
             }
 
-            // ====== UPLOAD ẢNH PHỤ ======
+            // update ảnh phụ
             if (request.SubImageFiles != null && request.SubImageFiles.Count > 0)
             {
                 request.SubImages = new List<string>();
@@ -139,9 +135,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        // ============================
-        // EDIT
-        // ============================
+       
         public async Task<IActionResult> Edit(Guid id)
         {
             ViewData["Categories"] = (await _categoryService.GetCategoryDropdown()).Data;
@@ -158,6 +152,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 Description = res.Data.Description,
                 Detail = res.Data.Detail,
                 Price = res.Data.Price,
+                Discount = res.Data.Discount,
                 Color = res.Data.Color,
                 Sizes = res.Data.Sizes,
                 Status = res.Data.Status,
@@ -169,7 +164,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             };
             if (!string.IsNullOrEmpty(res.Data.Detail))
             {
-                // bạn đang join bằng "\n\n" khi lưu → tách theo "\n\n"
+               
                 var parts = res.Data.Detail.Split(
                     new[] { "\n\n" },
                     StringSplitOptions.None
@@ -182,9 +177,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return View(dto);
         }
 
-        // ============================
-        // UPDATE
-        // ============================
+   
         [HttpPost]
         public async Task<IActionResult> Update(Guid id, ProductSaveDto request)
         {
@@ -192,8 +185,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             if (current.Data == null)
                 return RedirectToAction("Index");
 
-            // ===== XỬ LÝ ẢNH PHỤ =====
-            // ===== XỬ LÝ ẢNH PHỤ =====
+           // xử lý ảnh phụ
             var finalImages = new List<string>();
 
             request.SubImageFiles = request.SubImageFiles ?? new List<IFormFile>();
@@ -227,7 +219,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
             request.SubImages = finalImages;
 
-            // ===== UPDATE PRODUCT =====
+            // update product
             var result = await _productService.UpdateProduct(id, request, finalImages);
 
             if (result.Type == GlobalConstants.ResponseType.Success)
@@ -237,9 +229,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
         }
 
 
-        // ============================
-        // DELETE
-        // ============================
+        
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {

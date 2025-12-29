@@ -1,8 +1,4 @@
-﻿// <copyright file= PermissionMenuDto.cs company=Tan Nguyen>
-// Copyright (c) Tan Nguyen. All rights reserved.
-// </copyright>
-
-namespace FBS.Shared.DataTransferObjects.Roles
+﻿namespace FBS.Shared.DataTransferObjects.Roles
 {
     using FBS.Shared.DataTranferObjects.Base;
 

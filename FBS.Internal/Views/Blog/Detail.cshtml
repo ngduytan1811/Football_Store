@@ -2,16 +2,16 @@
 
 <div class="container mt-5" style="max-width:900px;">
 
-    <!-- TIÊU ĐỀ -->
+    
     <h1 class="fw-bold mb-3">@Model.Title</h1>
 
-    <!-- TÁC GIẢ + NGÀY ĐĂNG -->
+  
     <p class="text-muted">
         @Model.Author — @(Model.CreatedAt?.ToString("dd/MM/yyyy") ?? "")
 
     </p>
 
-    <!-- ẢNH THUMBNAIL -->
+   
     @if (!string.IsNullOrEmpty(Model.Thumbnail))
     {
         <img src="/@Model.Thumbnail"
@@ -19,19 +19,18 @@
              style="width:100%;object-fit:cover;" />
     }
 
-    <!-- TÁCH CONTENT RA 2 ĐOẠN -->
+  
     @{
         var parts = (Model.Content ?? "").Split("<!--IMG-BLOCK-->");
         string c1 = parts.Length > 0 ? parts[0] : "";
         string c2 = parts.Length > 1 ? parts[1] : "";
     }
 
-    <!-- NỘI DUNG 1 -->
+ 
     <div class="content mb-4" style="font-size:18px;line-height:1.7;">
         @Html.Raw(c1)
     </div>
 
-    <!-- ẢNH PHỤ 1 -->
     @if (Model.Images != null && Model.Images.Count > 0)
     {
         <img src="/@Model.Images[0]"
@@ -39,12 +38,12 @@
              style="width:100%;object-fit:cover;" />
     }
 
-    <!-- NỘI DUNG 2 -->
+  
     <div class="content mb-4" style="font-size:18px;line-height:1.7;">
         @Html.Raw(c2)
     </div>
 
-    <!-- CÁC ẢNH PHỤ CÒN LẠI -->
+  
     @if (Model.Images != null && Model.Images.Count > 1)
     {
         for (int i = 1; i < Model.Images.Count; i++)

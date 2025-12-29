@@ -1,8 +1,4 @@
-﻿// <copyright file= User.cs company= Giang Nguyen>
-// Copyright (c) Giang Nguyen. All rights reserved.
-// </copyright>
-
-namespace FBS.Infrastructure.Entities
+﻿namespace FBS.Infrastructure.Entities
 {
     using System;
     using System.Collections.Generic;

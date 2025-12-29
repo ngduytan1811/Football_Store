@@ -1,6 +1,4 @@
-﻿// <copyright file= SystemLogConfiguration.cs company= Giang Nguyen>
-// Copyright (c) Giang Nguyen. All rights reserved.
-// </copyright>
+﻿
 
 namespace FBS.DataAccess.Configurations
 {

@@ -18,9 +18,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        // ============================
-        // DANH SÁCH LIÊN HỆ
-        // ============================
+        
         public async Task<IActionResult> Index(string? keyword)
         {
             var repo = _unitOfWork.GetRepositoryAsync<Contact>();
@@ -63,9 +61,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
 
 
-        // ============================
-        // XEM CHI TIẾT LIÊN HỆ
-        // ============================
+       
         public async Task<IActionResult> Detail(Guid id)
         {
             var repo = _unitOfWork.GetRepositoryAsync<Contact>();
@@ -78,9 +74,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return View(contact);
         }
 
-        // ============================
-        // XÓA (SOFT DELETE)
-        // ============================
+       
         public async Task<IActionResult> Delete(Guid id)
         {
             var repo = _unitOfWork.GetRepositoryAsync<Contact>();

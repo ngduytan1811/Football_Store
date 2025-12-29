@@ -1,8 +1,4 @@
-﻿// <copyright file=  FileUploadDto.cs company= Tan Nguyen>
-// Copyright (c) Tan Nguyen. All rights reserved.
-// </copyright>
-
-namespace FBS.Shared.DataTranferObjects.FileUploads
+﻿namespace FBS.Shared.DataTranferObjects.FileUploads
 {
     public class FileUploadDto
     {

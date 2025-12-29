@@ -26,9 +26,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             _categoryService = categoryService;
         }
 
-        // ============================
-        // LIST
-        // ============================
+       
         public async Task<IActionResult> Index(int page = 1)
         {
             var dataSearch = new BaseSearchDto<CategorySearchDto>()
@@ -38,7 +36,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
             var data = await _categoryService.GetCategories(dataSearch);
 
-            // Tính STT
+       
             var startIndex = dataSearch.Start + 1;
             data.Items?.ForEach(i => i.Index = startIndex++);
 
@@ -46,20 +44,16 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return View();
         }
 
-        // ============================
-        // CREATE GET
-        // ============================
+      
         public async Task<IActionResult> Create()
         {
             var dropdown = await _categoryService.GetCategoryDropdown(null);
-            ViewData["Categories"] = dropdown?.Data;   // sử dụng key chuẩn
+            ViewData["Categories"] = dropdown?.Data;  
 
             return View();
         }
 
-        // ============================
-        // CREATE POST
-        // ============================
+      
         [HttpPost]
         public async Task<IActionResult> Create(CategorySaveDto model)
         {
@@ -78,9 +72,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        // ============================
-        // EDIT GET
-        // ============================
+       
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
@@ -88,7 +80,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             var dropdown = await _categoryService.GetCategoryDropdown(null);
             var list = dropdown?.Data ?? new List<CategoryDto>();
 
-            // Lấy dữ liệu category đang sửa
+            // Lấy dữ liệu khi sửa
             var data = await _categoryService.FindById(id);
             if (data.Data == null)
                 return RedirectToAction("Index");
@@ -101,15 +93,13 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 ParentId = data.Data.ParentId
             };
 
-            // Loại chính nó khỏi dropdown
+            
             ViewData["Categories"] = list.Where(x => x.Id != id).ToList();
 
             return View(model);
         }
 
-        // ============================
-        // EDIT POST
-        // ============================
+       
         [HttpPost]
         public async Task<IActionResult> Update(Guid id, CategorySaveDto model)
         {
@@ -126,9 +116,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        // ============================
-        // DELETE
-        // ============================
+        
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {

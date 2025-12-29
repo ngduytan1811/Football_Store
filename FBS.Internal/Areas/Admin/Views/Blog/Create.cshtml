@@ -27,24 +27,24 @@
     <form asp-action="Create" method="post" enctype="multipart/form-data">
         <div class="row">
 
-            <!-- LEFT -->
+         
             <div class="col-xl-8">
                 <div class="card shadow-sm">
                     <div class="card-body">
 
-                        <!-- Tiêu đề -->
+                       
                         <div class="mb-4">
                             <label class="form-label fw-bold">Tiêu đề</label>
                             <input asp-for="Title" class="form-control form-control-lg" placeholder="Nhập tiêu đề bài viết" />
                         </div>
 
-                        <!-- Tác giả -->
+                      
                         <div class="mb-4">
                             <label class="form-label fw-bold">Tác giả</label>
                             <input asp-for="Author" class="form-control form-control-lg" placeholder="Tên tác giả" />
                         </div>
 
-                        <!-- Nội dung đoạn 1 -->
+                       
                         <div class="mb-4">
                             <label class="form-label fw-bold">Nội dung đoạn 1</label>
                             <textarea asp-for="ContentPart1"
@@ -52,7 +52,6 @@
                                       class="form-control"></textarea>
                         </div>
 
-                        <!-- Nội dung đoạn 2 -->
                         <div class="mb-4">
                             <label class="form-label fw-bold">Nội dung đoạn 2</label>
                             <textarea asp-for="ContentPart2"
@@ -64,12 +63,12 @@
                 </div>
             </div>
 
-            <!-- RIGHT -->
+            
             <div class="col-xl-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
 
-                        <!-- Thumbnail -->
+                       
                         <h5 class="fw-bold">Ảnh thumbnail</h5>
                         <div class="mb-4">
                             <input asp-for="ThumbnailFile"
@@ -83,7 +82,7 @@
                                  style="width:100%;margin-top:10px;display:none;border-radius:10px;object-fit:cover" />
                         </div>
 
-                        <!-- Ảnh phụ -->
+                     
                         <h5 class="fw-bold">Ảnh phụ (nhiều hình)</h5>
                         <div class="mb-4">
                             <input id="SubImageFiles"
@@ -95,7 +94,7 @@
                                    onchange="previewSubImages(event)" />
                         </div>
 
-                        <!-- PREVIEW ẢNH PHỤ -->
+                      
                         <div id="subImagePreview" class="mt-3"></div>
 
                         <div class="text-end mt-4">
@@ -120,7 +119,7 @@
 
 @section Scripts {
     <script>
-        /* ============ PREVIEW THUMBNAIL ============ */
+       
         function previewThumbnail(event) {
             const reader = new FileReader();
             reader.onload = function () {
@@ -131,7 +130,7 @@
             reader.readAsDataURL(event.target.files[0]);
         }
 
-        /* ============ PREVIEW NHIỀU ẢNH PHỤ ============ */
+        
         let selectedSubImages = [];
 
         function previewSubImages(event) {

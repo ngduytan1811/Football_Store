@@ -63,12 +63,12 @@ namespace FootballShop.Areas.Admin.Controllers
             // Repository ghi
             var repo = _unitOfWork.GetRepositoryAsync<ProductReview>();
 
-            // Lấy review theo ID (FindById là hàm đúng trong repo)
+            // Lấy review theo id
             var review = await repo.FindById(id);
 
             if (review != null)
             {
-                // Xoá theo entity hoặc theo ID đều được
+                
                 await repo.Delete(id);
                 await _unitOfWork.SaveChangesAsync();
             }

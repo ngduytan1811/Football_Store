@@ -22,7 +22,7 @@ namespace FBS.Internal.Controllers
             _blogService = blogService;
         }
 
-        // GET: /blog
+       
         [HttpGet("")]
         public async Task<IActionResult> Index()
         {

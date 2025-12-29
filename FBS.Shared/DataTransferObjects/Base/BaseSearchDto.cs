@@ -1,8 +1,4 @@
-﻿// <copyright file=  BaseSearchDto.cs company= Tan Nguyen>
-// Copyright (c) Tan Nguyen. All rights reserved.
-// </copyright>
-
-namespace FBS.Shared.DataTranferObjects.Base
+﻿namespace FBS.Shared.DataTranferObjects.Base
 {
     using FBS.Shared.Constants;
 
