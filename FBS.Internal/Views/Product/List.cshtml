@@ -49,8 +49,8 @@
                                 <div class="mn-select-inner">
                                     <select name="Sort" id="mn-select">
                                         <option  disabled>Sắp xếp</option>
-                                        <option value="Price_Desc" selected="@(searchData.Sort == "Price_Desc")">Giá:tăng dần</option>
-                                        <option value="Price_Asc" selected="@(searchData.Sort == "Price_Asc")">Giá:giảm dần</option>
+                                        <option value="Price_Desc" selected="@(searchData.Sort == "Price_Desc")">Giá:giảm dần</option>
+                                        <option value="Price_Asc" selected="@(searchData.Sort == "Price_Asc")">Giá:tăng dần</option>
                                         <option value="Name_Asc" selected="@(searchData.Sort == "Name_Asc")">Tên: A-Z</option>
                                         <option value="Name_Desc" selected="@(searchData.Sort == "Name_Desc")">Tên: Z-A</option>
                                     </select>
@@ -124,19 +124,19 @@
                                                 <div class="mn-price" style="display:flex; align-items:center; gap:8px; font-size:16px; flex-wrap:wrap;">
                                                     @if (product.Discount.HasValue && product.Discount.Value > 0)
                                                     {
-                                                        <!-- Giá gốc gạch ngang, mờ -->
+                                                       
                                                         <span style="text-decoration:line-through; color:gray; white-space:nowrap;">
-                                                            @product.PriceString&nbsp;đ
+                                                            @product.PriceString&nbsp;
                                                         </span>
-                                                        <!-- Giá sau giảm -->
-                                                        <span style="color:#28a745; font-weight:bold; white-space:nowrap;">
+                                                       
+                                                        <span style="color:black; font-weight:bold; white-space:nowrap;">
                                                             @product.PriceAfterDiscountString&nbsp;
                                                         </span>
                                                     }
                                                     else
                                                     {
                                                         <span style="font-weight:bold; white-space:nowrap;">
-                                                            @product.PriceString&nbsp;đ
+                                                            @product.PriceString&nbsp;
                                                         </span>
                                                     }
                                                 </div>
@@ -209,7 +209,7 @@
 .mn-img img {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* đổi cover nếu muốn đầy khung */
+    object-fit: contain; 
 }
 
 

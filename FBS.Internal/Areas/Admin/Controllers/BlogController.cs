@@ -44,7 +44,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(BlogSaveDto dto)
         {
-            // Ghép 2 đoạn nội dung vào 1 HTML
+            // ghép 2 đoạn nội dung 
             dto.Content = $"{dto.ContentPart1}\n\n<!--IMG-BLOCK-->\n\n{dto.ContentPart2}";
 
             
@@ -97,7 +97,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 }
             }
 
-            // Lưu vào data
+            // lưu vào data
             await _blogService.CreateBlog(dto);
 
             return RedirectToAction("Index", "Blog", new { area = "Admin" });
@@ -113,7 +113,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
             var data = result.Data;
 
-            // Tách nội dung
+            // tách nội dung
             var parts = (data.Content ?? "").Split("<!--IMG-BLOCK-->");
             string p1 = parts.Length > 0 ? parts[0] : "";
             string p2 = parts.Length > 1 ? parts[1] : "";
@@ -138,7 +138,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, BlogSaveDto dto)
         {
-            // Lấy blog cũ
+            // lấy bài viết cũ
             var oldBlog = await _blogService.FindById(id);
             if (oldBlog.Data == null)
                 return RedirectToAction("Index", "Blog", new { area = "Admin" });
@@ -146,7 +146,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             //ghép content
             dto.Content = $"{dto.ContentPart1}\n\n<!--IMG-BLOCK-->\n\n{dto.ContentPart2}";
 
-            //xử lý thumnailfile
+            //xử lý 
             if (dto.ThumbnailFile == null)
             {
                 dto.Thumbnail = oldBlog.Data.Thumbnail;

@@ -69,11 +69,11 @@ namespace FBS.Application.Services
                 .Where(s => !string.IsNullOrWhiteSpace(s))
                 .OrderBy(s =>
                 {
-                    // SIZE SỐ
+                    
                     if (int.TryParse(s, out int number))
                         return number;
 
-                    // SIZE CHỮ → đẩy sau size số
+                    
                     var index = SizeOrder.IndexOf(s.ToUpper());
                     return index >= 0 ? 1000 + index : 2000;
                 })
@@ -124,7 +124,7 @@ namespace FBS.Application.Services
                     .GetRepositoryReadOnlyAsync<Category>()
                     .QueryAll();
 
-                // Lấy CHA + CON
+               
                 var categoryIds = queryCategories
                     .Where(c => c.Id == parentId || c.ParentId == parentId)
                     .Select(c => c.Id)
@@ -135,6 +135,29 @@ namespace FBS.Application.Services
                     categoryIds.Contains(x.CategoryId.Value));
             }
 
+            //Sắp xếp sản phẩm 
+            switch (search.Sort)
+            {
+                case "Price_Asc":
+                    queryProduct = queryProduct.OrderBy(x => x.Price);
+                    break;
+
+                case "Price_Desc":
+                    queryProduct = queryProduct.OrderByDescending(x => x.Price);
+                    break;
+
+                case "Name_Asc":
+                    queryProduct = queryProduct.OrderBy(x => x.Name);
+                    break;
+
+                case "Name_Desc":
+                    queryProduct = queryProduct.OrderByDescending(x => x.Name);
+                    break;
+
+                default:
+                    queryProduct = queryProduct.OrderByDescending(x => x.CreatedAt);
+                    break;
+            }
 
 
 
@@ -168,9 +191,7 @@ namespace FBS.Application.Services
             return result;
         }
 
-        // ======================
-        // FIND PRODUCT BY ID
-        // ======================
+        
         public async Task<BaseResponse<ProductDto>> FindById(Guid productId)
         {
             var result = new BaseResponse<ProductDto>();
@@ -208,9 +229,7 @@ namespace FBS.Application.Services
             return result;
         }
 
-        // ======================
-        // CREATE PRODUCT REVIEW
-        // ======================
+        
         public async Task<BaseResponse<string>> CreateProductReview(ProductReviewSaveDto dto)
         {
             var result = new BaseResponse<string>();
@@ -230,9 +249,7 @@ namespace FBS.Application.Services
             return result;
         }
 
-        // ======================
-        // CREATE PRODUCT
-        // ======================
+        
         public async Task<BaseResponse<string>> CreateProduct(ProductSaveDto dto)
         {
             var result = new BaseResponse<string>();
@@ -242,7 +259,7 @@ namespace FBS.Application.Services
             var productSizeRep = _unitOfWork.GetRepositoryAsync<ProductSize>();
             var imageRep = _unitOfWork.GetRepositoryAsync<ProductImage>();
 
-            // ===== Tạo product =====
+           
             var product = new Product
             {
                 Name = dto.Name?.Trim(),
@@ -264,14 +281,14 @@ namespace FBS.Application.Services
 
             await productRep.Add(product);
 
-            // ===== Màu =====
+        
             await productColorRep.Add(new ProductColor
             {
                 Product = product,
                 Color = dto.Color
             });
 
-            // ===== Sizes =====
+          
             var sizes = dto.Sizes.Distinct().Select(s => new ProductSize
             {
                 Product = product,
@@ -280,10 +297,10 @@ namespace FBS.Application.Services
 
             await productSizeRep.Add(sizes);
 
-            // ===== Lưu product trước =====
+           
             await _unitOfWork.SaveChangesAsync();
 
-            // ===== Lưu ảnh phụ =====
+           
             if (dto.SubImages != null && dto.SubImages.Count > 0)
             {
                 foreach (var img in dto.SubImages)
@@ -303,9 +320,7 @@ namespace FBS.Application.Services
         }
 
 
-        // ======================
-        // ADD MULTIPLE IMAGES
-        // ======================
+      
         public async Task AddProductImages(Guid productId, List<string> images)
         {
             var repo = _unitOfWork.GetRepositoryAsync<ProductImage>();
@@ -323,9 +338,7 @@ namespace FBS.Application.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
-        // ======================
-        // UPDATE PRODUCT
-        // ======================
+      
         public async Task<BaseResponse<string>> UpdateProduct(Guid id, ProductSaveDto dto, List<string> newImages)
         {
             var result = new BaseResponse<string>();
@@ -341,7 +354,7 @@ namespace FBS.Application.Services
 
             var productColor = await productColorRep.Single(x => x.ProductId == id);
 
-            // =============== UPDATE PRODUCT =======================
+            
             product.Name = dto.Name?.Trim();
             product.CategoryId = dto.CategoryId;
             product.Description = dto.Description;
@@ -382,7 +395,7 @@ namespace FBS.Application.Services
 
             var keepImages = dto.OldSubImages ?? new List<string>();
 
-            // XOÁ ảnh phụ bị user xoá
+            // xóa ảnh phụ
             foreach (var img in oldImages)
             {
                 if (!keepImages.Contains(img.ImagePath))
@@ -391,7 +404,7 @@ namespace FBS.Application.Services
                 }
             }
 
-            // THÊM ảnh phụ mới
+            // thêm ảnh phụ
             if (newImages != null && newImages.Count > 0)
             {
                 foreach (var img in newImages)
@@ -405,7 +418,7 @@ namespace FBS.Application.Services
                 }
             }
 
-            // Lưu thay đổi
+            
             await _unitOfWork.SaveChangesAsync();
 
             return result;

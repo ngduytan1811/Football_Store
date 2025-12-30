@@ -23,9 +23,7 @@ namespace FBS.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        // ================================
-        // ADMIN - Lấy tất cả đơn hàng
-        // ================================
+        
         public async Task<BaseTableResponse<OrderDto>> GetOrders(BaseSearchDto<OrderSearchDto> dto)
         {
             var result = new BaseTableResponse<OrderDto>();
@@ -51,9 +49,7 @@ namespace FBS.Application.Services
             return result;
         }
 
-        // ================================
-        // ADMIN / USER - Lấy chi tiết đơn hàng theo ID
-        // ================================
+      
         public async Task<BaseResponse<OrderDto>> FindById(Guid orderId)
         {
             var result = new BaseResponse<OrderDto>();
@@ -88,9 +84,7 @@ namespace FBS.Application.Services
             return result;
         }
 
-        // ================================
-        // USER - Tạo đơn hàng mới
-        // ================================
+       
         public async Task<BaseResponse<string>> CreateOrder(CheckoutDto dto)
         {
             var result = new BaseResponse<string>();
@@ -98,7 +92,7 @@ namespace FBS.Application.Services
 
             var newOrder = new Order
             {
-                CustomerId = dto.CustomerId,         // 🔥 BẮT BUỘC
+                CustomerId = dto.CustomerId,        
                 CustomerName = dto.FullName,
                 CustomerPhone = dto.PhoneNumber,
                 CustomerEmail = dto.Email,
@@ -124,9 +118,7 @@ namespace FBS.Application.Services
         }
 
 
-        // ================================
-        // USER - Lấy tất cả đơn hàng theo CustomerId
-        // ================================
+     
         public async Task<List<OrderDto>> GetOrdersByCustomer(Guid customerId)
         {
             var query = await _unitOfWork
@@ -167,9 +159,7 @@ namespace FBS.Application.Services
         }
 
 
-        // ================================
-        // USER - Lấy chi tiết đơn hàng & kiểm tra quyền sở hữu
-        // ================================
+        
         public async Task<OrderDto?> GetOrderDetail(Guid orderId, Guid customerId)
         {
             var repo = _unitOfWork.GetRepositoryReadOnlyAsync<Order>();
@@ -208,9 +198,7 @@ namespace FBS.Application.Services
             };
         }
 
-        // ================================
-        // ADMIN - Xóa đơn
-        // ================================
+        
         public async Task<BaseResponse<string>> DeleteOrder(Guid id)
         {
             var result = new BaseResponse<string>();
@@ -225,7 +213,7 @@ namespace FBS.Application.Services
         }
         public async Task<BaseResponse<string>> CancelOrder(Guid orderId, Guid customerId)
         {
-            // READ
+          
             var orderReadRepo = _unitOfWork.GetRepositoryReadOnlyAsync<Order>();
             var query = await orderReadRepo.QueryAll();
 
@@ -241,7 +229,7 @@ namespace FBS.Application.Services
                 };
             }
 
-            // ❌ KHÔNG CHO HỦY KHI:
+           
             if (order.Status == StatusEnum.InHandler ||
                 order.Status == StatusEnum.WaitingApproval ||
                 order.Status == StatusEnum.Cancel)
@@ -253,7 +241,7 @@ namespace FBS.Application.Services
                 };
             }
 
-            // WRITE
+            
             var orderWriteRepo = _unitOfWork.GetRepositoryAsync<Order>();
 
             order.Status = StatusEnum.Cancel;
@@ -286,7 +274,7 @@ namespace FBS.Application.Services
                 };
             }
 
-            // ❌ KHÔNG cho sửa khi đã giao / hoàn thành / hủy
+            
             if (order.Status == StatusEnum.InHandler ||
                 order.Status == StatusEnum.WaitingApproval ||
                 order.Status == StatusEnum.Cancel)
@@ -298,7 +286,7 @@ namespace FBS.Application.Services
                 };
             }
 
-            // UPDATE
+          
             order.CustomerName = dto.CustomerName;
             order.CustomerPhone = dto.CustomerPhone;
             order.CustomerAddress = dto.CustomerAddress;

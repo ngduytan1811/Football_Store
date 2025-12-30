@@ -14,6 +14,7 @@ namespace FBS.Internal.Controllers
     {
         private readonly IProductService _productService;
         private readonly IOrderService _orderService;
+        private int totalQuantity;
 
         public CartController(
             UserManager<User> userManager,
@@ -68,6 +69,15 @@ namespace FBS.Internal.Controllers
                 TempData["Error"] = "Sản phẩm không tồn tại";
                 return RedirectToAction("Index", "Product");
             }
+            if (totalQuantity > 10)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return Json(new { success = false, message = "Số lượng tối đa là 10 sản phẩm. Vui lòng liên hệ shop." });
+
+                TempData["Error"] = "Số lượng tối đa là 10 sản phẩm. Vui lòng liên hệ shop.";
+                return RedirectToAction("Detail", "Product", new { id = request.ProductId });
+            }
+
 
             var existingItem = cart.FirstOrDefault(i =>
                 i.ProductId == request.ProductId && i.Size == request.Size);
@@ -104,7 +114,7 @@ namespace FBS.Internal.Controllers
                 });
             }
 
-            // ✅ Form submit → redirect như cũ
+            
             return RedirectToAction("Index");
         }
 

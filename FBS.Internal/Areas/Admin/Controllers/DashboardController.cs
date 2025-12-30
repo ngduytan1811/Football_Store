@@ -55,8 +55,7 @@ namespace FootballShop.Areas.Admin.Controllers
             var lastDate = validOrders.Max(o => o.CreatedAt!.Value.Date);
             var today = lastDate;
 
-           //Doanh thu tổng
-
+           //doanh thu tổng
             ViewBag.TotalRevenue = validOrders.Sum(o =>
                 o.OrderItems.Sum(i => (i.Price ?? 0) * (i.Quantity ?? 0)));
 
@@ -72,16 +71,12 @@ namespace FootballShop.Areas.Admin.Controllers
 
            // trạng thái đơn hàng
             ViewBag.TotalOrders = orders.Count;
-
             ViewBag.CanceledOrders = orders.Count(o => o.Status == StatusEnum.Cancel);
             ViewBag.ProcessingOrders = orders.Count(o => o.Status == StatusEnum.WaitingApproval);
             ViewBag.ShippingOrders = orders.Count(o => o.Status == StatusEnum.InHandler);
-
-            
             ViewBag.CompletedOrders = orders.Count(o => o.Status == StatusEnum.Active);
 
           // biểu đồ
-
             var last7Days = Enumerable.Range(0, 7)
     .Select(i => lastDate.AddDays(-i))
     .OrderBy(d => d)
@@ -93,8 +88,6 @@ namespace FootballShop.Areas.Admin.Controllers
             .Sum(o => o.OrderItems.Sum(i => (i.Price ?? 0) * (i.Quantity ?? 0)))
     })
     .ToList();
-
-
             ViewBag.Last7DaysRevenue = last7Days;
 
             // sản phẩm bán chạy

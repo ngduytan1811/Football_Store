@@ -76,11 +76,11 @@ namespace FBS.Internal.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            // Dropdown tất cả category
+            //  tất cả category
             var dropdown = await _categoryService.GetCategoryDropdown(null);
             var list = dropdown?.Data ?? new List<CategoryDto>();
 
-            // Lấy dữ liệu khi sửa
+            // lấy dữ liệu khi sửa
             var data = await _categoryService.FindById(id);
             if (data.Data == null)
                 return RedirectToAction("Index");
