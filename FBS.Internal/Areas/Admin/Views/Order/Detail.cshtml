@@ -13,7 +13,7 @@
 
         <h3 class="fw-bold mb-3">Chi tiết đơn hàng</h3>
 
-        <!-- Thông báo -->
+        
         @if (TempData["Success"] != null)
         {
             <div class="alert alert-success">@TempData["Success"]</div>
@@ -23,7 +23,7 @@
             <div class="alert alert-danger">@TempData["Error"]</div>
         }
 
-        <!-- Thông tin khách hàng -->
+     
         <div class="mb-4">
             <p><b>Tên khách:</b> @Model.CustomerName</p>
             <p><b>Số điện thoại:</b> @Model.CustomerPhone</p>
@@ -34,7 +34,7 @@
 
         <hr />
 
-        <!-- Đổi trạng thái đơn hàng -->
+        
         <h5 class="fw-bold mb-3">Trạng thái đơn hàng</h5>
 
         <form asp-action="UpdateStatus" asp-controller="Order" method="post">
@@ -58,7 +58,7 @@
 
         <hr />
 
-        <!-- Danh sách sản phẩm -->
+ 
         <h5 class="fw-bold mb-3">Danh sách sản phẩm</h5>
 
         <table class="table table-bordered table-hover align-middle">

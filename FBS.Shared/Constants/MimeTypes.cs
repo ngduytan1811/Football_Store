@@ -1,8 +1,4 @@
-﻿// <copyright file=  MimeTypes.cs company= Giang Nguyen>
-// Copyright (c) Giang Nguyen. All rights reserved.
-// </copyright>
-
-namespace FBS.Shared.Constants
+﻿namespace FBS.Shared.Constants
 {
     public static class MimeTypes
     {

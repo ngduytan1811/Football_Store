@@ -15,23 +15,19 @@ namespace FootballShop.Areas.Admin.Controllers
         {
         }
 
-        // 📌 DANH SÁCH ĐƠN HÀNG
+       
         public async Task<IActionResult> Index(string? keyword, DateTime? fromDate, DateTime? toDate, StatusEnum? status)
         {
             var repo = _unitOfWork.GetRepositoryReadOnlyAsync<Order>();
             var query = await repo.QueryAll();   // IQueryable
 
-            // =============================
-            // 1️⃣ Lọc trạng thái đơn hàng
-            // =============================
+            // lọc trạng thái đơn
             if (status.HasValue)
             {
                 query = query.Where(o => o.Status == status.Value);
             }
 
-            // =============================
-            // 2️⃣ Lọc theo từ khóa
-            // =============================
+            // lọc từ khóa
             if (!string.IsNullOrEmpty(keyword))
             {
                 keyword = keyword.Trim().ToLower();
@@ -44,18 +40,14 @@ namespace FootballShop.Areas.Admin.Controllers
                 );
             }
 
-            // =============================
-            // 3️⃣ Lọc theo ngày
-            // =============================
+            // lọc theo ngày
             if (fromDate.HasValue)
                 query = query.Where(o => o.CreatedAt >= fromDate);
 
             if (toDate.HasValue)
                 query = query.Where(o => o.CreatedAt < toDate.Value.AddDays(1));
 
-            // =============================
-            // 4️⃣ Trả kết quả
-            // =============================
+           // kết quả
             var orders = query
                 .OrderByDescending(o => o.CreatedAt)
                 .ToList();
@@ -84,7 +76,7 @@ namespace FootballShop.Areas.Admin.Controllers
 
 
 
-        // 📌 CHI TIẾT ĐƠN HÀNG
+        
         public async Task<IActionResult> Detail(Guid id)
         {
             var repo = _unitOfWork.GetRepositoryReadOnlyAsync<Order>();
@@ -92,7 +84,7 @@ namespace FootballShop.Areas.Admin.Controllers
 
             var order = query
                 .Include(o => o.OrderItems)
-                .ThenInclude(i => i.Product) // load Product
+                .ThenInclude(i => i.Product) 
                 .FirstOrDefault(o => o.Id == id);
 
             if (order == null)
@@ -102,7 +94,7 @@ namespace FootballShop.Areas.Admin.Controllers
         }
 
 
-        // 📌 CẬP NHẬT TRẠNG THÁI ĐƠN HÀNG
+      
         [HttpPost]
         public async Task<IActionResult> UpdateStatus(Guid id, string status)
         {

@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FBS.Infrastructure.Migrations
 {
-    /// <inheritdoc />
+   
     public partial class AddSizeToProductSizes : Migration
     {
-        /// <inheritdoc />
+        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()

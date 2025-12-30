@@ -21,7 +21,7 @@
                   method="post"
                   class="p-4">
 
-                <!-- Tên danh mục -->
+                
                 <div class="mb-4">
                     <label asp-for="Name" class="form-label fw-bold">
                         Tên danh mục <span class="text-danger">*</span>
@@ -32,7 +32,7 @@
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
 
-                <!-- Danh mục cha -->
+              
                 <div class="mb-4">
                     <label asp-for="ParentId" class="form-label fw-bold">
                         Danh mục cha
@@ -47,7 +47,7 @@
                     <span asp-validation-for="ParentId" class="text-danger"></span>
                 </div>
 
-                <!-- Mô tả -->
+          
                 <div class="mb-4">
                     <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
                     <textarea asp-for="Description"
@@ -60,11 +60,11 @@
                     <a asp-action="Index"
                        asp-controller="Category"
                        class="btn btn-light px-4">
-                        ⬅️ Quay lại
+                         Quay lại
                     </a>
 
                     <button type="submit" class="btn btn-primary px-5">
-                        💾 Lưu danh mục
+                         Lưu danh mục
                     </button>
                 </div>
 

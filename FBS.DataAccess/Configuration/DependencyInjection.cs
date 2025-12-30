@@ -1,6 +1,4 @@
-﻿// <copyright file= DependencyInjection.cs company=Tan Nguyen>
-// Copyright (c) Tan Nguyen. All rights reserved.
-// </copyright>
+﻿
 
 namespace FBS.Infrastructure.Configuration
 {

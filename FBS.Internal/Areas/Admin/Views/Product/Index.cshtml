@@ -3,8 +3,9 @@
 @using FBS.Application.DataTranferObjects.Products
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản lý sản phẩm";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
     var products = (BaseTableResponse<ProductDto>)ViewData["Products"];
     var currentPage = (int)ViewData["Page"];
     var categories = (List<CategoryDto>)ViewData["Categories"];
@@ -12,16 +13,17 @@
 }
 
 <div class="container-fluid basic_table">
+
     <div class="text-end mb-3">
         <a asp-action="Create" asp-controller="Product" class="btn btn-primary">Thêm mới sản phẩm</a>
-
     </div>
+
+  
     <form method="get" class="mb-3">
-    <div class="row">
-        <div class="col-md-4">
+        <div class="row">
+            <div class="col-md-4">
                 <select class="form-select" name="categoryId" onchange="this.form.submit()">
                     <option value="">-- Tất cả danh mục --</option>
-
                     @foreach (var cat in categories)
                     {
                         <option value="@cat.Id" selected="@(selectedId == cat.Id)">
@@ -29,33 +31,35 @@
                         </option>
                     }
                 </select>
+            </div>
         </div>
-    </div>
-</form>
+    </form>
+
 
     <div class="row">
         <div class="col-sm-12">
-            <div class="card px-4 ">
+            <div class="card px-4">
                 <div class="table-responsive theme-scrollbar py-4">
-                    <table class="table table-hover">
+                    <table class="table table-hover align-middle">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Ảnh</th>
-                                <th scope="col">Tên sản phẩm</th>
-                                <th scope="col">Danh mục</th>
-                                <th scope="col">Đơn giá</th>
-                                <th scope="col">Kích thước</th>
-                                <th scope="col">Màu</th>
-                                <th scope="col">Trạng thái</th>
-                                <th scope="col">Thao tác</th>
+                                <th>#</th>
+                                <th>Ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Danh mục</th>
+                                <th>Giá gốc</th>
+                                <th>Giá bán</th>
+                                <th>Kích thước</th>
+                                <th>Màu</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach(var product in products.Items)
+                            @foreach (var product in products.Items)
                             {
                                 <tr>
-                                    <th scope="row">@product.Index</th>
+                                    <th>@product.Index</th>
                                     <td>
                                         @if (!string.IsNullOrEmpty(product.Image))
                                         {
@@ -66,63 +70,109 @@
                                         {
                                             <span>Không có ảnh</span>
                                         }
-
                                     </td>
                                     <td>@product.Name</td>
                                     <td>@(product.CategoryName ?? "--")</td>
-                                    <td>@(product.Price.HasValue? product.PriceString: "--")</td>
-                                    <td>@string.Join(", ", product.Sizes)</td>
 
+                             
+                                    <td>
+                                        @if (product.Price.HasValue)
+                                        {
+                                            <div style="display:flex; align-items:center; gap:6px;">
+                                                @if (product.Discount.HasValue && product.Discount.Value > 0)
+                                                {
+                                                    <span style="text-decoration:line-through; color:gray;">
+                                                        @product.Price.Value.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))&nbsp;đ
+                                                    </span>
+                                                    <small class="text-danger">-@product.Discount.Value%</small>
+                                                }
+                                                else
+                                                {
+                                                    <span>@product.Price.Value.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))&nbsp;đ</span>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span>--</span>
+                                        }
+                                    </td>
+
+                          
+                                    <td>
+                                        @if (product.Price.HasValue)
+                                        {
+                                            var priceAfterDiscount = product.Price - (product.Price * (product.Discount ?? 0) / 100);
+                                            <span class="fw-bold text-success">
+                                                @priceAfterDiscount.Value.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))&nbsp;đ
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span>--</span>
+                                        }
+                                    </td>
+
+
+
+
+                                    <td>@string.Join(", ", product.Sizes)</td>
                                     <td>@product.Color</td>
                                     <td>@product.StatusName</td>
-                                    <td style="white-space:nowrap">
 
-                                        <!-- Nút sửa -->
+                            
+                                    <td style="white-space:nowrap">
                                         <a class="text-primary me-2"
-                                           asp-action="Edit" asp-controller="Product" asp-route-id="@product.Id">
+                                           asp-action="Edit"
+                                           asp-controller="Product"
+                                           asp-route-id="@product.Id">
                                             <i data-feather="edit-2"></i>
                                         </a>
 
-                                        <!-- Nút xóa -->
                                         <form asp-action="Delete"
                                               asp-controller="Product"
                                               asp-route-id="@product.Id"
                                               method="post"
                                               style="display:inline">
-
                                             <button type="submit"
                                                     class="btn btn-link text-danger p-0"
                                                     onclick="return confirm('Bạn chắc chắn muốn xóa sản phẩm này?');">
                                                 <i data-feather="trash-2"></i>
                                             </button>
-
                                         </form>
-
                                     </td>
-
                                 </tr>
                             }
                         </tbody>
+
                     </table>
+
+       
                     <nav aria-label="Page navigation" class="mt-3">
                         <ul class="pagination justify-content-center">
-
                             @for (int i = 1; i <= products.TotalPage; i++)
                             {
                                 <li class="page-item @(i == currentPage ? "active" : "")">
                                     <a class="page-link" href="?page=@i">@i</a>
                                 </li>
                             }
-
                         </ul>
                     </nav>
-
 
                 </div>
             </div>
         </div>
     </div>
 </div>
+<style>
+    .text-decoration-line-through {
+        text-decoration: line-through;
+        color: #888; /* màu xám cho giá gốc */
+    }
+
+    .text-success {
+        color: #e53935; /* đỏ nổi bật cho giá giảm */
+    }
 
 
-
+</style>

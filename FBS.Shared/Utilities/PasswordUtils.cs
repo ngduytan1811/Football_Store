@@ -1,8 +1,4 @@
-﻿// <copyright file=  "PasswordUtils.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
-namespace FBS.Shared.Utilities
+﻿namespace FBS.Shared.Utilities
 {
     using System.Text;
     using Microsoft.AspNetCore.Identity;

@@ -21,14 +21,14 @@
                   method="post"
                   class="p-4">
 
-                <!-- Tên -->
+         
                 <div class="mb-4">
                     <label asp-for="Name" class="form-label fw-bold">Tên danh mục <span class="text-danger">*</span></label>
                     <input asp-for="Name" class="form-control form-control-lg" placeholder="Nhập tên danh mục..." />
                     <span asp-validation-for="Name" class="text-danger small"></span>
                 </div>
 
-                <!-- Danh mục cha -->
+             
                 <div class="mb-4">
                     <label class="form-label fw-bold">Danh mục cha</label>
                     <select asp-for="ParentId"
@@ -45,7 +45,7 @@
                     <textarea asp-for="Description" class="form-control" rows="3" placeholder="Nhập mô tả ngắn..."></textarea>
                 </div>
 
-                <!-- Buttons -->
+              
                 <div class="d-flex justify-content-between mt-4">
                     <a asp-action="Index"
                        asp-controller="Category"

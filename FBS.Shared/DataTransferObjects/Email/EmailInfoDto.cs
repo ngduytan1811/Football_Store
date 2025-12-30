@@ -1,8 +1,4 @@
-﻿// <copyright file=  EmailInfoDto.cs company= Tan Nguyen>
-// Copyright (c) Tan Nguyen. All rights reserved.
-// </copyright>
-
-namespace FBS.Shared.DataTranferObjects.Email
+﻿namespace FBS.Shared.DataTranferObjects.Email
 {
     public class EmailInfoDto
     {

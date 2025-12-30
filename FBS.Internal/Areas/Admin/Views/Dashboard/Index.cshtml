@@ -11,7 +11,7 @@
 
 <h2 class="fw-bold mb-4">Báo cáo doanh thu</h2>
 
-<!-- ======================= THỐNG KÊ DOANH THU ======================= -->
+
 <div class="row g-3 mb-4">
 
     <div class="col-md-3">
@@ -50,7 +50,7 @@
 
 </div>
 
-<!-- ======================= TRẠNG THÁI ĐƠN HÀNG ======================= -->
+
 <div class="row g-3 mb-5">
 
     <div class="col-md-3">
@@ -85,7 +85,7 @@
 
 <hr />
 
-<!-- ======================= LỌC DOANH THU THEO NGÀY ======================= -->
+
 <form method="get" asp-action="Index" class="d-flex gap-2 mb-4">
     <input type="date" name="fromDate" value="@ViewBag.FromDate" class="form-control" style="width:200px;" />
     <input type="date" name="toDate" value="@ViewBag.ToDate" class="form-control" style="width:200px;" />
@@ -113,7 +113,7 @@ else if (ViewBag.RevenueInRange != null)
 
 <hr />
 
-<!-- ======================= BIỂU ĐỒ 7 NGÀY ======================= -->
+
 <h4 class="fw-bold mb-3">Doanh thu 7 ngày gần nhất</h4>
 
 @if (chart7Days.Any())
@@ -175,7 +175,7 @@ else
 
 <hr />
 
-<!-- ======================= TOP 5 SẢN PHẨM ======================= -->
+
 <h4 class="fw-bold mb-3">Top 5 sản phẩm bán chạy</h4>
 
 <table class="table table-bordered">

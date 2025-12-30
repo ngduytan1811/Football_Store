@@ -1,7 +1,4 @@
-﻿// <copyright file= CatgoryService.cs company= Tan Nguyen>
-// Copyright (c) Tan Nguyen. All rights reserved.
-// </copyright>
-
+﻿
 namespace FBS.Application.Services
 {
     using System;

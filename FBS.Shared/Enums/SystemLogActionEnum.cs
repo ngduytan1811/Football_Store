@@ -1,8 +1,4 @@
-﻿// <copyright file=  SystemLogActionEnum.cs company= Giang Nguyen>
-// Copyright (c) Giang Nguyen. All rights reserved.
-// </copyright>
-
-namespace FBS.Shared.Enums
+﻿namespace FBS.Shared.Enums
 {
     public enum SystemLogActionEnum
     {

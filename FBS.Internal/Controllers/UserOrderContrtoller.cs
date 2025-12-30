@@ -23,27 +23,23 @@ namespace FBS.Internal.Controllers
             _orderService = orderService;
         }
 
-        // =====================================
-        //  ⭐ DANH SÁCH ĐƠN HÀNG THEO CUSTOMER
-        // =====================================
+        
         public async Task<IActionResult> Index()
         {
             if (CurrentUser == null)
                 return RedirectToAction("Login", "Auth");
 
-            // Get list orders by CustomerId (Guid)
+            
             var orders = await _orderService.GetOrdersByCustomer(CurrentUser.CustomerId);
             orders = orders
       .OrderBy(o => o.Status == FBS.Shared.Enums.StatusEnum.Cancel)
       .ThenByDescending(o => o.CreatedAt)
       .ToList();
 
-            return View(orders); // => List<OrderDto>
+            return View(orders); 
         }
 
-        // =====================================
-        //  ⭐ CHI TIẾT ĐƠN HÀNG
-        // =====================================
+        
         public async Task<IActionResult> Detail(Guid id)
         {
             if (CurrentUser == null)
@@ -54,7 +50,7 @@ namespace FBS.Internal.Controllers
             if (order == null)
                 return NotFound();
 
-            return View(order); // => OrderDto
+            return View(order); 
         }
         [HttpPost]
         [Authorize]

@@ -51,21 +51,19 @@ namespace FBS.Internal.Controllers
             if (data?.Data == null)
                 return RedirectToAction("List");
 
-            var product = data.Data; // ProductDto
+            var product = data.Data; 
 
             var randomProducts = await _productService.GetRandomProducts();
 
             var reviews = await _productReviewService.GetReviews(id);
-            // reviews là List<ProductReview> từ DB
 
-            // ⭐ MAP ProductReview → ProductReivewDto
             product.Reviews = reviews.Select(r => new ProductReivewDto
             {
                 FullName = r.FullName,
                 Message = r.Message
             }).ToList();
 
-            // ⭐ Truyền sang View
+           
             ViewData["Product"] = product;
             ViewData["RandomProducts"] = randomProducts;
             ViewData["Reviews"] = product.Reviews;
@@ -92,7 +90,7 @@ namespace FBS.Internal.Controllers
             var user = await _userManager.GetUserAsync(User);
 
            
-            // Tạo review mới
+           
             var review = new ProductReview
             {
                 ProductId = ProductId,

@@ -35,7 +35,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
         source: "publish.tar.gz"
-        target: "/var/www/football_store"
+        target: "/var/www/fbs"
 
     - name: SSH to VPS and deploy
       uses: appleboy/ssh-action@v1.0.0
@@ -45,9 +45,9 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
-          cd /var/www/football_store
+          cd /var/www/fbs
           tar -xzf publish.tar.gz
           rm publish.tar.gz
 
-          sudo systemctl restart football_store
+          sudo systemctl restart fbs
           echo "🚀 Deploy Football Store Successful!"

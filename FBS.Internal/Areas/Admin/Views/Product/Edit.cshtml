@@ -6,9 +6,7 @@
 @{
     ViewData["Title"] = "Edit Product";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-
     var categoryDropdown = (List<CategoryDto>)ViewData["Categories"];
-    var currentSubImages = Model.SubImages ?? new List<string>();
 }
 
 <div class="container-fluid">
@@ -31,28 +29,26 @@
     <form asp-action="Update" asp-controller="Product" method="post" enctype="multipart/form-data" asp-route-id="@Model.Id">
         <div class="row">
 
-            <!-- ========================
-                 LEFT SIDE - INFO
-            ==========================-->
+            
             <div class="col-xl-6">
                 <div class="card">
                     <div class="card-body">
+                        <h5>Thông tin sản phẩm</h5>
 
-                        <h5>Thông tin</h5>
-
+                     
                         <div class="mb-3">
                             <label class="form-label">Tên sản phẩm</label>
                             <input asp-for="Name" class="form-control" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
 
+                        <!-- Tóm tắt -->
                         <div class="mb-3">
                             <label class="form-label">Tóm tắt</label>
                             <input asp-for="Description" class="form-control" />
                         </div>
 
-                        <h5 class="mt-4">Danh mục</h5>
-
+                      
                         <div class="mb-3">
                             <label class="form-label">Danh mục</label>
                             <select asp-for="CategoryId" class="form-select">
@@ -67,141 +63,112 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-sm-6">
+                            <!-- Brand -->
+                            <div class="col-sm-6 mb-3">
                                 <label class="form-label">Thương hiệu</label>
                                 <select asp-for="Brand" class="form-select">
                                     <option hidden selected>Chọn...</option>
                                     @foreach (var brand in GlobalConstants.Brands)
                                     {
-                                        <option value="@brand" selected="@(brand == Model.Brand)">
-                                            @brand
-                                        </option>
+                                        <option value="@brand" selected="@(brand == Model.Brand)">@brand</option>
                                     }
                                 </select>
                             </div>
 
-                            <div class="col-sm-6">
+                       
+                            <div class="col-sm-6 mb-3">
                                 <label class="form-label">Màu</label>
                                 <select asp-for="Color" class="form-select">
                                     <option hidden selected>Chọn...</option>
                                     @foreach (var color in GlobalConstants.Color)
                                     {
-                                        <option value="@color" selected="@(color == Model.Color)">
-                                            @color
-                                        </option>
+                                        <option value="@color" selected="@(color == Model.Color)">@color</option>
                                     }
                                 </select>
                             </div>
                         </div>
 
+                       
+                        <div class="mb-3">
+                            <label class="form-label">Thông tin chi tiết (phần 1)</label>
+                            <textarea asp-for="DetailPart1" class="form-control" rows="4"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Thông tin chi tiết (phần 2)</label>
+                            <textarea asp-for="DetailPart2" class="form-control" rows="4"></textarea>
+                        </div>
+
+                     
+                        <div class="row">
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">Giá (đ)</label>
+                                <input asp-for="Price" class="form-control" type="text"
+                                       value="@(Model.Price.HasValue ? Model.Price.Value.ToString("#,##0") : "")"
+                                       oninput="this.value=this.value.replace(/[^0-9]/g,'');" />
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <label class="form-label">Giảm giá (%)</label>
+                                <input asp-for="Discount" class="form-control" type="number" step="1" min="0" max="100" />
+                            </div>
+                        </div>
+
+                       
+                        <div class="mb-3">
+                            <label class="form-label">Kích thước</label>
+                            <div class="form-group">
+                                @foreach (var size in new[] { "39", "40", "41", "42", "43", "S", "M", "L", "XL", "2XL" })
+                                {
+                                    var isChecked = Model.Sizes != null && Model.Sizes.Contains(size);
+                                    <label class="form-check form-check-inline">
+                                        <input type="checkbox" name="Sizes" value="@size" class="form-check-input" @(isChecked ? "checked" : "") />
+                                        <span class="form-check-label">@size</span>
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Thông tin chi tiết (phần 1)</label>
-                    <textarea asp-for="DetailPart1" class="form-control" rows="4"></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Thông tin chi tiết (phần 2)</label>
-                    <textarea asp-for="DetailPart2" class="form-control" rows="4"></textarea>
-                </div>
-
-              
             </div>
-           
 
-            <!-- ========================
-                 RIGHT SIDE - IMAGES
-            ==========================-->
+            
             <div class="col-xl-6">
                 <div class="card">
                     <div class="card-body">
-
                         <h5>Hình ảnh sản phẩm</h5>
 
-                        <!-- Ảnh chính -->
                         <label class="form-label fw-bold">Ảnh chính</label>
-
                         @if (!string.IsNullOrEmpty(Model.Image))
                         {
                             <div class="mb-2">
                                 <img src="@Url.Content("~/theme/client/img/product/" + Model.Image)"
                                      style="width:150px;height:150px;object-fit:cover;border-radius:8px" />
-
                             </div>
                         }
-
                         <input asp-for="ImageFile" type="file" accept="image/*" class="form-control"
                                onchange="previewMainImage(event)" />
-
                         <input type="hidden" asp-for="Image" />
-
                         <div id="mainImagePreview" class="mt-2"></div>
 
                         <hr />
 
-                        <label class="form-label fw-bold">Ảnh phụ hiện có</label>
-
+                       
+                        <label class="form-label fw-bold">Ảnh phụ</label>
                         @for (var i = 0; i < 3; i++)
                         {
-                            var oldImage = Model.SubImages != null && Model.SubImages.Count > i
-                            ? Model.SubImages[i]
-                            : null;
-
+                            var oldImage = Model.SubImages != null && Model.SubImages.Count > i ? Model.SubImages[i] : null;
                             <div class="mb-3">
-
-                                <label class="form-label fw-bold">Ảnh phụ @(i + 1)</label>
-
+                                <label class="form-label">Ảnh phụ @(i + 1)</label>
                                 @if (oldImage != null)
                                 {
                                     <img src="@Url.Content("~/theme/client/img/product/" + oldImage)"
                                          style="width:120px;height:120px;object-fit:cover;border-radius:8px;margin-bottom:10px" />
                                 }
-
-                                <!-- Upload ảnh mới -->
-                                <input type="file"
-                                       name="SubImageFiles"
-                                       accept="image/*"
-                                       onchange="previewEditSub(@i, event)"
-                                       class="form-control" />
-
-                                <!-- Giữ ảnh cũ -->
-                                <input type="hidden"
-                                       name="OldSubImages"
-                                       value="@oldImage" />
-
-                                <!-- Preview -->
+                                <input type="file" name="SubImageFiles" accept="image/*" onchange="previewEditSub(@i, event)" class="form-control" />
+                                <input type="hidden" name="OldSubImages" value="@oldImage" />
                                 <div id="previewEditSub@(i)" class="mt-2"></div>
                             </div>
                         }
-
-
-
-
-                        <h5 class="mt-4">Kích thước</h5>
-
-                        <div class="form-group">
-
-                            @foreach (var size in new[] { "39", "40", "41", "42", "43", "S", "M", "L", "XL", "2XL" })
-                            {
-                                var isChecked = Model.Sizes != null && Model.Sizes.Contains(size);
-
-                                <label class="form-check form-check-inline">
-                                    <input type="checkbox"
-                                           name="Sizes"
-                                           value="@size"
-                                           class="form-check-input"
-                                    @(isChecked ? "checked" : "") />
-                                    <span class="form-check-label">@size</span>
-                                </label>
-                            }
-
-                        </div>
-
-                        <div class="mt-3">
-                            <label class="form-label">Giá</label>
-                            <input asp-for="Price" class="form-control" type="number" />
-                        </div>
 
                         <div class="text-end mt-4">
                             <button type="submit" class="btn btn-primary me-3">Cập nhật</button>
@@ -216,17 +183,12 @@
     </form>
 </div>
 
-<!-- ============================================
-      JS preview ảnh
-   ============================================ -->
 <script>
     function previewMainImage(event) {
         const container = document.getElementById("mainImagePreview");
         container.innerHTML = "";
-
         const file = event.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = e => {
             const img = document.createElement("img");
@@ -235,44 +197,20 @@
             img.style.height = "150px";
             img.style.objectFit = "cover";
             img.style.borderRadius = "8px";
-
             container.appendChild(img);
         };
         reader.readAsDataURL(file);
     }
 
-        function previewEditSub(index, event) {
+    function previewEditSub(index, event) {
         const div = document.getElementById("previewEditSub" + index);
         div.innerHTML = "";
         const file = event.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = e => {
-            div.innerHTML = `<img src="${e.target.result}"
-                style="width:120px;height:120px;border-radius:6px;object-fit:cover"/>`;
+            div.innerHTML = `<img src="${e.target.result}" style="width:120px;height:120px;border-radius:6px;object-fit:cover"/>`;
         };
         reader.readAsDataURL(file);
-    }
-    function previewSubImages(event) {
-        const container = document.getElementById("subImagePreview");
-        container.innerHTML = "";
-
-        Array.from(event.target.files).forEach(file => {
-            const reader = new FileReader();
-            reader.onload = e => {
-                const img = document.createElement("img");
-                img.src = e.target.result;
-                img.style.width = "120px";
-                img.style.height = "120px";
-                img.style.objectFit = "cover";
-                img.style.borderRadius = "8px";
-                img.style.marginRight = "10px";
-                img.style.marginBottom = "10px";
-
-                container.appendChild(img);
-            };
-            reader.readAsDataURL(file);
-        });
     }
 </script>

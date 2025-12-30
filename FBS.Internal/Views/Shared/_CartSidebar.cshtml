@@ -9,14 +9,13 @@
         : 0m;
 }
 
-<!-- OVERLAY -->
 <div class="mn-side-cart-overlay"></div>
 
-<!-- SIDEBAR -->
+
 <div id="mn-side-cart" class="mn-side-cart">
     <div class="mn-cart-inner">
 
-        <!-- HEADER -->
+    
         <div class="mn-cart-top">
             <div class="mn-cart-title">
                 <span class="cart_title">Giỏ hàng</span>
@@ -25,7 +24,7 @@
                 </a>
             </div>
 
-            <!-- LIST -->
+            
             <ul class="mn-cart-pro-items">
                 @if (cart.Any())
                 {
@@ -67,7 +66,7 @@
             </ul>
         </div>
 
-        <!-- FOOTER -->
+     
         <div class="mn-cart-bottom">
             <div class="cart-sub-total">
                 <table class="table cart-table">
@@ -118,7 +117,7 @@
 <script>
     document.addEventListener("click", function (e) {
 
-        // CLOSE CART
+        
         if (e.target.closest(".mn-cart-close") ||
             e.target.classList.contains("mn-side-cart-overlay")) {
             e.preventDefault();
@@ -126,7 +125,7 @@
             return;
         }
 
-        // REMOVE ITEM
+        
         const removeBtn = e.target.closest(".cart-remove-btn");
         if (!removeBtn) return;
 
@@ -181,7 +180,7 @@
 
 
 <style>
-    /* ===== LAYER FIX (RẤT QUAN TRỌNG) ===== */
+    
     .mn-side-cart {
         position: fixed;
         z-index: 9999;
@@ -193,7 +192,7 @@
         z-index: 9998;
     }
 
-    /* ===== LIST & ITEM ===== */
+    
     .mn-cart-pro-items {
         position: relative;
         z-index: 10000;
@@ -212,7 +211,6 @@
         box-shadow: 0 6px 18px rgba(0,0,0,.06);
     }
 
-    /* ===== IMAGE WRAPPER ===== */
     .cart-thumb {
         width: 72px;
         height: 72px;
@@ -226,7 +224,6 @@
         justify-content: center;
     }
 
-        /* ===== IMAGE ===== */
         .cart-thumb img {
             width: 100%;
             height: 100%;
@@ -239,7 +236,6 @@
         transform: scale(1.05);
     }
 
-    /* ===== REMOVE BUTTON ===== */
     .cart-remove-btn {
         position: absolute;
         top: 8px;
@@ -254,7 +250,6 @@
         cursor: pointer;
     }
 
-    /* 🚫 TẮT CLICK LỚP TRANG TRÍ (NẾU CÓ) */
     .mn-side-cart::before,
     .mn-side-cart::after,
     .mn-cart-inner::before,

@@ -1,8 +1,4 @@
-﻿// <copyright file= MessageResponseDto.cs company=Tan Nguyen>
-// Copyright (c) Tan Nguyen. All rights reserved.
-// </copyright>
-
-namespace FBS.Shared.DataTransferObjects.Base
+﻿namespace FBS.Shared.DataTransferObjects.Base
 {
     public class MessageResponseDto
     {

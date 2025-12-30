@@ -1,9 +1,4 @@
-﻿/******************************************/
-/*             App: SUM_APP               */
-/*           Author: Tan Nguyen           */
-/******************************************/
-
-namespace FBS.Shared.DataTranferObjects.Base
+﻿namespace FBS.Shared.DataTranferObjects.Base
 {
     public class PermissionDto
     {
