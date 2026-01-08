@@ -14,5 +14,7 @@ namespace FBS.Application.DataTranferObjects.Blog
         public string? Content { get; set; }
         public string? Author { get; set; }
         public List<string> Images { get; set; }
+        public Guid? ProductId { get; set; }
+
     }
 }

@@ -1,12 +1,10 @@
 ﻿@using FBS.Application.DataTranferObjects.Cart
 @model CheckoutDto
-
 @{
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var cart = (List<CartItemDto>)ViewData["Cart"] ?? new List<CartItemDto>();
-
     decimal shipping = 30000m;
     decimal subtotal = cart.Sum(x => (x.Price ?? 0m) * x.Quantity);
     decimal total = subtotal + shipping;
@@ -21,93 +19,74 @@
     </nav>
 
     <div class="row g-4">
-
-      
         <div class="col-lg-8">
-
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-primary text-white py-3">
-                    <h5 class="mb-0"> Thông tin giao hàng</h5>
+                    <h5 class="mb-0">Thông tin giao hàng</h5>
                 </div>
-
                 <div class="card-body p-4">
-
                     <form asp-action="Checkout" asp-controller="Cart" method="post" class="row gy-3">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-                  
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Họ tên *</label>
-                            <input asp-for="FullName" class="form-control form-control-lg" placeholder="Nhập họ tên của bạn">
+                            <input asp-for="FullName" class="form-control form-control-lg">
+                            <span asp-validation-for="FullName" class="text-danger"></span>
                         </div>
 
-                       
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Số điện thoại *</label>
-                            <input asp-for="PhoneNumber" class="form-control form-control-lg" placeholder="Nhập số điện thoại">
+                            <input asp-for="PhoneNumber" class="form-control form-control-lg">
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
 
-                       
                         <div class="col-md-12">
                             <label class="form-label fw-bold">Địa chỉ *</label>
-                            <input asp-for="Address" class="form-control form-control-lg" placeholder="Nhập địa chỉ nhận hàng">
+                            <input asp-for="Address" class="form-control form-control-lg">
+                            <span asp-validation-for="Address" class="text-danger"></span>
                         </div>
 
-                       
                         <div class="col-md-12">
                             <label class="form-label fw-bold">Ghi chú</label>
-                            <textarea asp-for="Note" class="form-control" rows="3" placeholder="Lưu ý khi giao hàng"></textarea>
+                            <textarea asp-for="Note" class="form-control" rows="3"></textarea>
                         </div>
 
-                        
                         <div class="col-12 mt-4">
-                            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold fs-5">
-                                 ĐẶT HÀNG NGAY
+                            <button type="submit"
+                                    id="btnCheckout"
+                                    class="btn btn-primary w-100 py-3 fw-bold fs-5"
+                                    disabled>
+                                ĐẶT HÀNG NGAY
                             </button>
                         </div>
-
                     </form>
-
                 </div>
             </div>
-
         </div>
 
-       
         <div class="col-lg-4">
-
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-dark text-white">
-                    <h5 class="mb-0"> Tóm tắt đơn hàng</h5>
+                    <h5 class="mb-0">Tóm tắt đơn hàng</h5>
                 </div>
-
                 <div class="card-body p-4">
-
-                   
-
-                   
                     @foreach (var item in cart)
                     {
                         <div class="d-flex mb-3 pb-3 border-bottom">
                             <img src="@Url.Content("~/theme/client/img/product/" + item.Image)"
                                  alt="@item.ProductName"
                                  style="width:60px;height:60px;object-fit:cover;border-radius:6px">
-
-
-
-                            <div class="flex-grow-1">
+                            <div class="flex-grow-1 ms-2">
                                 <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.ProductId"
                                    class="fw-bold text-dark d-block mb-1">
                                     @item.ProductName
                                 </a>
-
                                 <div class="text-muted small">
                                     Size: @item.Size – Màu: @item.Color
                                 </div>
-
                                 <div class="small">
                                     Số lượng: <strong>@item.Quantity</strong>
                                 </div>
-
                                 <div class="text-primary fw-bold mt-1">
                                     @item.SubPriceString
                                 </div>
@@ -119,36 +98,26 @@
                         <span class="fw-semibold">Tạm tính</span>
                         <span>@subtotal.ToString("N0") đ</span>
                     </div>
-
                     <div class="d-flex justify-content-between mb-2">
                         <span class="fw-semibold">Phí vận chuyển</span>
                         <span>@shipping.ToString("N0") đ</span>
                     </div>
-
                     <hr>
-
                     <div class="d-flex justify-content-between mb-3 fs-5 fw-bold text-primary">
                         <span>Tổng tiền</span>
                         <span>@total.ToString("N0") đ</span>
                     </div>
-
                     <hr />
-
                 </div>
-
             </div>
 
-           
             <div class="payment-section card shadow-sm border-0 mt-4">
                 <div class="card-header bg-secondary text-white py-3">
                     <h5 class="mb-0"><i class="ri-wallet-3-line me-1"></i> Hình thức thanh toán</h5>
                 </div>
-
                 <div class="card-body p-4">
-
-                   
                     <label class="payment-option">
-                        <input type="radio" name="PaymentMethod" id="pay_cod" value="COD" checked>
+                        <input type="radio" name="PaymentMethod" id="pay_cod" value="COD" @(Model.PaymentMethod == "COD" ? "checked" : "")>
                         <div class="payment-box">
                             <div class="payment-icon cod"><i class="ri-truck-line"></i></div>
                             <div>
@@ -158,55 +127,34 @@
                         </div>
                     </label>
 
-                    
                     <label class="payment-option">
-                        <input type="radio" name="PaymentMethod" id="pay_card" value="CARD">
+                        <input type="radio" name="PaymentMethod" id="pay_qr" value="VietQR" @(Model.PaymentMethod == "VietQR" ? "checked" : "")>
                         <div class="payment-box">
-                            <div class="payment-icon card"><i class="ri-bank-card-line"></i></div>
+                            <div class="payment-icon qr"><i class="ri-qr-code-line"></i></div>
                             <div>
-                                <div class="payment-title">Thanh toán qua thẻ (Visa / MasterCard)</div>
-                                <div class="payment-desc">Thanh toán an toàn – bảo mật cao</div>
+                                <div class="payment-title">Thanh toán bằng VietQR</div>
+                                <div class="payment-desc">Quét QR Code bằng app ngân hàng để thanh toán</div>
                             </div>
                         </div>
                     </label>
 
-                 
-                    <div id="card-form" class="payment-card-form">
-                        <div class="row">
-                            <div class="col-12 mb-3">
-                                <label class="fw-bold">Số thẻ</label>
-                                <input type="text" class="form-control form-control-lg" placeholder="•••• •••• •••• ••••">
-                            </div>
-
-                            <div class="col-12 mb-3">
-                                <label class="fw-bold">Tên chủ thẻ</label>
-                                <input type="text" class="form-control form-control-lg" placeholder="NGUYEN VAN A">
-                            </div>
-
-                            <div class="col-6 mb-3">
-                                <label class="fw-bold">Ngày hết hạn</label>
-                                <input type="text" class="form-control form-control-lg" placeholder="MM/YY">
-                            </div>
-
-                            <div class="col-6 mb-3">
-                                <label class="fw-bold">CVV</label>
-                                <input type="text" class="form-control form-control-lg" placeholder="123">
-                            </div>
-                        </div>
+                    <div id="qr-section" class="mt-3" style="display:@(Model.QRCodeUrl != null ? "block" : "none")">
+                        @if (Model.QRCodeUrl != null)
+                        {
+                            <img src="@Model.QRCodeUrl" alt="VietQR" style="width:200px;height:200px;">
+                            <p>Tổng tiền: @Model.TotalAmount.ToString("N0") đ</p>
+                        }
                     </div>
+
 
                 </div>
             </div>
-
-
-
         </div>
-
     </div>
-
 </div>
-<style>
 
+<!-- giữ nguyên style của bạn -->
+<style>
     .payment-option {
         display: block;
         cursor: pointer;
@@ -217,7 +165,6 @@
             display: none;
         }
 
-    
     .payment-box {
         display: flex;
         align-items: center;
@@ -226,7 +173,7 @@
         border: 2px solid #e3e3e3;
         border-radius: 12px;
         background: #fff;
-        transition: all 0.25s ease;
+        transition: all .25s ease;
     }
 
     .payment-option:hover .payment-box {
@@ -240,7 +187,6 @@
         box-shadow: 0 3px 10px rgba(0,0,0,0.08);
     }
 
-   
     .payment-icon {
         width: 45px;
         height: 45px;
@@ -256,12 +202,11 @@
             color: #0d6efd;
         }
 
-        .payment-icon.card {
+        .payment-icon.qr {
             background: #fff4e5;
             color: #ff8b2c;
         }
 
-    
     .payment-title {
         font-size: 16px;
         font-weight: 700;
@@ -272,30 +217,48 @@
         color: #555;
         margin-top: 2px;
     }
-
-
-    .payment-card-form {
-        display: none;
-        border: 1px solid #d9e7ff;
-        background: #f7faff;
-        padding: 18px;
-        border-radius: 12px;
-        margin-top: 10px;
-    }
-
 </style>
-<script>
-    const codRadio = document.getElementById("pay_cod");
-    const cardRadio = document.getElementById("pay_card");
-    const cardForm = document.getElementById("card-form");
 
-    codRadio.addEventListener("change", () => {
-        cardForm.style.display = "none";
-    });
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 
-    cardRadio.addEventListener("change", () => {
-        cardForm.style.display = "block";
-    });
-</script>
+    <script>
+        const btn = document.getElementById("btnCheckout");
+        const form = document.querySelector("form");
 
+        const requiredInputs = [
+            document.querySelector('input[name="FullName"]'),
+            document.querySelector('input[name="PhoneNumber"]'),
+            document.querySelector('input[name="Address"]')
+        ];
 
+        function checkFormValidity() {
+            let isValid = true;
+            requiredInputs.forEach(input => { if (!input.value.trim()) isValid = false; });
+            if (!form.checkValidity()) isValid = false;
+            btn.disabled = !isValid;
+        }
+
+        requiredInputs.forEach(input => {
+            input.addEventListener("input", () => { $(input).valid(); checkFormValidity(); });
+            input.addEventListener("blur", () => { $(input).valid(); });
+        });
+
+        checkFormValidity();
+
+        const codRadio = document.getElementById("pay_cod");
+        const qrRadio = document.getElementById("pay_qr");
+        const qrSection = document.getElementById("qr-section");
+
+        codRadio.addEventListener("change", () => { qrSection.style.display = "none"; });
+        qrRadio.addEventListener("change", () => { qrSection.style.display = "block"; });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const qrUrl = '@(Model.QRCodeUrl ?? "")';
+            if (qrRadio.checked && qrUrl !== "") {
+                qrSection.style.display = "block";
+            }
+        });
+
+    </script>
+}

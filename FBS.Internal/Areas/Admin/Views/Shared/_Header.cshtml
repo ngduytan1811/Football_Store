@@ -12,8 +12,8 @@
                 <li class="profile-nav onhover-dropdown">
                     <div class="account-user"><i data-feather="user"></i></div>
                     <ul class="profile-dropdown onhover-show-div">
-                        <li><a href="user-profile.html"><i data-feather="user"></i><span>Tài khoản</span></a></li>
-                        <li><a href="edit-profile.html"><i data-feather="settings"></i><span>Cài đặt</span></a></li>
+                        <li><a asp-area="Admin" asp-controller="Profile" asp-action="Index"><i data-feather="user"></i><span>Tài khoản</span></a></li>
+                       
                         <li><a asp-controller="Auth" asp-action="Logout"><i data-feather="log-out"> </i><span>Đăng xuất</span></a></li>
                     </ul>
                 </li>

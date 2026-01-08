@@ -1,25 +1,56 @@
 ﻿using FBS.Application.Services.Interfaces;
 using FBS.Application.Services;
 using FBS.Infrastructure.Configuration;
+using FBS.Infrastructure.DataAccess.Seed;
+using FBS.Infrastructure.DataAccess;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using FBS.Infrastructure.Entities;
+using FBS.DataAccess.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Product.Create", policy => policy.RequireClaim("Permission", "Product.Create"));
+    options.AddPolicy("Product.Edit", policy => policy.RequireClaim("Permission", "Product.Edit"));
+    options.AddPolicy("Product.Delete", policy => policy.RequireClaim("Permission", "Product.Delete"));
+    options.AddPolicy("Category.Create", policy => policy.RequireClaim("Permission", "Category.Create"));
+    options.AddPolicy("Category.Edit", policy => policy.RequireClaim("Permission", "Category.Edit"));
+    options.AddPolicy("Category.Delete", policy => policy.RequireClaim("Permission", "Category.Delete"));
+
+    
+    options.AddPolicy("Customer.Create", policy => policy.RequireClaim("Permission", "Customer.Create"));
+    options.AddPolicy("Customer.Edit", policy => policy.RequireClaim("Permission", "Customer.Edit"));
+    options.AddPolicy("Customer.Update", policy => policy.RequireClaim("Permission", "Customer.Update"));
+    options.AddPolicy("Customer.Delete", policy => policy.RequireClaim("Permission", "Customer.Delete"));
+    options.AddPolicy("Contact.Manage", policy => policy.RequireClaim("Permission", "Contact.Manage"));
+    options.AddPolicy("Contact.Delete", policy => policy.RequireClaim("Permission", "Contact.Delete "));
+
+    options.AddPolicy("Order.View", policy => policy.RequireClaim("Permission", "Order.View"));
+    options.AddPolicy("Order.Update", policy => policy.RequireClaim("Permission", "Order.Update"));
+
+    options.AddPolicy("Blog.Create", policy => policy.RequireClaim("Permission", "Blog.Create"));
+    options.AddPolicy("Blog.Edit", policy => policy.RequireClaim("Permission", "Blog.Edit"));
+    options.AddPolicy("Blog.Delete", policy => policy.RequireClaim("Permission", "Blog.Delete"));
+    options.AddPolicy("Review.Manage", policy => policy.RequireClaim("Permission", "Review.Manage"));
+
+    options.AddPolicy("Revenue.View", policy => policy.RequireClaim("Permission", "Revenue.View"));
+});
+
+
 builder.Services.SetDBContext(builder.Configuration);
 
-builder.Services.AddControllersWithViews()
-    .AddSessionStateTempDataProvider();
 
-builder.Services.AddRazorPages()
-    .AddRazorRuntimeCompilation();
+builder.Services.AddControllersWithViews().AddSessionStateTempDataProvider();
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+
 
 builder.Services.InitialApplicationServices(builder.Configuration);
 
-// =======================
-// CẤU HÌNH PASSWORD IDENTITY
-// =======================
+
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequiredLength = 3;
@@ -31,6 +62,14 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = true;
 });
 
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Admin/Auth/Login";
+    options.AccessDeniedPath = "/Admin/Auth/Login";
+});
+
+
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -39,12 +78,20 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(60);
     options.Cookie.SameSite = SameSiteMode.Lax;
 });
+builder.Services.AddHttpClient<VietQRService>();
 
 var app = builder.Build();
 
-app.Services.InitialDBAndSeedData();
 
-// Configure the HTTP request pipeline.
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await IdentitySeeder.SeedRolesAndAdminAsync(services);
+    services.InitialDBAndSeedData();
+}
+
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -60,16 +107,21 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllerRoute(
-      name: "areas",
-      pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+    
+    endpoints.MapAreaControllerRoute(
+        name: "Admin",
+        areaName: "Admin",
+        pattern: "Admin/{controller=Dashboard}/{action=Index}/{id?}"
     );
 
+ 
     endpoints.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}"
+    );
 });
 
 app.Run();

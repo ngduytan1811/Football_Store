@@ -52,7 +52,7 @@ else
                         <td>@order.CustomerName</td>
                         <td>@order.CustomerPhone</td>
 
-                        <!-- ===== TRẠNG THÁI ===== -->
+                      
                         <td class="text-center">
                             <span class="badge
                                 @(order.Status == StatusEnum.Cancel ? "bg-secondary" :
@@ -63,7 +63,7 @@ else
                             </span>
                         </td>
 
-                        <!-- ===== THAO TÁC ===== -->
+                      
                         <td class="text-center">
                             <a asp-action="Detail"
                                asp-route-id="@order.Id"

@@ -8,6 +8,7 @@ using FBS.Infrastructure.Repositories.Interfaces;
 using FBS.Shared.Constants;
 using FBS.Shared.DataTranferObjects.Base;
 using FootballShop.Areas.Admin.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.Ocsp;
@@ -35,12 +36,16 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Lienhe")]
+        [Authorize(Policy = "Customer.Create")]
         public async Task<IActionResult> Create()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Lienhe")]
+        [Authorize(Policy = "Customer.Create")]
         public async Task<IActionResult> Create(UserSaveDto request)
         {
             if (!ModelState.IsValid)
@@ -64,6 +69,8 @@ namespace FBS.Internal.Areas.Admin.Controllers
             }
         }
 
+        [Authorize(Roles = "Lienhe")]
+        [Authorize(Policy = "Customer.Edit")]
         public async Task<IActionResult> Edit(Guid userId)
         {
             var user = await _userService.FindById(userId);
@@ -85,6 +92,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Lienhe")]
         public async Task<IActionResult> Update(Guid userId, UserSaveDto request)
         {
             var user = await _userService.FindById(userId);
@@ -103,6 +111,8 @@ namespace FBS.Internal.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Lienhe")]
+         [Authorize(Policy = "Customer.Delete")]
         public async Task<IActionResult> Delete(Guid userId)
         {
             var user = await _userService.FindById(userId);

@@ -24,7 +24,7 @@ namespace FBS.Application.DataTranferObjects.Blog
         public List<IFormFile>? SubImageFiles { get; set; }
         public List<string>? SubImages { get; set; }
         public List<string> OldSubImages { get; set; } = new();
-
+        public Guid? ProductId { set; get; }
     }
 }          
 

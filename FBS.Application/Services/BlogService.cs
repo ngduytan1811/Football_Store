@@ -86,10 +86,12 @@ namespace FBS.Application.Services
             {
                 Data = new BlogDto
                 {
+                   
                     Id = entity.Id,
                     Title = entity.Title,
                     Content = entity.Content,
                     Author = entity.Author,
+                    ProductId = entity.ProductId,
                     Thumbnail = entity.Thumbnail,
                     Images = entity.Images != null
                 ? entity.Images.Select(i => i.Image).ToList()
@@ -106,11 +108,13 @@ namespace FBS.Application.Services
             var repoBlogImg = _unitOfWork.GetRepositoryAsync<BlogImage>();
 
             var blog = new Blog
-            {
+            {   
+                
                 Title = dto.Title,
                 Content = dto.Content,
                 Author = dto.Author,
                 Thumbnail = dto.Thumbnail,
+                ProductId =dto.ProductId,
                 Status = StatusEnum.Active,
                 CreatedAt = DateTime.Now
             };
@@ -162,9 +166,9 @@ namespace FBS.Application.Services
                 };
             }
 
-            
-          
-            
+
+
+            blog.ProductId = dto.ProductId;
             blog.Title = dto.Title;
             blog.Content = dto.Content;
             blog.Author = dto.Author;

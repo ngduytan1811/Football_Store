@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FBS.Application.DataTranferObjects.Reports;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FootballShop.Areas.Admin.Controllers
 {
-    [Area("admin")]
+    [Area("Admin")]
+   
     public class DashboardController : BaseAdminController
     {
         public DashboardController(UserManager<User> userManager, IUnitOfWork unitOfWork)
@@ -107,7 +109,7 @@ namespace FootballShop.Areas.Admin.Controllers
 
             ViewBag.TopProducts = top5Products;
 
-           // doanh thu ngày
+       
             ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
             ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
 

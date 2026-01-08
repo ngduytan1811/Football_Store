@@ -57,7 +57,8 @@ namespace FootballShop.Areas.Admin.Controllers
             return View(reviews);
         }
 
-
+        [Authorize(Roles = "Baiviet")]
+        [Authorize(Policy = "Review.Manage")]
         public async Task<IActionResult> Delete(Guid id)
         {
             // Repository ghi

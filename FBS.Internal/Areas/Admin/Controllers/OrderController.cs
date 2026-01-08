@@ -1,6 +1,7 @@
 ﻿using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
 using FBS.Shared.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ namespace FootballShop.Areas.Admin.Controllers
         {
         }
 
+       
        
         public async Task<IActionResult> Index(string? keyword, DateTime? fromDate, DateTime? toDate, StatusEnum? status)
         {
@@ -71,12 +73,9 @@ namespace FootballShop.Areas.Admin.Controllers
 
             return View(orders);
         }
-
-
-
-
-
         
+        [Authorize(Roles = "Quanlydonhang")]
+        [Authorize(Policy = "Order.View")]
         public async Task<IActionResult> Detail(Guid id)
         {
             var repo = _unitOfWork.GetRepositoryReadOnlyAsync<Order>();
@@ -92,10 +91,10 @@ namespace FootballShop.Areas.Admin.Controllers
 
             return View(order);
         }
-
-
       
         [HttpPost]
+        [Authorize(Roles = "Quanlydonhang")]
+        [Authorize(Policy = "Order.Update")]
         public async Task<IActionResult> UpdateStatus(Guid id, string status)
         {
             var repo = _unitOfWork.GetRepositoryAsync<Order>();

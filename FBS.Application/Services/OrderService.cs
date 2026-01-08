@@ -89,6 +89,16 @@ namespace FBS.Application.Services
         {
             var result = new BaseResponse<string>();
             var orderItemRepo = _unitOfWork.GetRepositoryAsync<OrderItem>();
+            var orderRepo = _unitOfWork.GetRepositoryAsync<Order>();
+
+            var paymentStatus = dto.PaymentMethod == "VietQR"
+                          ? PaymentStatusEnum.Paid
+                          : PaymentStatusEnum.Unpaid;
+
+            var status = dto.PaymentMethod == "VietQR"
+                ? StatusEnum.Active  
+                : StatusEnum.Inactive;
+
 
             var newOrder = new Order
             {
@@ -98,6 +108,8 @@ namespace FBS.Application.Services
                 CustomerEmail = dto.Email,
                 CustomerAddress = dto.Address,
                 Note = dto.Note,
+                PaymentMethod = dto.PaymentMethod,
+                PaymentStatus = paymentStatus,
                 CreatedAt = DateTime.Now
             };
 
@@ -112,13 +124,61 @@ namespace FBS.Application.Services
             }).ToList();
 
             await orderItemRepo.Add(items);
+            await orderRepo.Add(newOrder);
             await _unitOfWork.SaveChangesAsync();
+
+            result.Data = newOrder.Id.ToString();
+            result.Type = GlobalConstants.ResponseType.Success;
+
+            result.Message = "Đặt hàng thành công!";
 
             return result;
         }
 
+        public async Task<OrderDto> CreatePendingOrder(CheckoutDto request)
+        {
+            var order = new Order
+            {
+                CustomerId = request.CustomerId,
 
-     
+                CustomerName = request.FullName,
+                CustomerPhone = request.PhoneNumber,
+                CustomerEmail = request.Email,
+                CustomerAddress = request.Address,
+
+                Note = request.Note,
+
+                PaymentMethod = "COD",
+                PaymentStatus = PaymentStatusEnum.Unpaid,
+                Status = StatusEnum.Active
+            };
+
+            var orderRepository = _unitOfWork.GetRepositoryAsync<Order>();
+
+            await orderRepository.AddAsync(order);
+            await _unitOfWork.SaveChangesAsync();
+
+            return new OrderDto
+            {
+                Id = order.Id
+            };
+        }
+
+        public async Task MarkOrderAsPaid(Guid orderId)
+        {
+            var repo = _unitOfWork.GetRepositoryAsync<Order>();
+
+            var order = await repo.GetByIdAsync(orderId);
+            if (order == null)
+                throw new Exception("Order không tồn tại");
+
+            order.PaymentStatus = PaymentStatusEnum.Paid;
+
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+
+
         public async Task<List<OrderDto>> GetOrdersByCustomer(Guid customerId)
         {
             var query = await _unitOfWork

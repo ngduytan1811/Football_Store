@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FBS.Application.DataTranferObjects.Cart
 {
@@ -11,18 +8,33 @@ namespace FBS.Application.DataTranferObjects.Cart
     {
         public Guid? CustomerId { get; set; }
 
-        [Required(ErrorMessage ="Họ tên là bắt buộc")]
+        [Required(ErrorMessage = "Họ tên là bắt buộc")]
+        [MinLength(3, ErrorMessage = "Họ tên quá ngắn, vui lòng nhập lại")]
         public string? FullName { get; set; }
 
         [Required(ErrorMessage = "Số điện thoại là bắt buộc")]
+        [RegularExpression(@"^(0|\+84)[0-9]{9}$",
+                 ErrorMessage = "Số điện thoại không hợp lệ, vui lòng nhập lại")]
         public string? PhoneNumber { get; set; }
+
+        [EmailAddress(ErrorMessage = "Email không hợp lệ")]
         public string? Email { get; set; }
 
-        [Required(ErrorMessage = "Địa chỉ là bắt buộc")]
+        [Required(ErrorMessage = "Vui lòng nhập địa chỉ")]
+        [MinLength(10, ErrorMessage = "Địa chỉ quá ngắn, vui lòng nhập lại")]
         public string? Address { get; set; }
 
         public string? Note { get; set; }
 
-        public List<CartItemDto> CartItems { get; set; } = new List<CartItemDto>();
+        [Required(ErrorMessage = "Vui lòng chọn phương thức thanh toán")]
+        public string PaymentMethod { get; set; } = "COD";
+        public string? QRCodeUrl { get; set; }
+
+        public decimal SubTotal { get; set; }
+        public decimal ShippingFee { get; set; }
+        public decimal TotalAmount { get; set; }
+
+        public List<CartItemDto> CartItems { get; set; } = new();
     }
+
 }

@@ -3,10 +3,12 @@
     using System;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
+    using static FBS.Infrastructure.Authorization.Permissions;
 
     public interface IUnitOfWork : IDisposable
     {
         Guid? CurrentUserEntityId { get; set; }
+      
 
         IRepositoryAsync<TEntity> GetRepositoryAsync<TEntity>()
             where TEntity : class;

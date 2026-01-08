@@ -10,7 +10,8 @@ using System.Security.Claims;
 namespace FootballShop.Areas.Admin.Controllers
 {
     [Area("admin")]
-    [Authorize]
+    [Authorize()]
+
     public class BaseAdminController : Controller
     {
         protected readonly UserManager<User> _userManager;

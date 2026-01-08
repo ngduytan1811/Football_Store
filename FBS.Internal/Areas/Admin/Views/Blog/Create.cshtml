@@ -67,6 +67,23 @@
             <div class="col-xl-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
+                        <h5 class="fw-bold mt-3">Sản phẩm liên kết</h5>
+
+                        <div class="mb-4">
+                            <select asp-for="ProductId" class="form-select">
+                                <option value="">-- Chọn sản phẩm --</option>
+
+                                @if (ViewBag.Products != null)
+                                {
+                                    foreach (var product in ViewBag.Products)
+                                    {
+                                        <option value="@product.Id">
+                                            @product.Name
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
 
                        
                         <h5 class="fw-bold">Ảnh thumbnail</h5>

@@ -22,6 +22,16 @@
         {
             await DbSet.AddAsync(entity);
         }
+        public async Task AddAsync(T entity)
+        {
+            await Add(entity);
+        }
+
+        public async Task<T?> GetByIdAsync(Guid id)
+        {
+            return await FindById(id);
+        }
+
 
         public async Task Add(params T[] entities)
         {
@@ -32,6 +42,7 @@
         {
             await DbSet.AddRangeAsync(entities);
         }
+
 
         public async Task Update(T entity)
         {

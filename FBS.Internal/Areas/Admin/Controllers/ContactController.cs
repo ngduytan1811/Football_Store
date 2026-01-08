@@ -1,6 +1,7 @@
 ﻿using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
 using FootballShop.Areas.Admin.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        
+       
         public async Task<IActionResult> Index(string? keyword)
         {
             var repo = _unitOfWork.GetRepositoryAsync<Contact>();
@@ -57,11 +58,8 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 .ToList());
         }
 
-
-
-
-
-       
+        [Authorize(Roles = "Lienhe")]
+        [Authorize(Policy = "Contact.Manage")]
         public async Task<IActionResult> Detail(Guid id)
         {
             var repo = _unitOfWork.GetRepositoryAsync<Contact>();
@@ -74,7 +72,8 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return View(contact);
         }
 
-       
+        [Authorize(Roles = "Lienhe")]
+        [Authorize(Policy = "Contact.Delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var repo = _unitOfWork.GetRepositoryAsync<Contact>();
