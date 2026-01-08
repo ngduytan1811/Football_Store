@@ -44,7 +44,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(BlogSaveDto dto)
         {
-            // Ghép 2 đoạn nội dung vào 1 HTML
+            // Ghép 2 đoạn nội dung vào 1 
             dto.Content = $"{dto.ContentPart1}\n\n<!--IMG-BLOCK-->\n\n{dto.ContentPart2}";
 
             
