@@ -11,7 +11,6 @@
 
 <h2 class="fw-bold mb-4">Báo cáo doanh thu</h2>
 
-
 <div class="row g-3 mb-4">
 
     <div class="col-md-3">
@@ -50,13 +49,12 @@
 
 </div>
 
-
 <div class="row g-3 mb-5">
 
     <div class="col-md-3">
         <div class="p-3 rounded shadow-sm bg-secondary text-white">
             <div class="fs-4 fw-bold">@((int?)ViewBag.ProcessingOrders ?? 0)</div>
-            <small>Đang xử lý</small>
+            <small>Giao thành công</small>
         </div>
     </div>
 
@@ -70,7 +68,7 @@
     <div class="col-md-3">
         <div class="p-3 rounded shadow-sm" style="background:#ffe7eb;">
             <div class="fs-4 fw-bold">@((int?)ViewBag.CompletedOrders ?? 0)</div>
-            <small>Hoàn thành</small>
+            <small>Đang xử lý</small>
         </div>
     </div>
 
@@ -85,7 +83,6 @@
 
 <hr />
 
-
 <form method="get" asp-action="Index" class="d-flex gap-2 mb-4">
     <input type="date" name="fromDate" value="@ViewBag.FromDate" class="form-control" style="width:200px;" />
     <input type="date" name="toDate" value="@ViewBag.ToDate" class="form-control" style="width:200px;" />
@@ -96,7 +93,7 @@
 {
     <div class="text-danger fw-bold mb-3">@ViewBag.DateError</div>
 }
-else if (ViewBag.RevenueInRange != null)
+else if (ViewBag.RevenueInRange > 0)
 {
     <h4>
         Doanh thu từ @ViewBag.FromDate → @ViewBag.ToDate :
@@ -113,7 +110,6 @@ else if (ViewBag.RevenueInRange != null)
 
 <hr />
 
-
 <h4 class="fw-bold mb-3">Doanh thu 7 ngày gần nhất</h4>
 
 @if (chart7Days.Any())
@@ -125,56 +121,57 @@ else
     <div class="text-muted">Chưa có dữ liệu 7 ngày</div>
 }
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
+    @* Chart 7 ngày *@
     @if (chart7Days.Any())
     {
         <text>
-            const ctx = document.getElementById('chart7days').getContext('2d');
-            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-            gradient.addColorStop(0, 'rgba(0,123,255,0.5)');
-            gradient.addColorStop(1, 'rgba(0,123,255,0)');
+            const ctx7 = document.getElementById('chart7days').getContext('2d');
+            const gradient7 = ctx7.createLinearGradient(0, 0, 0, 300);
+            gradient7.addColorStop(0, 'rgba(0,123,255,0.5)');
+            gradient7.addColorStop(1, 'rgba(0,123,255,0)');
 
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: [@string.Join(",", chart7Days.Select(x => $"\"{x.Date}\""))],
-                    datasets: [{
-                        data: [@string.Join(",", chart7Days.Select(x => x.Revenue))],
-                        fill: true,
-                        backgroundColor: gradient,
-                        borderColor: '#007bff',
-                        borderWidth: 3,
-                        tension: 0.4,
-                        pointRadius: 5
-                    }]
-                },
-                options: { plugins: { legend: { display: false } } }
+            new Chart(ctx7, {
+            type: 'line',
+            data: {
+            labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(chart7Days.Select(x => x.Date))),
+            datasets: [{
+            data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(chart7Days.Select(x => x.Revenue))),
+            fill: true,
+            backgroundColor: gradient7,
+            borderColor: '#007bff',
+            borderWidth: 3,
+            tension: 0.4,
+            pointRadius: 5
+            }]
+            },
+            options: { plugins: { legend: { display: false } } }
             });
         </text>
     }
 
+    @* Chart khoảng doanh thu *@
     @if (rangeChart.Any())
     {
         <text>
             new Chart(document.getElementById('rangeChart'), {
-                type: 'bar',
-                data: {
-                    labels: [@string.Join(",", rangeChart.Select(x => $"\"{x.Date}\""))],
-                    datasets: [{
-                        data: [@string.Join(",", rangeChart.Select(x => x.Revenue))],
-                        backgroundColor: '#4e73df',
-                        borderRadius: 6
-                    }]
-                }
+            type: 'bar',
+            data: {
+            labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(rangeChart.Select(x => x.Date))),
+            datasets: [{
+            data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(rangeChart.Select(x => x.Revenue))),
+            backgroundColor: '#4e73df',
+            borderRadius: 6
+            }]
+            }
             });
         </text>
     }
-</script>
+}
 
 <hr />
-
 
 <h4 class="fw-bold mb-3">Top 5 sản phẩm bán chạy</h4>
 

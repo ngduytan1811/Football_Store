@@ -24,9 +24,7 @@ namespace FBS.Application.DataTranferObjects.Users
         public string? Address { get; set; }
         public bool IsActive { get; set; }
 
-        // ================================
-        // Thêm trường mật khẩu
-        // ================================
+       
         [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
         [MinLength(6, ErrorMessage = "Mật khẩu phải ít nhất 6 ký tự")]
         public string? Password { get; set; }

@@ -1,9 +1,13 @@
-﻿using FBS.Application.DataTranferObjects.Cart;
+﻿
+using FBS.Application.DataTranferObjects.Cart;
+using FBS.Application.Services;
 using FBS.Application.Services.Interfaces;
 using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
+using FBS.Internal.Models;
 using FBS.Internal.Utils;
 using FBS.Shared.Constants;
+using FBS.Shared.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -14,19 +18,23 @@ namespace FBS.Internal.Controllers
     {
         private readonly IProductService _productService;
         private readonly IOrderService _orderService;
+        private int totalQuantity;
+
+        private readonly VietQRService _vietQRService;
 
         public CartController(
             UserManager<User> userManager,
             IProductService productService,
             IOrderService orderService,
-            IUnitOfWork unitOfWork
+            IUnitOfWork unitOfWork,
+            VietQRService vietQRService
         ) : base(userManager, unitOfWork)
         {
             _productService = productService;
             _orderService = orderService;
+            _vietQRService = vietQRService;
         }
 
-       
         public IActionResult Index()
         {
             var cart = GetCart();
@@ -34,16 +42,29 @@ namespace FBS.Internal.Controllers
             return View();
         }
 
-      
+
         [HttpGet]
         public IActionResult Checkout()
         {
             var cart = GetCart();
-            ViewData["Cart"] = cart;
-            return View(new CheckoutDto());
+            decimal shipping = 30000m;
+            decimal subtotal = cart.Sum(x => (x.Price ?? 0m) * x.Quantity);
+            decimal total = subtotal + shipping;
+
+            var model = new CheckoutDto
+            {
+                CartItems = cart,
+                SubTotal = subtotal,
+                ShippingFee = shipping,
+                TotalAmount = total
+            };
+
+            return View(model);
         }
 
-     
+
+
+
         [HttpPost]
         public async Task<IActionResult> AddToCart(CartItemDto request)
         {
@@ -68,6 +89,15 @@ namespace FBS.Internal.Controllers
                 TempData["Error"] = "Sản phẩm không tồn tại";
                 return RedirectToAction("Index", "Product");
             }
+            if (totalQuantity > 10)
+            {
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    return Json(new { success = false, message = "Số lượng tối đa là 10 sản phẩm. Vui lòng liên hệ shop." });
+
+                TempData["Error"] = "Số lượng tối đa là 10 sản phẩm. Vui lòng liên hệ shop.";
+                return RedirectToAction("Detail", "Product", new { id = request.ProductId });
+            }
+
 
             var existingItem = cart.FirstOrDefault(i =>
                 i.ProductId == request.ProductId && i.Size == request.Size);
@@ -104,11 +134,9 @@ namespace FBS.Internal.Controllers
                 });
             }
 
-            // ✅ Form submit → redirect như cũ
+            
             return RedirectToAction("Index");
         }
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -141,8 +169,6 @@ namespace FBS.Internal.Controllers
         }
 
 
-
-
         [HttpPost]
         public IActionResult UpdateQuantity(Guid productId, string size, int quantity)
         {
@@ -161,44 +187,59 @@ namespace FBS.Internal.Controllers
         }
 
 
-       
         [HttpPost]
         public async Task<IActionResult> Checkout(CheckoutDto request)
         {
-            if (!ModelState.IsValid)
-            {
-                ViewData["Cart"] = GetCart();
-                return View(request);
-            }
-
             var cart = GetCart();
+
             if (!cart.Any())
             {
                 TempData["Error"] = "Giỏ hàng trống";
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
 
-            
-            request.CustomerId = CurrentUser.CustomerId;
-            request.Email = CurrentUser.Email;
+            request.CartItems = cart;
+            CalculateAmount(request, cart);
 
-            request.CartItems = cart.Select(x => new CartItemDto
+            if (!ModelState.IsValid)
+                return View(request);
+
+            // ===== COD =====
+            if (request.PaymentMethod == "COD")
             {
-                ProductId = x.ProductId,
-                Quantity = x.Quantity,
-                Price = x.Price,
-                Size = x.Size,
-                Color = x.Color,
-                Image = x.Image
-               
-            }).ToList();
+                await _orderService.CreateOrder(request);
+                ClearCart();
 
-            var result = await _orderService.CreateOrder(request);
+                TempData["OrderSuccess"] = "Đặt hàng COD thành công!";
+                return RedirectToAction("Index", "Home");
+            }
 
-            ClearCart();
-            TempData["OrderSuccess"] = "Bạn đã đặt hàng thành công!";
+            if (request.PaymentMethod == "VietQR")
+            {
+                // 👉 Tạo order trạng thái Pending
+                var order = await _orderService.CreatePendingOrder(request);
 
-            return RedirectToAction("Index", "Cart");
+                request.QRCodeUrl = await _vietQRService.GenerateVietQRAsync(
+                    accountNo: "1026869227",
+                    accountName: "NGUYEN TRUONG GIANG",
+                    bank: BankEnum.Vietcombank,
+                    amount: request.TotalAmount,
+                    note: $"DH-{order.OrderCode}"
+                );
+
+                return View("Checkout", request);
+            }
+
+            return RedirectToAction("Checkout");
+        }
+
+        private void CalculateAmount(CheckoutDto request, List<CartItemDto> cart)
+        {
+            const decimal SHIPPING_FEE = 30000m;
+
+            request.SubTotal = cart.Sum(x => (x.Price ?? 0m) * x.Quantity);
+            request.ShippingFee = SHIPPING_FEE;
+            request.TotalAmount = request.SubTotal + SHIPPING_FEE;
         }
 
         [HttpGet]

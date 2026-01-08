@@ -36,7 +36,7 @@ namespace FBS.Application.DataTranferObjects.Products
                 {
                     finalPrice -= finalPrice * Discount.Value / 100m;
                 }
-                return finalPrice.ToString("C", new CultureInfo("vi-VN"));
+                return finalPrice.ToString("C", new CultureInfo("vi-VN")) ;
             }
         }
         public List<ProductReivewDto> Reviews { get; set; } = new List<ProductReivewDto>();

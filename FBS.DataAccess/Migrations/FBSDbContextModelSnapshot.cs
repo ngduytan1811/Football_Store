@@ -46,6 +46,9 @@ namespace FBS.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<Guid?>("ProductId")
+                        .HasColumnType("char(36)");
+
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
@@ -352,7 +355,14 @@ namespace FBS.Infrastructure.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("Status")
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -546,7 +556,7 @@ namespace FBS.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages");
+                    b.ToTable("ProductImages", (string)null);
                 });
 
             modelBuilder.Entity("FBS.Infrastructure.Entities.ProductReview", b =>
@@ -856,7 +866,7 @@ namespace FBS.Infrastructure.Migrations
                             IsAdmin = true,
                             LockoutEnabled = true,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJvcL0xn4F0PwzuWIt19J37lFzlGpZAeN5R/MXSTrMh3qSh9QXJBVJ1Y8B/KkGdtag==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEM30zLtXS+52QcLcbbqD/Eq/Hh1noB5Y2yl+s1VCklUPIOMkqk/5bDYhXvP65lMoAw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "ZY5BGSWBARTE74T6ZLO7WKKMMILBEB2E",
                             Status = 1,

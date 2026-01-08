@@ -36,9 +36,7 @@ namespace FBS.Infrastructure.Repositories
 
         public IDistributedCache DistributedCache { get; set; }
 
-        // -------------------------
-        // READWRITE REPOSITORY
-        // -------------------------
+        
         public IRepositoryAsync<TEntity> GetRepositoryAsync<TEntity>()
             where TEntity : class
         {

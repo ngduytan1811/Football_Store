@@ -23,18 +23,18 @@ namespace FBS.Application.DataTranferObjects.Products
         public string? DetailPart1 { get; set; }
         public string? DetailPart2 { get; set; }
 
-        // Ảnh chính
+     
         public string? Image { get; set; }
         public IFormFile? ImageFile { get; set; }
  
 
-        // Ảnh phụ mới upload
+        
         public List<IFormFile>? SubImageFiles { get; set; }
 
-        // Tên ảnh phụ mới sau khi upload
+       
         public List<string>? SubImages { get; set; }
 
-        // Ảnh phụ cũ (load lại khi Edit)
+    
         public List<string>? OldSubImages { get; set; }
 
         public string? Brand { get; set; }

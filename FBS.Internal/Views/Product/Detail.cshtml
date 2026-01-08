@@ -106,16 +106,16 @@
                                                 {
                                                   
                                                     <div class="price-original-row">
-                                                        <span class="price-original">@productData.PriceString&nbsp;đ</span>
+                                                        <span class="price-original">@productData.PriceString&nbsp;</span>
                                                         <span class="price-discount">-@productData.Discount%</span>
                                                     </div>
 
                                                   
-                                                    <div class="price-final">@productData.PriceAfterDiscountString&nbsp;đ</div>
+                                                    <div class="price-final">@productData.PriceAfterDiscountString&nbsp;</div>
                                                 }
                                                 else
                                                 {
-                                                    <div class="price-final">@productData.PriceString&nbsp;đ</div>
+                                                    <div class="price-final">@productData.PriceString&nbsp;</div>
                                                 }
                                             </div>
                                         </div>
@@ -196,35 +196,20 @@
 
                                                 <form asp-action="AddToCart"
                                                       asp-controller="Cart"
-                                                      method="post">
+                                                      method="post"
+                                                      id="addToCartForm">
 
                                                     @Html.AntiForgeryToken()
 
                                                     <input type="hidden" name="ProductId" value="@Model.ProductId" />
-
                                                     <input type="hidden" name="Size" id="SelectedSize" />
                                                     <input type="hidden" name="Quantity" id="Quantity" value="1" />
 
-                                                    <form asp-action="AddToCart"
-                                                          asp-controller="Cart"
-                                                          method="post">
-
-                                                        @Html.AntiForgeryToken()
-
-                                                      
-                                                        <input type="hidden" name="ProductId" value="@Model.ProductId" />
-
-                                                     
-                                                        <input type="hidden" name="Size" id="SelectedSize" />
-
-                                                     
-                                                        <input type="hidden" name="Quantity" id="Quantity" value="1" />
-
-                                                        <button type="submit" class="btn btn-primary mn-btn-2">
-                                                            Thêm vào giỏ
-                                                        </button>
-                                                    </form>
+                                                    <button type="submit" class="btn btn-primary mn-btn-2 mn-add-cart">
+                                                        Thêm vào giỏ
+                                                    </button>
                                                 </form>
+
 
 
                                             </div>
@@ -386,53 +371,75 @@
                         </div>
 
                         <div class="mn-product owl-carousel">
-
-                            @foreach (var item in randomProducts)
+                            @foreach (var product in randomProducts)
                             {
-                                <div class="mn-product-card">
-
+                                <div class="mn-product-card modern-card">
                                     <div class="mn-product-img">
-                                        <div class="lbl"><span class="trending">Mới</span></div>
+                                        <div class="lbl">
+                                            <span class="badge-new">Mới</span>
+                                        </div>
 
                                         <div class="mn-img">
-                                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id">
-                                                <img class="main-img" src="@item.Image" alt="@item.Name">
-                                                <img class="hover-img" src="@item.Image" alt="@item.Name">
+                                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id" class="image">
+                                                <img class="main-img" src="@product.Image" alt="@product.Name">
                                             </a>
+
+                                            <div class="mn-options modern-options">
+                                                <ul>
+                                                    <li>
+                                                        <a data-bs-toggle="modal"
+                                                           data-bs-target="#quickview_modal_@product.Id"
+                                                           title="Xem nhanh">
+                                                            <i class="ri-eye-line"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a data-bs-toggle="modal"
+                                                           data-bs-target="#quickview_modal_@product.Id"
+                                                           title="Thêm vào giỏ">
+                                                            <i class="ri-shopping-cart-line"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div class="mn-product-detail">
                                         <div class="cat">
-                                            <a asp-controller="Product"
-                                               asp-action="List"
-                                               asp-route-categoryId="@item.CategoryId">
-                                                @item.CategoryName
+                                            <a asp-controller="Product" asp-action="List"
+                                               asp-route-categoryId="@product.CategoryId">
+                                                @product.CategoryName
                                             </a>
-
-
-                                            <ul>
-                                                <li>Size: @string.Join(", ", item.Sizes)</li>
-                                            </ul>
+                                            <span class="size-text">
+                                                Size: @string.Join(", ", product.Sizes)
+                                            </span>
                                         </div>
 
-                                        <h5>
-                                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@item.Id">
-                                                @item.Name
+                                        <h5 class="product-name">
+                                            <a asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id">
+                                                @product.Name
                                             </a>
                                         </h5>
 
-                                        <div class="mn-price">
-                                            <div class="mn-price-new">@item.PriceString</div>
-                                            <div class="mn-price-old">@item.PriceString</div>
+                                        <div class="product-price">
+                                            @if (product.Discount.HasValue && product.Discount.Value > 0)
+                                            {
+                                                <span class="price-old">@product.PriceString</span>
+                                                <span class="price-new">@product.PriceAfterDiscountString</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="price-new">@product.PriceString</span>
+                                            }
                                         </div>
-                                    </div>
 
+                                    </div>
                                 </div>
                             }
-
                         </div>
                     </section>
+
 
                 </div>
 
@@ -489,12 +496,20 @@
             if (qtyInput) {
                 qtyInput.addEventListener("input", checkQuantity);
             }
+            
+            document.addEventListener("click", function (e) {
+                if (e.target.closest(".qty-plus-minus")) {
+                    setTimeout(() => {
+                        checkQuantity();
+                    }, 50);
+                }
+            });
 
-          
+
             if (form) {
                 form.addEventListener("submit", function (e) {
 
-                 
+                    //  chưa chọn size
                     if (!hiddenSize.value) {
                         e.preventDefault();
 
@@ -508,8 +523,9 @@
                         return;
                     }
 
-                    
-                    const qty = parseInt(qtyInput.value || 0);
+                    // kiểm tra số lượng 
+                    const qty = parseInt(document.getElementById("Quantity").value || 0);
+
                     if (qty > 10) {
                         e.preventDefault();
                         alert("Đơn hàng trên 10 sản phẩm. Vui lòng liên hệ shop.");
@@ -518,12 +534,10 @@
                 });
             }
 
+
         });
     </script>
 }
-
-
-
 
 <style>
     .size-error {
@@ -619,81 +633,37 @@
             object-fit: contain;
         }
 
-  
+
     .mn-product-detail {
-        flex: 1; 
-        display: flex;
-        flex-direction: column;
-        padding-top: 8px;
-    }
-
-        /* giới hạn tên */
-        .mn-product-detail h5 a {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            min-height: 44px;
-        }
-
-   
-    .mn-price {
-        margin-top: auto; 
-        display: flex;
-        gap: 10px;
-    }
-    
-    .mn-price,
-    .mn-price-new,
-    .mn-price-old {
-        display: flex;
-        align-items: baseline; 
-        gap: 2px;
-    }
-
-
-    .mn-price-new {
-        font-size: 17px;
-        font-weight: 800;
-        color: #111827;
-        white-space: nowrap; 
-    }
-
-   
-        .mn-price-new::after {
-            content: "đ";
-            font-size: 12px;
-            font-weight: 600;
-            margin-left: 2px;
-        }
-
-
-    .mn-price-old {
-        font-size: 13px;
-        color: #9ca3af;
-        text-decoration: line-through;
-        white-space: nowrap;
-    }
-
-        .mn-price-old::after {
-            content: "đ";
-            font-size: 11px;
-            margin-left: 2px;
-        }
-
-    .qty-wrapper {
+        flex: 1;
         display: flex;
         flex-direction: column;
     }
+
+
+        .mn-product-detail h5 {
+            min-height: 44px; /* ❗ 2 dòng chữ */
+            margin: 0 0 6px 0;
+        }
+
+            .mn-product-detail h5 a {
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+        .mn-product-detail .cat {
+            min-height: 36px; /* tuỳ UI */
+        }
+
 
     #contactWarning {
         font-size: 14px;
         line-height: 1.4;
     }
 
-    .mn-single-price {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+    
 
     
     .price-original-row {
@@ -721,7 +691,7 @@
 
  
     .price-final {
-        color: #28a745;
+        color:black;
         font-weight: bold;
         white-space: nowrap;
         ;
@@ -733,12 +703,55 @@
     @@media (max-width: 576px) {
         .price-original-row
 
-    {
+     {
         flex-wrap: wrap;
         gap: 6px;
+     }
+    }
+    .product-price {
+        margin-top:auto;
+    display: flex;
+    align-items: baseline;   /* căn đẹp số */
+    gap: 6px;
+    white-space: nowrap;     /* ❗ ép 1 hàng */
+    max-width: 100%;
+    overflow: hidden;
+}
+
+    .price-old {
+        font-size: 14px;
+        color: #9ca3af;
+        text-decoration: line-through;
     }
 
+    .price-new {
+        font-size: 18px;
+        font-weight: 700;
     }
+
+
+    .price-old {
+        font-size: 14px;
+        color: #9ca3af;
+        text-decoration: line-through;
+        font-weight: 500;
+    }
+
+    .price-new {
+        font-size: 18px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+
+/* Mobile nhỏ thì thu font lại */
+@@media (max-width: 576px) {
+    .price-new {
+        font-size: 16px;
+    }
+}
+
+    
 </style>
 
 

@@ -6,12 +6,15 @@ using FBS.Infrastructure.Repositories.Interfaces;
 using FBS.Shared.Constants;
 using FBS.Shared.DataTranferObjects.Base;
 using FootballShop.Areas.Admin.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using static FBS.Shared.Constants.ContactConstants;
 
 namespace FBS.Internal.Areas.Admin.Controllers
 {
+    [Area("Admin")]
+    [Authorize]
     public class ProductController : BaseAdminController
     {
         private readonly IProductService _productService;
@@ -61,7 +64,8 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return View();
         }
 
-        
+        [Authorize(Roles = "Quanlysanpham")]
+        [Authorize(Policy = "Product.Create")]
         public async Task<IActionResult> Create()
         {
             var drop = await _categoryService.GetCategoryDropdown();
@@ -71,6 +75,8 @@ namespace FBS.Internal.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Quanlysanpham")]
+        [Authorize(Policy = "Product.Create")]
         public async Task<IActionResult> Create(ProductSaveDto request)
         {
             if (!ModelState.IsValid)
@@ -135,7 +141,8 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-       
+        [Authorize(Roles = "Quanlysanpham")]
+        [Authorize(Policy = "Product.Edit")]
         public async Task<IActionResult> Edit(Guid id)
         {
             ViewData["Categories"] = (await _categoryService.GetCategoryDropdown()).Data;
@@ -179,6 +186,8 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
    
         [HttpPost]
+        [Authorize(Roles = "Quanlysanpham")]
+        [Authorize(Policy = "Product.Edit")]
         public async Task<IActionResult> Update(Guid id, ProductSaveDto request)
         {
             var current = await _productService.FindById(id);
@@ -227,10 +236,10 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
             return RedirectToAction("Edit", new { id });
         }
-
-
         
         [HttpPost]
+        [Authorize(Roles = "Quanlysanpham")]
+        [Authorize(Policy = "Product.Delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var product = await _productService.FindById(id);

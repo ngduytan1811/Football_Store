@@ -1,0 +1,51 @@
+﻿@model FBS.Application.DataTranferObjects.Auth.RegisterAdminDto
+
+@{
+    ViewData["Title"] = "Tạo tài khoản Admin";
+    Layout = "~/Areas/Admin/Views/Shared/_EmptyLayout.cshtml";
+}
+
+<div class="row m-0">
+    <div class="col-12 p-0">
+        <div class="login-card">
+            <div class="login-main">
+                <form asp-action="Register" method="post" class="theme-form">
+                    <h4 class="text-center">Tạo tài khoản Admin</h4>
+                    <p class="text-center">Chỉ dành cho quản trị viên</p>
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="Username">Tên đăng nhập</label>
+                        <input asp-for="Username" class="form-control" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Email">Email</label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Password">Mật khẩu</label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <button type="submit" class="btn btn-primary w-100">
+                            Tạo tài khoản
+                        </button>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <a asp-area="Admin" asp-controller="Auth" asp-action="Login">
+                            Quay lại đăng nhập
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

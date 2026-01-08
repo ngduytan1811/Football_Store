@@ -27,5 +27,6 @@ namespace FBS.Application.Services.Interfaces
         Task AddProductImages(Guid productId, List<string> images);
 
         Task RemoveProductImages(Guid productId);
+        
     }
 }

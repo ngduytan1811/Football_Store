@@ -17,5 +17,6 @@ namespace FBS.Application.DataTranferObjects.Auth
         [DataType(DataType.Password)]
         [StringLength(50, ErrorMessage = "Mật khẩu tối đa 50 ký tự")]
         public string Password { get; set; } = string.Empty;
+        public bool RememberMe { get; set; }
     }
 }

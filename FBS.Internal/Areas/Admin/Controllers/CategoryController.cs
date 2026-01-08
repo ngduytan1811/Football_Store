@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Linq;
 using FootballShop.Areas.Admin.Controllers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FBS.Internal.Areas.Admin.Controllers
 {
@@ -44,7 +45,8 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return View();
         }
 
-      
+        [Authorize(Roles = "Quanlysanpham")]
+        [Authorize(Policy = "Category.Create")]
         public async Task<IActionResult> Create()
         {
             var dropdown = await _categoryService.GetCategoryDropdown(null);
@@ -55,6 +57,8 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
       
         [HttpPost]
+        [Authorize(Roles = "Quanlysanpham")]
+        [Authorize(Policy = "Category.Create")]
         public async Task<IActionResult> Create(CategorySaveDto model)
         {
             if (!ModelState.IsValid)
@@ -74,13 +78,15 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
        
         [HttpGet]
+        [Authorize(Roles = "Quanlysanpham")]
+        [Authorize(Policy = "Category.Edit")]
         public async Task<IActionResult> Edit(Guid id)
         {
-            // Dropdown tất cả category
+            //  tất cả category
             var dropdown = await _categoryService.GetCategoryDropdown(null);
             var list = dropdown?.Data ?? new List<CategoryDto>();
 
-            // Lấy dữ liệu khi sửa
+            // lấy dữ liệu khi sửa
             var data = await _categoryService.FindById(id);
             if (data.Data == null)
                 return RedirectToAction("Index");
@@ -101,6 +107,8 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
        
         [HttpPost]
+        [Authorize(Roles = "Quanlysanpham")]
+        [Authorize(Policy = "Category.Edit")]
         public async Task<IActionResult> Update(Guid id, CategorySaveDto model)
         {
             if (!ModelState.IsValid)
@@ -118,6 +126,8 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
         
         [HttpPost]
+        [Authorize(Roles = "Quanlysanpham")]
+        [Authorize(Policy = "Category.Delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var category = await _categoryService.FindById(id);

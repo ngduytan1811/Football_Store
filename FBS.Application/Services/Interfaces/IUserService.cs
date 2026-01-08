@@ -1,6 +1,4 @@
-﻿// <copyright file= IUserService.cs company= Tan Nguyen>
-// Copyright (c) Tan Nguyen. All rights reserved.
-// </copyright>
+﻿
 
 namespace FBS.Application.Services.Interfaces
 {

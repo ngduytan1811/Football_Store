@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FBS.Application.DataTranferObjects.Reports;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FootballShop.Areas.Admin.Controllers
 {
-    [Area("admin")]
+    [Area("Admin")]
+   
     public class DashboardController : BaseAdminController
     {
         public DashboardController(UserManager<User> userManager, IUnitOfWork unitOfWork)
@@ -55,8 +57,7 @@ namespace FootballShop.Areas.Admin.Controllers
             var lastDate = validOrders.Max(o => o.CreatedAt!.Value.Date);
             var today = lastDate;
 
-           //Doanh thu tổng
-
+           //doanh thu tổng
             ViewBag.TotalRevenue = validOrders.Sum(o =>
                 o.OrderItems.Sum(i => (i.Price ?? 0) * (i.Quantity ?? 0)));
 
@@ -72,16 +73,12 @@ namespace FootballShop.Areas.Admin.Controllers
 
            // trạng thái đơn hàng
             ViewBag.TotalOrders = orders.Count;
-
             ViewBag.CanceledOrders = orders.Count(o => o.Status == StatusEnum.Cancel);
             ViewBag.ProcessingOrders = orders.Count(o => o.Status == StatusEnum.WaitingApproval);
             ViewBag.ShippingOrders = orders.Count(o => o.Status == StatusEnum.InHandler);
-
-            
             ViewBag.CompletedOrders = orders.Count(o => o.Status == StatusEnum.Active);
 
           // biểu đồ
-
             var last7Days = Enumerable.Range(0, 7)
     .Select(i => lastDate.AddDays(-i))
     .OrderBy(d => d)
@@ -93,8 +90,6 @@ namespace FootballShop.Areas.Admin.Controllers
             .Sum(o => o.OrderItems.Sum(i => (i.Price ?? 0) * (i.Quantity ?? 0)))
     })
     .ToList();
-
-
             ViewBag.Last7DaysRevenue = last7Days;
 
             // sản phẩm bán chạy
@@ -114,7 +109,7 @@ namespace FootballShop.Areas.Admin.Controllers
 
             ViewBag.TopProducts = top5Products;
 
-           // doanh thu ngày
+       
             ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
             ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
 

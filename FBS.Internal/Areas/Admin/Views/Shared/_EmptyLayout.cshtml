@@ -42,7 +42,10 @@
  
     <div class="container-fluid p-0">
        @RenderBody()
+       
     </div>
+    @RenderSection("Scripts", required: false)
+
     <script src="~/theme/admin/js/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap js-->
     <script src="~/theme/admin/js/bootstrap/bootstrap.bundle.min.js"></script>

@@ -11,12 +11,24 @@
 
     </p>
 
-   
+
+
     @if (!string.IsNullOrEmpty(Model.Thumbnail))
     {
-        <img src="/@Model.Thumbnail"
-             class="img-fluid rounded mb-4"
-             style="width:100%;object-fit:cover;" />
+        <div class="blog-thumb-wrapper">
+            <img src="/@Model.Thumbnail"
+                 class="img-fluid blog-thumb-img" />
+
+            @if (Model.ProductId.HasValue)
+            {
+                <a asp-controller="Product"
+                   asp-action="Detail"
+                   asp-route-id="@Model.ProductId"
+                   class="btn-buy-now">
+                    <i class="bi bi-cart3"></i> Mua ngay
+                </a>
+            }
+        </div>
     }
 
   
@@ -55,3 +67,47 @@
     }
 
 </div>
+<style>
+    .blog-thumb-wrapper {
+        position: relative;
+        border-radius: 18px;
+        overflow: hidden;
+    }
+
+    .blog-thumb-img {
+        width: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    
+    .btn-buy-now {
+        position: absolute;
+        bottom: 22px;
+        left: 22px;
+        padding: 14px 32px;
+        border-radius: 999px;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: .3px;
+        color: gray;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: linear-gradient( 135deg, rgba(60, 60, 60, 0.85), rgba(30, 30, 30, 0.75) );
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+        transition: all .3s cubic-bezier(.4,0,.2,1);
+    }
+
+      
+        .btn-buy-now:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+            color: #fff;
+        }
+
+
+</style>

@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+    using AngleSharp.Dom;
     using FBS.Infrastructure.Entities;
     using Microsoft.EntityFrameworkCore.Query;
 
@@ -41,6 +42,9 @@
 
         Task<IQueryable<T>> QueryCondition(Expression<Func<T, bool>> expression);
         Task<List<T>> FindByAsync(Expression<Func<T, bool>> predicate);
-        
+        Task AddAsync(T entity);            
+
+        Task<T?> GetByIdAsync(Guid id);
+
     }
 }
