@@ -39,7 +39,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
         }
 
         [Authorize(Roles = "Baiviet")]
-        [Authorize(Policy = "Blog.Creat")]
+        [Authorize(Policy = "Blog.Create")]
         public async Task<IActionResult> Create()
         {
             var response = await _productService.GetProducts(
@@ -55,7 +55,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Baiviet")]
-        [Authorize(Policy = "Blog.Creat")]
+        [Authorize(Policy = "Blog.Create")]
         public async Task<IActionResult> Create(BlogSaveDto dto)
         {
 

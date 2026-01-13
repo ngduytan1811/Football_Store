@@ -362,8 +362,14 @@ namespace FBS.Infrastructure.Migrations
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("ShippingFee")
+                        .HasColumnType("decimal(65,30)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(65,30)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -427,6 +433,29 @@ namespace FBS.Infrastructure.Migrations
                     b.ToTable("OrderItems");
                 });
 
+            modelBuilder.Entity("FBS.Infrastructure.Entities.OrderStatusHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrderStatusHistories");
+                });
+
             modelBuilder.Entity("FBS.Infrastructure.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -434,9 +463,13 @@ namespace FBS.Infrastructure.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Brand")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<Guid?>("CategoryId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid?>("CategoryId1")
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime?>("CreatedAt")
@@ -461,10 +494,11 @@ namespace FBS.Infrastructure.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("Status")
                         .HasColumnType("int");
@@ -479,7 +513,9 @@ namespace FBS.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.HasIndex("CategoryId1");
+
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("FBS.Infrastructure.Entities.ProductColor", b =>
@@ -490,7 +526,8 @@ namespace FBS.Infrastructure.Migrations
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime(6)");
@@ -515,10 +552,9 @@ namespace FBS.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId")
-                        .IsUnique();
+                    b.HasIndex("ProductId");
 
-                    b.ToTable("ProductColors");
+                    b.ToTable("ProductColors", (string)null);
                 });
 
             modelBuilder.Entity("FBS.Infrastructure.Entities.ProductImage", b =>
@@ -614,11 +650,16 @@ namespace FBS.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<Guid>("ProductId")
+                    b.Property<Guid>("ProductColorId")
                         .HasColumnType("char(36)");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.Property<string>("Size")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("varchar(15)");
 
                     b.Property<int?>("Status")
                         .HasColumnType("int");
@@ -631,9 +672,10 @@ namespace FBS.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductColorId", "Size")
+                        .IsUnique();
 
-                    b.ToTable("ProductSizes");
+                    b.ToTable("ProductSizes", (string)null);
                 });
 
             modelBuilder.Entity("FBS.Infrastructure.Entities.Role", b =>
@@ -866,7 +908,7 @@ namespace FBS.Infrastructure.Migrations
                             IsAdmin = true,
                             LockoutEnabled = true,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEM30zLtXS+52QcLcbbqD/Eq/Hh1noB5Y2yl+s1VCklUPIOMkqk/5bDYhXvP65lMoAw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOIv4Th4KUN0g8eKa/C2MyL7/3q2lBjnynp1mbkUPHPl6NlTWR+9pwhIuQU3h1oLcg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "ZY5BGSWBARTE74T6ZLO7WKKMMILBEB2E",
                             Status = 1,
@@ -1017,8 +1059,13 @@ namespace FBS.Infrastructure.Migrations
             modelBuilder.Entity("FBS.Infrastructure.Entities.Product", b =>
                 {
                     b.HasOne("FBS.Infrastructure.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("FBS.Infrastructure.Entities.Category", null)
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId1");
 
                     b.Navigation("Category");
                 });
@@ -1026,8 +1073,8 @@ namespace FBS.Infrastructure.Migrations
             modelBuilder.Entity("FBS.Infrastructure.Entities.ProductColor", b =>
                 {
                     b.HasOne("FBS.Infrastructure.Entities.Product", "Product")
-                        .WithOne("ProductColor")
-                        .HasForeignKey("FBS.Infrastructure.Entities.ProductColor", "ProductId")
+                        .WithMany("ProductColors")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1056,13 +1103,13 @@ namespace FBS.Infrastructure.Migrations
 
             modelBuilder.Entity("FBS.Infrastructure.Entities.ProductSize", b =>
                 {
-                    b.HasOne("FBS.Infrastructure.Entities.Product", "Product")
+                    b.HasOne("FBS.Infrastructure.Entities.ProductColor", "ProductColor")
                         .WithMany("ProductSizes")
-                        .HasForeignKey("ProductId")
+                        .HasForeignKey("ProductColorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Product");
+                    b.Navigation("ProductColor");
                 });
 
             modelBuilder.Entity("FBS.Infrastructure.Entities.RoleClaim", b =>
@@ -1145,13 +1192,15 @@ namespace FBS.Infrastructure.Migrations
 
             modelBuilder.Entity("FBS.Infrastructure.Entities.Product", b =>
                 {
-                    b.Navigation("ProductColor")
-                        .IsRequired();
+                    b.Navigation("ProductColors");
 
                     b.Navigation("ProductImages");
 
                     b.Navigation("ProductReviews");
+                });
 
+            modelBuilder.Entity("FBS.Infrastructure.Entities.ProductColor", b =>
+                {
                     b.Navigation("ProductSizes");
                 });
 

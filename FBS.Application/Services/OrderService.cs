@@ -11,19 +11,20 @@ namespace FBS.Application.Services
     using FBS.Infrastructure.Entities;
     using FBS.Infrastructure.Repositories.Interfaces;
     using FBS.Shared.Constants;
+    using FBS.Shared.DataTranferObjects.Auth;
     using FBS.Shared.DataTranferObjects.Base;
     using FBS.Shared.Enums;
 
     public class OrderService : IOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private decimal productTotal;
 
         public OrderService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-
-        
+       
         public async Task<BaseTableResponse<OrderDto>> GetOrders(BaseSearchDto<OrderSearchDto> dto)
         {
             var result = new BaseTableResponse<OrderDto>();
@@ -47,9 +48,7 @@ namespace FBS.Application.Services
 
             result.TotalPage = 1;
             return result;
-        }
-
-      
+        }     
         public async Task<BaseResponse<OrderDto>> FindById(Guid orderId)
         {
             var result = new BaseResponse<OrderDto>();
@@ -83,33 +82,26 @@ namespace FBS.Application.Services
 
             return result;
         }
-
-       
-        public async Task<BaseResponse<string>> CreateOrder(CheckoutDto dto)
+        public async Task<BaseResponse<string>> CreateOrder(CheckoutDto dto, Guid customerId)
         {
             var result = new BaseResponse<string>();
             var orderItemRepo = _unitOfWork.GetRepositoryAsync<OrderItem>();
             var orderRepo = _unitOfWork.GetRepositoryAsync<Order>();
-
-            var paymentStatus = dto.PaymentMethod == "VietQR"
-                          ? PaymentStatusEnum.Paid
-                          : PaymentStatusEnum.Unpaid;
-
-            var status = dto.PaymentMethod == "VietQR"
-                ? StatusEnum.Active  
-                : StatusEnum.Inactive;
-
+          
+            var paymentStatus = PaymentStatusEnum.Unpaid;
+            var status = StatusEnum.Inactive;
 
             var newOrder = new Order
             {
-                CustomerId = dto.CustomerId,        
+                CustomerId = customerId ,
                 CustomerName = dto.FullName,
                 CustomerPhone = dto.PhoneNumber,
                 CustomerEmail = dto.Email,
                 CustomerAddress = dto.Address,
-                Note = dto.Note,
-                PaymentMethod = dto.PaymentMethod,
+                Note = dto.Note, 
+                PaymentMethod = dto.PaymentMethod,   
                 PaymentStatus = paymentStatus,
+                Status = StatusEnum.Inactive,
                 CreatedAt = DateTime.Now
             };
 
@@ -123,39 +115,61 @@ namespace FBS.Application.Services
                 Price = x.Price
             }).ToList();
 
-            await orderItemRepo.Add(items);
             await orderRepo.Add(newOrder);
+            await orderItemRepo.Add(items);
             await _unitOfWork.SaveChangesAsync();
-
+            await AddStatusHistory(newOrder.Id,StatusEnum.Inactive, "Đơn hàng đang chờ xác nhận");
             result.Data = newOrder.Id.ToString();
             result.Type = GlobalConstants.ResponseType.Success;
-
             result.Message = "Đặt hàng thành công!";
 
             return result;
         }
-
-        public async Task<OrderDto> CreatePendingOrder(CheckoutDto request)
+        public async Task<OrderDto> CreatePendingOrder(CheckoutDto request,Guid customerId)
         {
+            const decimal ShippingFee = 30000m;
+
+            var subTotal = request.CartItems.Sum(x =>
+                (x.Price ?? 0) * x.Quantity
+            );
+
+            var totalAmount = subTotal + ShippingFee;
             var order = new Order
             {
-                CustomerId = request.CustomerId,
-
+                CustomerId = customerId,
                 CustomerName = request.FullName,
                 CustomerPhone = request.PhoneNumber,
                 CustomerEmail = request.Email,
                 CustomerAddress = request.Address,
-
                 Note = request.Note,
 
-                PaymentMethod = "COD",
+                PaymentMethod = request.PaymentMethod,
                 PaymentStatus = PaymentStatusEnum.Unpaid,
-                Status = StatusEnum.Active
+                ShippingFee =ShippingFee,
+                TotalAmount =totalAmount,
+                Status = StatusEnum.Inactive,
+                CreatedAt = DateTime.Now
             };
 
-            var orderRepository = _unitOfWork.GetRepositoryAsync<Order>();
+            var orderRepo = _unitOfWork.GetRepositoryAsync<Order>();
+            var itemRepo = _unitOfWork.GetRepositoryAsync<OrderItem>();
 
-            await orderRepository.AddAsync(order);
+           
+            await orderRepo.AddAsync(order);
+            await _unitOfWork.SaveChangesAsync();
+            await AddStatusHistory(order.Id, StatusEnum.Inactive, "Đơn hàng đang chờ xác nhận");
+
+            var items = request.CartItems.Select(x => new OrderItem
+            {
+                OrderId = order.Id,
+                ProductId = x.ProductId,
+                ProductColor = x.Color,
+                ProductSize = x.Size,
+                Quantity = x.Quantity,
+                Price = x.Price
+            }).ToList();
+
+            await itemRepo.Add(items);
             await _unitOfWork.SaveChangesAsync();
 
             return new OrderDto
@@ -163,7 +177,6 @@ namespace FBS.Application.Services
                 Id = order.Id
             };
         }
-
         public async Task MarkOrderAsPaid(Guid orderId)
         {
             var repo = _unitOfWork.GetRepositoryAsync<Order>();
@@ -176,9 +189,6 @@ namespace FBS.Application.Services
 
             await _unitOfWork.SaveChangesAsync();
         }
-
-
-
         public async Task<List<OrderDto>> GetOrdersByCustomer(Guid customerId)
         {
             var query = await _unitOfWork
@@ -217,9 +227,6 @@ namespace FBS.Application.Services
 
             }).ToList();
         }
-
-
-        
         public async Task<OrderDto?> GetOrderDetail(Guid orderId, Guid customerId)
         {
             var repo = _unitOfWork.GetRepositoryReadOnlyAsync<Order>();
@@ -233,7 +240,19 @@ namespace FBS.Application.Services
                     o.Id == orderId && o.CustomerId == customerId);
 
             if (order == null) return null;
+            var historyRepo = _unitOfWork.GetRepositoryReadOnlyAsync<OrderStatusHistory>();
+            var historyQuery = await historyRepo.QueryAll();
 
+            var statusHistories = historyQuery
+                .Where(x => x.OrderId == order.Id)
+                .OrderBy(x => x.CreatedAt)
+                .Select(x => new OrderStatusHistoryDto
+                {
+                    Status = x.Status,
+                    CreatedAt = x.CreatedAt,
+                    Note = x.Note
+                })
+                .ToList();
             return new OrderDto
             {
                 Id = order.Id,
@@ -244,7 +263,9 @@ namespace FBS.Application.Services
                 Note = order.Note,
                 CreatedAt = order.CreatedAt,
                 Status = order.Status,
-
+                ShippingFee = order.ShippingFee,    
+                TotalAmount = order.TotalAmount,
+                 StatusHistories =statusHistories,
                 OrderItems = order.OrderItems.Select(i => new OrderItemDto
                 {
                     ProductId = i.ProductId,
@@ -257,8 +278,6 @@ namespace FBS.Application.Services
                 }).ToList()
             };
         }
-
-        
         public async Task<BaseResponse<string>> DeleteOrder(Guid id)
         {
             var result = new BaseResponse<string>();
@@ -316,7 +335,6 @@ namespace FBS.Application.Services
                 Message = "Hủy đơn hàng thành công"
             };
         }
-
         public async Task<BaseResponse<string>> UpdateOrderInfo(Guid orderId,Guid customerId,UpdateOrderInfoDto dto)
         {
             var readRepo = _unitOfWork.GetRepositoryReadOnlyAsync<Order>();
@@ -363,7 +381,50 @@ namespace FBS.Application.Services
                 Message = "Cập nhật thông tin đơn hàng thành công"
             };
         }
+        public async Task<BaseResponse<string>> UpdateOrderStatus(Guid orderId,StatusEnum newStatus,string note)
+        {
+            var orderRepo = _unitOfWork.GetRepositoryAsync<Order>();
+            var order = await orderRepo.GetByIdAsync(orderId);
 
+            if (order == null)
+            {
+                return new BaseResponse<string>
+                {
+                    Type = GlobalConstants.ResponseType.Error,
+                    Message = "Không tìm thấy đơn hàng"
+                };
+            }
+
+            order.Status = newStatus;
+            order.UpdatedAt = DateTime.Now;
+
+            orderRepo.Update(order);
+
+          
+            await AddStatusHistory(order.Id, newStatus, note);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return new BaseResponse<string>
+            {
+                Type = GlobalConstants.ResponseType.Success,
+                Message = "Cập nhật trạng thái thành công"
+            };
+        }
+
+        private async Task AddStatusHistory(Guid orderId,StatusEnum status,string note)
+        {
+            var historyRepo = _unitOfWork.GetRepositoryAsync<OrderStatusHistory>();
+
+            await historyRepo.Add(new OrderStatusHistory
+            {
+                OrderId = orderId,
+                Status = status,
+                Note = note,
+                CreatedAt = DateTime.Now
+            });
+            await _unitOfWork.SaveChangesAsync();
+        }
 
     }
 }

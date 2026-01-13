@@ -8,6 +8,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
+
 <div class="container-fluid">
     <div class="card p-4 shadow-sm">
 
@@ -33,32 +34,76 @@
         </div>
 
         <hr />
+        <div class="mb-4">
+            <h5 class="fw-bold mb-2">Thông tin thanh toán</h5>
+
+            <p>
+                <b>Phương thức:</b>
+                @if (Model.PaymentMethod == "COD")
+                {
+                    <span class="badge bg-info">COD</span>
+                }
+                else
+                {
+                    <span class="badge bg-warning">VietQR</span>
+                }
+            </p>
+
+            <p>
+                <b>Trạng thái thanh toán:</b>
+                @if (Model.PaymentStatus == PaymentStatusEnum.Paid)
+                {
+                    <span class="badge bg-success">Đã thanh toán</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Chưa thanh toán</span>
+                }
+            </p>
+
+
+            @if (Model.PaymentMethod == "VietQR"
+            && Model.PaymentStatus == PaymentStatusEnum.Unpaid)
+            {
+                <form asp-action="ConfirmPayment"
+                      asp-controller="Order"
+                      method="post"
+                      onsubmit="return confirm('Xác nhận khách đã thanh toán VietQR?');">
+
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <button class="btn btn-success">
+                        Xác nhận đã thanh toán VietQR
+                    </button>
+                </form>
+            }
+
+        </div>
+
 
         
         <h5 class="fw-bold mb-3">Trạng thái đơn hàng</h5>
 
-        <form asp-action="UpdateStatus" asp-controller="Order" method="post">
+        <form asp-area="Admin"asp-controller="AdminOrder"asp-action="UpdateStatus"method="post">
             <input type="hidden" name="id" value="@Model.Id" />
 
-            <div class="d-flex gap-3 align-items-center">
-                <select name="status" class="form-select" style="width:250px;">
-                    @foreach (StatusEnum st in Enum.GetValues(typeof(StatusEnum)))
-                    {
-                        <option value="@st" selected="@(Model.Status == st)">
-                            @st.GetDisplayName()
-                        </option>
-                    }
-                </select>
+            <select name="status" class="form-select" style="width:250px;">
+                @foreach (StatusEnum st in Enum.GetValues(typeof(StatusEnum)))
+                {
+                    <option value="@st" selected="@(Model.Status == st)">
+                        @st.GetDisplayName()
+                    </option>
+                }
+            </select>
 
-                <button type="submit" class="btn btn-primary">
-                    Cập nhật
-                </button>
-            </div>
+            <button class="btn btn-primary">
+                Cập nhật
+            </button>
         </form>
+
 
         <hr />
 
- 
         <h5 class="fw-bold mb-3">Danh sách sản phẩm</h5>
 
         <table class="table table-bordered table-hover align-middle">
@@ -96,7 +141,9 @@
         <!-- Tổng tiền -->
         <div class="text-end mt-3">
             <h4 class="fw-bold text-primary">
-                Tổng tiền: @(Model.OrderItems.Sum(x => (x.Price ?? 0) * (x.Quantity ?? 0)).ToString("N0")) đ
+                <p><b>Phí vận chuyển:</b> @Model.ShippingFee.ToString("N0") đ</p>
+                <p><b>Tổng tiền:</b> @Model.TotalAmount.ToString("N0") đ</p>
+
 
             </h4>
         </div>

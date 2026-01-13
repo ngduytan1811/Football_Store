@@ -31,6 +31,7 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("Order.View", policy => policy.RequireClaim("Permission", "Order.View"));
     options.AddPolicy("Order.Update", policy => policy.RequireClaim("Permission", "Order.Update"));
+    options.AddPolicy("Order.ConfirmPayment", policy => policy.RequireClaim("Permission", "Order.ConfirmPayment"));
 
     options.AddPolicy("Blog.Create", policy => policy.RequireClaim("Permission", "Blog.Create"));
     options.AddPolicy("Blog.Edit", policy => policy.RequireClaim("Permission", "Blog.Edit"));

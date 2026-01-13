@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FootballShop.Areas.Admin.Controllers
 {
-    [Area("admin")]
+    [Area("Admin")]
     public class OrderController : BaseAdminController
     {
         public OrderController(UserManager<User> userManager, IUnitOfWork unitOfWork)
@@ -95,7 +95,8 @@ namespace FootballShop.Areas.Admin.Controllers
         [HttpPost]
         [Authorize(Roles = "Quanlydonhang")]
         [Authorize(Policy = "Order.Update")]
-        public async Task<IActionResult> UpdateStatus(Guid id, string status)
+       
+        public async Task<IActionResult> UpdateStatus(Guid id, StatusEnum status)
         {
             var repo = _unitOfWork.GetRepositoryAsync<Order>();
             var order = await repo.Single(x => x.Id == id);
@@ -103,22 +104,54 @@ namespace FootballShop.Areas.Admin.Controllers
             if (order == null)
                 return NotFound();
 
-            if (Enum.TryParse<StatusEnum>(status, out var newStatus))
+            
+            if (order.PaymentMethod == "VietQR"
+                && order.PaymentStatus == PaymentStatusEnum.Unpaid)
             {
-                order.Status = newStatus;
-            }
-            else
-            {
-                TempData["Error"] = "Trạng thái không hợp lệ!";
+                TempData["Error"] = "Đơn hàng VietQR chưa thanh toán, không thể xử lý!";
                 return RedirectToAction("Detail", new { id });
             }
 
+            order.Status = status;
 
             await repo.Update(order);
             await _unitOfWork.SaveChangesAsync();
 
-            TempData["Success"] = "Cập nhật trạng thái thành công!";
+            TempData["Success"] = "Cập nhật trạng thái đơn hàng thành công!";
             return RedirectToAction("Detail", new { id });
         }
+        [HttpPost]
+        [Authorize(Roles = "Quanlydonhang")]
+
+        public async Task<IActionResult> ConfirmPayment(Guid id)
+        {
+            var repo = _unitOfWork.GetRepositoryAsync<Order>();
+            var order = await repo.Single(x => x.Id == id);
+
+            if (order == null)
+                return NotFound();
+
+            if (order.PaymentMethod != "VietQR")
+            {
+                TempData["Error"] = "Đơn hàng này không phải VietQR!";
+                return RedirectToAction("Detail", new { id });
+            }
+
+            if (order.PaymentStatus == PaymentStatusEnum.Paid)
+            {
+                TempData["Error"] = "Đơn hàng đã được thanh toán!";
+                return RedirectToAction("Detail", new { id });
+            }
+
+            order.PaymentStatus = PaymentStatusEnum.Paid;
+            order.Status = StatusEnum.Active; // bắt đầu xử lý
+
+            await repo.Update(order);
+            await _unitOfWork.SaveChangesAsync();
+
+            TempData["Success"] = "Đã xác nhận thanh toán VietQR!";
+            return RedirectToAction("Detail", new { id });
+        }
+
     }
 }

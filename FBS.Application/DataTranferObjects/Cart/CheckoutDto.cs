@@ -6,7 +6,7 @@ namespace FBS.Application.DataTranferObjects.Cart
 {
     public class CheckoutDto
     {
-        public Guid? CustomerId { get; set; }
+       
 
         [Required(ErrorMessage = "Họ tên là bắt buộc")]
         [MinLength(3, ErrorMessage = "Họ tên quá ngắn, vui lòng nhập lại")]
@@ -27,7 +27,7 @@ namespace FBS.Application.DataTranferObjects.Cart
         public string? Note { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn phương thức thanh toán")]
-        public string PaymentMethod { get; set; } = "COD";
+        public string PaymentMethod { get; set; }
         public string? QRCodeUrl { get; set; }
 
         public decimal SubTotal { get; set; }

@@ -10,15 +10,19 @@ namespace FBS.Infrastructure.Authorization
     {
         public static class Product
         {
-            public const string Create = "Product.Create";
-            public const string Edit = "Product.Edit";
-            public const string Delete = "Product.Delete";
+            public const string ProductCreate = "Product.Create";
+            public const string ProductEdit = "Product.Edit";
+            public const string ProductDelete = "Product.Delete";
+            public const string CategoryCreate = "Category.Create";
+            public const string CategoryEdit = "Category.Edit";
+            public const string CategoryDelete = "Category.Delete";
         }
 
         public static class Order
         {
             public const string View = "Order.View";
             public const string Update = "Order.Update";
+            public const string ConfirmPayment = "Order.ConfirmPayment";
         }
 
         public static class Blog
@@ -35,12 +39,16 @@ namespace FBS.Infrastructure.Authorization
 
         public static class Customer
         {
-            public const string Manage = "Customer.Manage";
+            public const string Create = "Customer.Create";
+            public const string Edit = "Customer.Edit";
+            public const string Update = "Customer.Update";
+            public const string Delete = "Customer.Delete";
         }
 
         public static class Contact
         {
-            public const string Manage = "Contact.Manage";
+            public const string Manage = "Contact.Manage"; 
+            public const string Delete = "Contact.Delete";
         }
 
         public static class Revenue

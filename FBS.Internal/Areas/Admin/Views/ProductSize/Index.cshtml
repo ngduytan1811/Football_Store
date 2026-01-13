@@ -1,0 +1,157 @@
+﻿@model List<FBS.Internal.Areas.Models.ProductSizeViewModel>
+@{
+    ViewData["Title"] = "Tồn kho theo Size";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var productColorId = (Guid)ViewBag.ProductColorId;
+}
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+
+            <h4 class="mb-3">Tồn kho theo Size</h4>
+
+            <form asp-action="SaveProductSize" method="post">
+                <input type="hidden" name="productColorId" value="@ViewBag.ProductColorId" />
+                <input type="hidden" name="productId" value="@ViewBag.ProductId" />
+
+                <table class="table" id="sizeTable">
+                    <thead>
+                        <tr>
+                            <th>Size</th>
+                            <th>Số lượng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="text"
+                                               name="Sizes[]"
+                                               class="form-control size-input"
+                                               value="@item.Size" />
+                                    </td>
+                                    <td>
+                                        <input type="number"
+                                               name="Quantities[]"
+                                               class="form-control qty-input"
+                                               value="@item.Quantity"
+                                               onblur="autoAddRow(this)"
+                                               onkeydown="handleEnter(event, this)" />
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                           
+                            <tr>
+                                <td>
+                                    <input type="text"
+                                           name="Sizes[]"
+                                           class="form-control size-input"
+                                           placeholder="Size mới" />
+                                </td>
+                                <td>
+                                    <input type="number"
+                                           name="Quantities[]"
+                                           class="form-control qty-input"
+                                           placeholder="Số lượng"
+                                           onblur="autoAddRow(this)"
+                                           onkeydown="handleEnter(event, this)" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+
+
+                <div class="text-end">
+
+                    <button type="submit" class="btn btn-primary">
+                        Lưu thay đổi
+                    </button>
+
+                    <a asp-action="Index"
+                       asp-controller="Product"
+                       class="btn btn-secondary">
+                        Quay lại
+                    </a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+<script>
+    function handleEnter(e, input) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            autoAddRow(input);
+        }
+    }
+
+    function autoAddRow(input) {
+        const row = input.closest("tr");
+        const tableBody = document.querySelector("#sizeTable tbody");
+        if (!row || !tableBody) return;
+
+        const sizeInput = row.querySelector(".size-input");
+        const qtyInput = row.querySelector(".qty-input");
+
+        const sizeVal = (sizeInput.value || "").trim();
+        const qtyVal = qtyInput.value;
+
+        // Chưa nhập đủ thì thôi
+        if (!sizeVal || qtyVal === "" || qtyVal === null) return;
+
+        // Check trùng size
+        const sizes = [...document.querySelectorAll(".size-input")]
+            .map(i => (i.value || "").trim())
+            .filter(Boolean);
+
+        const duplicates = sizes.filter(s => s.toUpperCase() === sizeVal.toUpperCase());
+        if (duplicates.length > 1) {
+            alert("Size bị trùng!");
+            sizeInput.focus();
+            return;
+        }
+
+        // Chỉ add nếu là dòng cuối
+        const rows = tableBody.querySelectorAll("tr");
+        if (row !== rows[rows.length - 1]) return;
+
+        // Add dòng mới
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `
+            <td>
+                <input type="text"
+                       name="Sizes[]"
+                       class="form-control size-input"
+                       placeholder="Size mới"
+                       onkeydown="handleEnter(event, this)" />
+            </td>
+            <td>
+                <input type="number"
+                       name="Quantities[]"
+                       class="form-control qty-input"
+                       placeholder="Số lượng"
+                       min="0"
+                       onchange="autoAddRow(this)"
+                       onkeydown="handleEnter(event, this)" />
+            </td>
+        `;
+
+        tableBody.appendChild(newRow);
+
+     
+        newRow.querySelector(".size-input").focus();
+    }
+</script>
+
+

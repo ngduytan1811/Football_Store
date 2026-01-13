@@ -50,6 +50,7 @@
                                 <th>Giá gốc</th>
                                 <th>Giá bán</th>
                                 <th>Kích thước</th>
+
                                 <th>Màu</th>
                                 <th>Trạng thái</th>
                                 <th>Thao tác</th>
@@ -82,9 +83,10 @@
                                                 @if (product.Discount.HasValue && product.Discount.Value > 0)
                                                 {
                                                     <span style="text-decoration:line-through; color:gray;">
-                                                        @product.Price.Value.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))&nbsp;đ
+                                                        @product.Price.Value.ToString("N0") đ
                                                     </span>
-                                                    <small class="text-danger">-@product.Discount.Value%</small>
+                                                    <small class="text-danger">-@product.Discount.Value%</small>    
+
                                                 }
                                                 else
                                                 {
@@ -167,11 +169,11 @@
 <style>
     .text-decoration-line-through {
         text-decoration: line-through;
-        color: #888; /* màu xám cho giá gốc */
+        color: #888; 
     }
 
     .text-success {
-        color: #e53935; /* đỏ nổi bật cho giá giảm */
+        color: #e53935; 
     }
 
 

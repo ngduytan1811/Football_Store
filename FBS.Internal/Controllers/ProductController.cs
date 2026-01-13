@@ -1,11 +1,14 @@
 ﻿using FBS.Application.DataTranferObjects.Cart;
 using FBS.Application.DataTranferObjects.Products;
+using FBS.Application.Services;
 using FBS.Application.Services.Interfaces;
 using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
 using FBS.Shared.DataTranferObjects.Base;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FBS.Internal.Controllers
 {
@@ -13,6 +16,7 @@ namespace FBS.Internal.Controllers
     {
         private readonly IProductService _productService;
         private readonly IProductReviewService _productReviewService;
+        private object _productSizeService;
 
         public ProductController(
             UserManager<User> userManager,
@@ -23,6 +27,7 @@ namespace FBS.Internal.Controllers
         {
             _productService = productService;
             _productReviewService = productReviewService;
+            _productSizeService = productService;
         }
 
         public async Task<IActionResult> List(ProductSearchDto request)
@@ -51,8 +56,25 @@ namespace FBS.Internal.Controllers
             if (data?.Data == null)
                 return RedirectToAction("List");
 
-            var product = data.Data; 
+            var product = data.Data;
+            var colorRepo = _unitOfWork.GetRepositoryReadOnlyAsync<ProductColor>();
+            var productColor = await (await colorRepo.QueryAll()).Include(c => c.ProductSizes).FirstOrDefaultAsync(c => c.ProductId == id);
+            if (productColor != null)
+            {
+                ViewBag.SizeStocks = productColor.ProductSizes
+                    .Select(ps => new
+                    {
+                        size = ps.Size,
+                        quantity = ps.Quantity
+                    })
+                    .ToList();
 
+                ViewBag.ProductColorId = productColor.Id;
+            }
+            else
+            {
+                ViewBag.SizeStocks = new List<object>();
+            }
             var randomProducts = await _productService.GetRandomProducts();
 
             var reviews = await _productReviewService.GetReviews(id);
@@ -75,7 +97,27 @@ namespace FBS.Internal.Controllers
             });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetStockByColor(Guid productColorId)
+        {
+            var sizes = await _unitOfWork
+                .GetRepositoryReadOnlyAsync<ProductSize>()
+                .QueryAll();
+
+            var data = await sizes
+                .Where(x => x.ProductColorId == productColorId)
+                .Select(x => new
+                {
+                    size = x.Size,
+                    quantity = x.Quantity
+                })
+                .ToListAsync();
+
+            return Json(data);
+        }
+
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Review(Guid ProductId, string FullName, string Message)
         {
             if (ProductId == Guid.Empty)
@@ -89,12 +131,13 @@ namespace FBS.Internal.Controllers
 
             var user = await _userManager.GetUserAsync(User);
 
+          
            
            
             var review = new ProductReview
             {
                 ProductId = ProductId,
-                FullName = FullName,
+                FullName = user.UserName,
                 Message = Message,
                 CreatedAt = DateTime.Now
             };

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -10,10 +11,12 @@ namespace FBS.Infrastructure.Entities
     [Table("ProductSizes")]
     public class ProductSize : BaseModel
     {
-        public Guid ProductId { get; set; }
+        public Guid ProductColorId { get; set; }
+        public virtual ProductColor ProductColor { get; set; }  
+      
+        [MaxLength(15)]
+        public string? Size { get; set; } = null!;
 
-        public virtual Product Product { get; set; }
-
-        public string? Size { get; set; }
+        public int Quantity {  get; set; }
     }
 }

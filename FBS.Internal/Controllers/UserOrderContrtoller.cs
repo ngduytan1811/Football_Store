@@ -6,6 +6,7 @@ using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
 using FBS.Shared.Constants;
 using FBS.Application.DataTranferObjects.Orders;
+using FBS.Shared.Enums;
 
 namespace FBS.Internal.Controllers
 {
@@ -28,14 +29,8 @@ namespace FBS.Internal.Controllers
         {
             if (CurrentUser == null)
                 return RedirectToAction("Login", "Auth");
-
-            
             var orders = await _orderService.GetOrdersByCustomer(CurrentUser.CustomerId);
-            orders = orders
-      .OrderBy(o => o.Status == FBS.Shared.Enums.StatusEnum.Cancel)
-      .ThenByDescending(o => o.CreatedAt)
-      .ToList();
-
+            orders = orders.OrderBy(o => o.Status == StatusEnum.Cancel).ThenByDescending(o => o.CreatedAt).ToList();
             return View(orders); 
         }
 

@@ -93,6 +93,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Lienhe")]
+        [Authorize(Policy = "Customer.Edit")]
         public async Task<IActionResult> Update(Guid userId, UserSaveDto request)
         {
             var user = await _userService.FindById(userId);

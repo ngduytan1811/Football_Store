@@ -17,7 +17,7 @@ namespace FBS.Application.Services.Interfaces
 
         Task<BaseResponse<string>> CreateProductReview(ProductReviewSaveDto dto);
 
-        Task<BaseResponse<string>> CreateProduct(ProductSaveDto dto);
+        Task<BaseResponse<Guid>> CreateProduct(ProductSaveDto dto);
 
         Task<BaseResponse<string>> UpdateProduct(Guid id, ProductSaveDto dto, List<string> newImages);
 

@@ -1,14 +1,17 @@
 ﻿using FBS.Application.DataTranferObjects.Categories;
 using FBS.Application.DataTranferObjects.Products;
+using FBS.Application.Services;
 using FBS.Application.Services.Interfaces;
 using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
+using FBS.Internal.Areas.Models;
 using FBS.Shared.Constants;
 using FBS.Shared.DataTranferObjects.Base;
 using FootballShop.Areas.Admin.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using static FBS.Shared.Constants.ContactConstants;
 
 namespace FBS.Internal.Areas.Admin.Controllers
@@ -20,6 +23,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
         private Guid? categoryId;
+        private readonly IProductSizeService _productSizeService;
 
         public ProductController(
             IProductService productService,
@@ -84,8 +88,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 ViewData["Categories"] = (await _categoryService.GetCategoryDropdown()).Data;
                 return View(request);
             }
-            Console.WriteLine("=== DEBUG SUB IMAGES ===");
-            Console.WriteLine("SubImageFiles = " + (request.SubImageFiles?.Count ?? 0));
+          
 
           // update ảnh chính
             if (request.ImageFile != null)
@@ -138,7 +141,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
                 return View(request);
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Edit", new { id = result.Data });
         }
 
         [Authorize(Roles = "Quanlysanpham")]
@@ -148,8 +151,15 @@ namespace FBS.Internal.Areas.Admin.Controllers
             ViewData["Categories"] = (await _categoryService.GetCategoryDropdown()).Data;
 
             var res = await _productService.FindById(id);
+            var colorRepo = _unitOfWork.GetRepositoryReadOnlyAsync<ProductColor>();
+            var productColor = await (await colorRepo.QueryAll())
+                .FirstOrDefaultAsync(x => x.ProductId == id);
+
+            ViewBag.ProductColorId = productColor?.Id;
+
             if (res.Data == null)
                 return RedirectToAction("Index");
+
 
             var dto = new ProductSaveDto
             {
@@ -250,5 +260,53 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [Authorize(Roles = "Quanlysanpham")]
+        public async Task<IActionResult> ProductSize(Guid productColorId)
+        {
+            var sizes = await _productSizeService.GetByProductColorAsync(productColorId);
+            ViewBag.ProductColorId = productColorId;
+            return View("~/Areas/Admin/Views/ProductSize/Index.cshtml", sizes);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Quanlysanpham")]
+        public async Task<IActionResult> SaveProductSize(List<ProductSizeViewModel> models)
+        {
+            if (models == null || !models.Any())
+                return RedirectToAction("Index");
+
+            var repo = _unitOfWork.GetRepositoryAsync<ProductSize>();
+
+            foreach (var item in models)
+            {
+                if (item.Id == Guid.Empty)
+                {
+                    
+                    await repo.Add(new ProductSize
+                    {
+                        ProductColorId = item.ProductColorId,
+                        Size = item.Size,
+                        Quantity = item.Quantity
+                    });
+                }
+                else
+                {
+                   
+                    var entity = await repo.Single(x => x.Id == item.Id);
+                    if (entity != null)
+                    {
+                        entity.Quantity = item.Quantity;
+                        await repo.Update(entity);
+                    }
+                }
+            }
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return RedirectToAction("ProductSize",
+                new { productColorId = models.First().ProductColorId });
+        }
+
     }
 }

@@ -3,6 +3,7 @@ using FBS.API.Responses.Base;
 using FBS.Application.DataTranferObjects.Cart;
 using FBS.Application.DataTranferObjects.Orders;
 using FBS.Shared.DataTranferObjects.Base;
+using FBS.Shared.Enums;
 
 namespace FBS.Application.Services.Interfaces
 {
@@ -11,8 +12,9 @@ namespace FBS.Application.Services.Interfaces
         
         Task<BaseTableResponse<OrderDto>> GetOrders(BaseSearchDto<OrderSearchDto> dto);
         Task<BaseResponse<OrderDto>> FindById(Guid id);
-        Task<BaseResponse<string>> CreateOrder(CheckoutDto dto);
-        Task<OrderDto> CreatePendingOrder(CheckoutDto request);
+        Task<BaseResponse<string>> CreateOrder(CheckoutDto dto, Guid customerId);
+        Task<OrderDto> CreatePendingOrder(CheckoutDto request, Guid customerId);
+
         Task<BaseResponse<string>> DeleteOrder(Guid id);
         Task MarkOrderAsPaid(Guid orderId);
 
@@ -21,6 +23,8 @@ namespace FBS.Application.Services.Interfaces
     
         Task<BaseResponse<string>> CancelOrder(Guid orderId, Guid customerId);
         Task<BaseResponse<string>> UpdateOrderInfo(Guid orderId,Guid customerId,UpdateOrderInfoDto dto);
+        Task<BaseResponse<string>> UpdateOrderStatus(Guid orderId,StatusEnum newStatus,string note);
+
 
     }
 }

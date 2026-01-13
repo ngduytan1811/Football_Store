@@ -21,11 +21,11 @@ namespace FBS.Infrastructure.Entities
         public int? Discount { get; set; }
         public string? Brand { get; set; }
 
+
         public virtual ICollection<ProductReview> ProductReviews { get; set; } = new List<ProductReview>();
+        public virtual ICollection<ProductColor> ProductColors { get; set; } = new List<ProductColor>();
 
-        public virtual ProductColor ProductColor { get; set; }
 
-        public virtual ICollection<ProductSize> ProductSizes { get; set; } = new List<ProductSize>();
         public virtual ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
 
     }

@@ -108,7 +108,13 @@
                             </div>
                             <div class="col-sm-6 mb-3">
                                 <label class="form-label">Giảm giá (%)</label>
-                                <input asp-for="Discount" class="form-control" type="number" step="1" min="0" max="100" />
+                                <input asp-for="Discount"
+                                       class="form-control"
+                                       type="number"
+                                       min="0"
+                                       max="100" />
+
+
                             </div>
                         </div>
 
@@ -169,6 +175,25 @@
                                 <div id="previewEditSub@(i)" class="mt-2"></div>
                             </div>
                         }
+                      @if (ViewBag.ProductColorId != null)
+                        {
+                            <a asp-area="Admin"
+                               asp-controller="ProductSize"  
+                               asp-action="Index"              
+                               asp-route-productColorId="@ViewBag.ProductColorId"
+                               class="btn btn-info mt-3">
+                                Xem tồn kho theo size
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning mt-3">
+                                Sản phẩm chưa có màu, không thể quản lý tồn kho.
+                            </div>
+                        }
+
+
+
 
                         <div class="text-end mt-4">
                             <button type="submit" class="btn btn-primary me-3">Cập nhật</button>

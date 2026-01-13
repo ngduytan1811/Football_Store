@@ -68,6 +68,7 @@ namespace FBS.Infrastructure.DataAccess.Seed
                 new[] { 
                     "Order.View",
                     "Order.Update",
+                    "Order.ConfirmPayment",
                     "Revenue.View" });
             await CreateAdminUser(
                 userManager, 

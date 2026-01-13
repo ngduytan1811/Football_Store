@@ -24,6 +24,11 @@ namespace FBS.DataAccess.Contexts
         }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<ProductColor> ProductColors { get; set; }
+        public DbSet<ProductSize> ProductSizes { get; set; }
+        public DbSet<OrderStatusHistory> OrderStatusHistories { get; set; }
+
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -64,6 +69,10 @@ namespace FBS.DataAccess.Contexts
             builder.ApplyConfiguration(new ProductReviewConfiguration());
             builder.ApplyConfiguration(new BlogConfiguration());
             builder.Entity<ProductImage>().ToTable("ProductImages");
+            builder.Entity<ProductSize>().HasIndex(x => new { x.ProductColorId, x.Size }).IsUnique();
+
+
+
         }
     }
 }

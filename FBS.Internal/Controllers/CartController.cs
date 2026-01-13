@@ -78,6 +78,11 @@ namespace FBS.Internal.Controllers
                 return RedirectToAction("Detail", "Product", new { id = request.ProductId });
             }
 
+            request.Size = request.Size
+    .Replace("\"", "")
+    .Replace("class=", "")
+    .Trim();
+
             var cart = GetCart();
 
             var productData = await _productService.FindById(request.ProductId);
@@ -191,11 +196,11 @@ namespace FBS.Internal.Controllers
         public async Task<IActionResult> Checkout(CheckoutDto request)
         {
             var cart = GetCart();
-
+            var ship = request.ShippingFee;
             if (!cart.Any())
             {
                 TempData["Error"] = "Giỏ hàng trống";
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Cart");
             }
 
             request.CartItems = cart;
@@ -204,34 +209,34 @@ namespace FBS.Internal.Controllers
             if (!ModelState.IsValid)
                 return View(request);
 
-            // ===== COD =====
+          
             if (request.PaymentMethod == "COD")
             {
-                await _orderService.CreateOrder(request);
+                await _orderService.CreatePendingOrder(request,CurrentUser.CustomerId);
                 ClearCart();
 
-                TempData["OrderSuccess"] = "Đặt hàng COD thành công!";
-                return RedirectToAction("Index", "Home");
+                TempData["OrderSuccess"] =
+                    " Đơn hàng đã được đặt thành công (Thanh toán khi nhận hàng)";
+
+                return RedirectToAction("Index", "Cart");
             }
 
+          
             if (request.PaymentMethod == "VietQR")
             {
-                // 👉 Tạo order trạng thái Pending
-                var order = await _orderService.CreatePendingOrder(request);
+                await _orderService.CreatePendingOrder(request,CurrentUser.CustomerId);
 
-                request.QRCodeUrl = await _vietQRService.GenerateVietQRAsync(
-                    accountNo: "1026869227",
-                    accountName: "NGUYEN TRUONG GIANG",
-                    bank: BankEnum.Vietcombank,
-                    amount: request.TotalAmount,
-                    note: $"DH-{order.OrderCode}"
-                );
+                ClearCart();
 
-                return View("Checkout", request);
+                TempData["OrderSuccess"] =
+                    " Đơn hàng đã được tạo. Vui lòng thanh toán bằng VietQR theo thông tin đã hiển thị.";
+
+                return RedirectToAction("Index", "Cart");
             }
 
-            return RedirectToAction("Checkout");
+            return RedirectToAction("Index", "Cart");
         }
+
 
         private void CalculateAmount(CheckoutDto request, List<CartItemDto> cart)
         {

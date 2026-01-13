@@ -29,7 +29,7 @@ namespace FBS.Application.Services
                 acqId = (int)(bank),
                 accountNo = accountNo,
                 accountName = accountName,
-                amount = (int)amount,
+                amount = Convert.ToInt32(Math.Round(amount)),
                 addInfo = note,
                 format = "text",
                 template = "compact"

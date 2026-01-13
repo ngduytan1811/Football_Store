@@ -152,18 +152,21 @@
                                                             }
                                                             @foreach (var s in orderedSizes)
                                                             {
-                                                                <label class="size-item">
-                                                                    <input type="radio"
-                                                                           asp-for="Size"
-                                                                           value="@s"
-                                                                           class="size-radio"
-                                                                           style="display:none;" />
+                                                                <label class="size-item" data-size ="@s">
+                                                                    <input type="radio" asp-for="Size" value="@s 
+                                                                        class="size-radio" style="display:none;" />
                                                                     <span class="size-text">@s</span>
                                                                 </label>
                                                             }
 
 
                                                         </div>
+                                                     
+                                                        <div id="stockInfo"
+                                                             style="margin-top:8px; font-weight:600; color:#333">
+                                                          
+                                                        </div>
+
 
                                                         <div id="sizeError" class="size-error">
                                                             <i class="ri-alert-line"></i>
@@ -283,22 +286,22 @@
 
 
                                 </div>
-
-                              
-                            
                                 <div class="tab-pane fade" id="review-pane" role="tabpanel">
-                                    <div class="row p-3">
-
-                                        
+                                    <div class="row p-3">  
                                         <div class="mn-t-review-wrapper mb-4">
                                             @if (productData.Reviews.Any())
                                             {
                                                 @foreach (var review in productData.Reviews)
                                                 {
                                                     <div class="p-3 mb-3 bg-white rounded shadow-sm border">
-                                                        <div class="d-flex justify-content-between">
-                                                            <div class="fw-bold text-primary">@review.FullName</div>
-                                                        </div>
+                                                        @if (User.Identity.IsAuthenticated)
+                                                        {
+                                                            <input type="text"
+                                                                   class="form-control rounded-pill"
+                                                                   value="@User.Identity.Name"
+                                                                   readonly />
+                                                        }
+
                                                         <div class="text-muted mt-1">@review.Message</div>
                                                     </div>
                                                 }
@@ -313,51 +316,46 @@
                                         <div class="mn-ratting-content p-4 bg-white rounded shadow-sm border">
                                             <h4 class="fw-bold mb-3">Thêm đánh giá</h4>
 
-                                            <form asp-action="Review" asp-controller="Product" method="post">
-                                                <input type="hidden" name="ProductId" value="@productData.Id" />
+                                            @if (User.Identity.IsAuthenticated)
+                                            {
+                                                <form asp-action="Review" asp-controller="Product" method="post">
+                                                    <input type="hidden" name="ProductId" value="@productData.Id" />
 
-                                           
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Họ tên</label>
-
-                                                    @if (User.Identity.IsAuthenticated)
-                                                    {
-                                                        <input name="FullName"
-                                                               type="text"
-                                                               value="@fullName"
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Họ tên</label>
+                                                        <input type="text"
                                                                class="form-control rounded-pill"
+                                                               value="@fullName"
                                                                readonly />
-                                                    }
-                                                    else
-                                                    {
-                                                        <input name="FullName"
-                                                               type="text"
-                                                               placeholder="Nhập họ tên"
-                                                               class="form-control rounded-pill" />
-                                                    }
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold">Nội dung</label>
+                                                        <textarea name="Message"
+                                                                  class="form-control rounded-4"
+                                                                  rows="4"
+                                                                  placeholder="Viết nội dung đánh giá..."></textarea>
+                                                    </div>
+
+                                                    <button class="btn btn-primary rounded-pill px-4 py-2 fw-bold" type="submit">
+                                                        Gửi đánh giá
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <div class="alert alert-warning">
+                                                    <i class="bi bi-exclamation-circle"></i>
+                                                    Vui lòng <a asp-controller="Auth" asp-action="Login" class="fw-bold">
+                                                        đăng nhập tài khoản mua hàng
+                                                    </a> để đánh giá sản phẩm.
                                                 </div>
+                                            }
 
-                                              
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-bold">Nội dung</label>
-                                                    <textarea name="Message"
-                                                              class="form-control rounded-4"
-                                                              rows="4"
-                                                              placeholder="Viết nội dung đánh giá..."></textarea>
-                                                </div>
-
-                                            
-                                                <button class="btn btn-primary rounded-pill px-4 py-2 fw-bold" type="submit">
-                                                    Gửi đánh giá
-                                                </button>
-
-                                            </form>
                                         </div>
 
                                     </div>
                                 </div>
-
-
 
                             </div>
                         </div>
@@ -451,11 +449,62 @@
     </div>
 </div>
 
+<script>
+       const sizeStocks = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.SizeStocks ?? new List<object>()));
+
+    let currentStock = 0;
+
+    document.querySelectorAll(".size-item").forEach(item => {
+        item.addEventListener("click", () => {
+
+            const size = item.dataset.size;
+            const stock = sizeStocks.find(x => x.size === size);
+
+            const stockInfo = document.getElementById("stockInfo");
+            const addBtn = document.querySelector(".mn-add-cart");
+
+            if (!stock || stock.quantity <= 0) {
+                currentStock = 0;
+                stockInfo.innerHTML = "<span style='color:red'>Hết hàng</span>";
+                addBtn.disabled = true;
+            } else {
+                currentStock = stock.quantity;
+                stockInfo.innerHTML = `Còn <b>${stock.quantity}</b> sản phẩm`;
+                addBtn.disabled = false;
+            }
+
+            
+            document.getElementById("Quantity").value = 1;
+        });
+    });
+        const qtyInput = document.getElementById("Quantity");
+    const warningBox = document.getElementById("contactWarning");
+
+    qtyInput.addEventListener("input", () => {
+        const qty = parseInt(qtyInput.value || 0);
+
+        if (currentStock > 0 && qty > currentStock) {
+            qtyInput.value = currentStock;
+            warningBox.style.display = "block";
+            warningBox.innerHTML = `⚠️ Chỉ còn <b>${currentStock}</b> sản phẩm trong kho`;
+        } else {
+            warningBox.style.display = "none";
+        }
+    });
+
+
+</script>
+
+
 @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
-            
+          
+            const sizeStocks = @Html.Raw(Json.Serialize(ViewBag.SizeStocks ?? new List<object>()));
+            let currentStock = 0;
+
+          
             const form = document.getElementById("addToCartForm");
             const sizeItems = document.querySelectorAll(".size-item");
             const hiddenSize = document.getElementById("SelectedSize");
@@ -465,79 +514,110 @@
             const addToCartBtn = document.querySelector(".mn-add-cart");
             const warningBox = document.getElementById("contactWarning");
 
-           
+        
+            let stockInfo = document.getElementById("stockInfo");
+            if (!stockInfo) {
+                stockInfo = document.createElement("div");
+                stockInfo.id = "stockInfo";
+                stockInfo.className = "mt-2 fw-semibold";
+                document.querySelector(".mn-pro-variation-size").appendChild(stockInfo);
+            }
+
+         
             sizeItems.forEach(item => {
                 item.addEventListener("click", () => {
+
                     sizeItems.forEach(i => i.classList.remove("active"));
                     item.classList.add("active");
 
-                    hiddenSize.value = item.querySelector("input").value;
+                    const size = item.dataset.size || item.querySelector("input").value;
+                    hiddenSize.value = size;
+
+                    const stock = sizeStocks.find(x => x.size === size);
+                    currentStock = stock ? stock.quantity : 0;
+
+                    if (currentStock <= 0) {
+                        stockInfo.innerHTML = "<span style='color:red'>Hết hàng</span>";
+                        addToCartBtn.disabled = true;
+                    } else {
+                        stockInfo.innerHTML = `Còn <b>${currentStock}</b> sản phẩm`;
+                        addToCartBtn.disabled = false;
+                        qtyInput.value = 1;
+                    }
 
                     sizeError.style.display = "none";
                     sizeError.classList.remove("shake");
                 });
             });
 
-            
+          
             function checkQuantity() {
-                const qty = parseInt(qtyInput.value || 0);
+                let qty = parseInt(qtyInput.value || 1);
+
+                if (qty > currentStock && currentStock > 0) {
+                    qtyInput.value = currentStock;
+                    stockInfo.innerHTML =
+                        `<span style="color:red">Chỉ còn ${currentStock} sản phẩm</span>`;
+                }
 
                 if (qty > 10) {
                     warningBox.style.display = "block";
                     addToCartBtn.disabled = true;
-                    addToCartBtn.classList.add("disabled");
                 } else {
                     warningBox.style.display = "none";
                     addToCartBtn.disabled = false;
-                    addToCartBtn.classList.remove("disabled");
                 }
+
+                if (qty < 1) qtyInput.value = 1;
             }
 
-            if (qtyInput) {
-                qtyInput.addEventListener("input", checkQuantity);
-            }
-            
+            qtyInput.addEventListener("input", checkQuantity);
+
             document.addEventListener("click", function (e) {
                 if (e.target.closest(".qty-plus-minus")) {
-                    setTimeout(() => {
-                        checkQuantity();
-                    }, 50);
+                    setTimeout(checkQuantity, 50);
                 }
             });
 
+            
+            form.addEventListener("submit", function (e) {
 
-            if (form) {
-                form.addEventListener("submit", function (e) {
+                const qty = parseInt(qtyInput.value || 0);
 
-                    //  chưa chọn size
-                    if (!hiddenSize.value) {
-                        e.preventDefault();
+             
+                if (!hiddenSize.value) {
+                    e.preventDefault();
+                    sizeError.style.display = "flex";
+                    sizeError.classList.add("shake");
+                    return;
+                }
 
-                        sizeError.style.display = "flex";
-                        sizeError.classList.add("shake");
+               
+                if (currentStock <= 0) {
+                    e.preventDefault();
+                    alert("Size này đã hết hàng");
+                    return;
+                }
 
-                        sizeError.scrollIntoView({
-                            behavior: "smooth",
-                            block: "center"
-                        });
-                        return;
-                    }
+               
+                if (qty > currentStock) {
+                    e.preventDefault();
+                    alert(`Số lượng vượt quá tồn kho (còn ${currentStock} sản phẩm)`);
+                    return;
+                }
 
-                    // kiểm tra số lượng 
-                    const qty = parseInt(document.getElementById("Quantity").value || 0);
-
-                    if (qty > 10) {
-                        e.preventDefault();
-                        alert("Đơn hàng trên 10 sản phẩm. Vui lòng liên hệ shop.");
-                        return;
-                    }
-                });
-            }
-
+               
+                if (qty > 10) {
+                    e.preventDefault();
+                    alert("Đơn hàng trên 10 sản phẩm. Vui lòng liên hệ shop.");
+                    return;
+                }
+            });
 
         });
     </script>
 }
+
 
 <style>
     .size-error {
@@ -642,7 +722,7 @@
 
 
         .mn-product-detail h5 {
-            min-height: 44px; /* ❗ 2 dòng chữ */
+            min-height: 44px; 
             margin: 0 0 6px 0;
         }
 
@@ -654,7 +734,7 @@
             }
 
         .mn-product-detail .cat {
-            min-height: 36px; /* tuỳ UI */
+            min-height: 36px; 
         }
 
 
@@ -663,9 +743,6 @@
         line-height: 1.4;
     }
 
-    
-
-    
     .price-original-row {
         display: flex;
         align-items: center;
@@ -711,9 +788,9 @@
     .product-price {
         margin-top:auto;
     display: flex;
-    align-items: baseline;   /* căn đẹp số */
+    align-items: baseline; 
     gap: 6px;
-    white-space: nowrap;     /* ❗ ép 1 hàng */
+    white-space: nowrap;     
     max-width: 100%;
     overflow: hidden;
 }
@@ -744,7 +821,6 @@
     }
 
 
-/* Mobile nhỏ thì thu font lại */
 @@media (max-width: 576px) {
     .price-new {
         font-size: 16px;
