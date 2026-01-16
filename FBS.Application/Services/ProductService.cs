@@ -146,9 +146,7 @@ namespace FBS.Application.Services
                 queryProduct = queryProduct.Where(p =>
                     p.CategoryId.HasValue &&
                     categoryIds.Contains(p.CategoryId.Value));
-            }
-
-            
+            }          
             switch (search.Sort)
             {
                 case "Price_Asc":
@@ -167,12 +165,8 @@ namespace FBS.Application.Services
                     queryProduct = queryProduct.OrderByDescending(p => p.CreatedAt);
                     break;
             }
-
             result.Total = await queryProduct.CountAsync();
-
-            var products = await queryProduct.ToListAsync();
-
-           
+            var products = await queryProduct.ToListAsync();          
             var mappedItems = products.Select(p => new ProductDto
             {
                 Id = p.Id,
@@ -184,14 +178,7 @@ namespace FBS.Application.Services
                 Price = p.Price,
                 Discount = p.Discount??0,
                 Color = p.ProductColors.FirstOrDefault()?.Color,
-
-                Sizes = SortSizes(
-                    p.ProductColors
-                        .SelectMany(pc => pc.ProductSizes)
-                        .Select(ps => ps.Size)
-                        .Distinct()
-                ),
-
+                Sizes = SortSizes( p.ProductColors.SelectMany(pc => pc.ProductSizes).Select(ps => ps.Size).Distinct()),
                 Image = !string.IsNullOrEmpty(p.Image)
                     ? "/theme/client/img/product/" + p.Image
                     : string.Empty,
@@ -218,24 +205,18 @@ namespace FBS.Application.Services
 
             var productRepo = await _unitOfWork
                 .GetRepositoryReadOnlyAsync<Product>()
-                .QueryAll();
-
+               .QueryAll();
             var product = await productRepo
                 .Include(x => x.Category)
                 .Include(x => x.ProductImages)
                 .FirstOrDefaultAsync(x => x.Id == productId);
-
             if (product == null)
-                return result;
-
-           
+                return result;         
             var colorRepo = _unitOfWork.GetRepositoryReadOnlyAsync<ProductColor>();
             var colors = await (await colorRepo.QueryAll())
                 .Where(c => c.ProductId == productId)
                 .Include(c => c.ProductSizes)
-                .ToListAsync();
-
-        
+                .ToListAsync();      
             var allSizes = colors
                 .SelectMany(c => c.ProductSizes)
                 .Select(ps => ps.Size);
@@ -252,12 +233,8 @@ namespace FBS.Application.Services
                 Brand = product.Brand,
                 CategoryId = product.CategoryId,
                 CategoryName = product.Category?.Name,
-                Price = product.Price,
-
-            
-                Color = colors.FirstOrDefault()?.Color,
-
-                
+                Price = product.Price,       
+                Color = colors.FirstOrDefault()?.Color, 
                 Sizes = SortSizes(allSizes),
 
                 SubImages = product.ProductImages
@@ -310,10 +287,6 @@ namespace FBS.Application.Services
             };
 
             await productRep.Add(product);
-
-        
-          
-
             var productColor = new ProductColor
             {
                 Product = product,
@@ -333,11 +306,6 @@ namespace FBS.Application.Services
                 .ToList();
 
             await productSizeRep.Add(sizes);
-
-           
-
-
-
             if (dto.SubImages != null && dto.SubImages.Count > 0)
             {
                 foreach (var img in dto.SubImages)
@@ -370,25 +338,19 @@ namespace FBS.Application.Services
                     ImagePath = img
                 });
             }
-
             await _unitOfWork.SaveChangesAsync();
         }
         public async Task<BaseResponse<string>> UpdateProduct(Guid id, ProductSaveDto dto, List<string> newImages)
         {
             var result = new BaseResponse<string>();
-
             var productRep = _unitOfWork.GetRepositoryAsync<Product>();
             var productColorRep = _unitOfWork.GetRepositoryAsync<ProductColor>();
             var productSizeRep = _unitOfWork.GetRepositoryAsync<ProductSize>();
             var productImageRep = _unitOfWork.GetRepositoryAsync<ProductImage>();
-
             var product = await productRep.Single(x => x.Id == id);
             if (product == null)
                 return result;
-
-            var productColor = await productColorRep.Single(x => x.ProductId == id);
-
-            
+            var productColor = await productColorRep.Single(x => x.ProductId == id);         
             product.Name = dto.Name?.Trim();
             product.CategoryId = dto.CategoryId;
             product.Description = dto.Description;
@@ -398,14 +360,8 @@ namespace FBS.Application.Services
             product.Status = dto.Status;
             product.Image = dto.Image;
             productColor.Color = dto.Color;
-            product.Detail = string.Join(
-    "\n\n",
-    new[] { dto.DetailPart1, dto.DetailPart2 }
-        .Where(s => !string.IsNullOrWhiteSpace(s))
-);
-
+            product.Detail = string.Join( "\n\n",new[] { dto.DetailPart1, dto.DetailPart2 }.Where(s => !string.IsNullOrWhiteSpace(s)));
             //  update size
-
             if (productColor != null)
             {
                 productColor.Color = dto.Color;
