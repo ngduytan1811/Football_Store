@@ -30,13 +30,13 @@ namespace FootballShop.Areas.Admin.Controllers
                     r.Message.Contains(keyword));
             }
 
-            // Lọc theo sản phẩm
+            // lọc sản phẩm
             if (productId != null && productId != Guid.Empty)
             {
                 query = query.Where(r => r.ProductId == productId);
             }
 
-            // Lấy danh sách sản phẩm để đổ dropdown
+           
             var productRepo = _unitOfWork.GetRepositoryReadOnlyAsync<Product>();
             var productQuery = await productRepo.QueryAll();
             var productList = await productQuery.ToListAsync();
@@ -61,10 +61,10 @@ namespace FootballShop.Areas.Admin.Controllers
         [Authorize(Policy = "Review.Manage")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            // Repository ghi
+          
             var repo = _unitOfWork.GetRepositoryAsync<ProductReview>();
 
-            // Lấy review theo id
+          
             var review = await repo.FindById(id);
 
             if (review != null)

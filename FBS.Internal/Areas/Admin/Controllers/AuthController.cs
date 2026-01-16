@@ -23,9 +23,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
         {
             _userManager = userManager;
             _signInManager = signInManager;
-        }
-
-        
+        }       
         public IActionResult Login(string? returnUrl = null)
         {
             
@@ -36,9 +34,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
             ViewBag.ReturnUrl = returnUrl;
             return View();
-        }
-
-      
+        }     
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginDto request, string? returnUrl = null)
@@ -82,15 +78,11 @@ namespace FBS.Internal.Areas.Admin.Controllers
             }
 
             return Redirect(returnUrl);
-        }
-
-       
+        }      
         public IActionResult Register()
         {
             return View();
-        }
-
-      
+        }     
         [HttpPost]
         public async Task<IActionResult> Register(RegisterAdminDto request)
         {
@@ -119,15 +111,12 @@ namespace FBS.Internal.Areas.Admin.Controllers
 
             return RedirectToAction("Login");
         }
-
       
         public IActionResult ForgotPassword()
         {
             return View();
-        }
-
-     
-        [HttpPost]
+        }    
+       [HttpPost]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordDto request)
         {
             if (!ModelState.IsValid)
@@ -146,8 +135,6 @@ namespace FBS.Internal.Areas.Admin.Controllers
             ViewBag.Message = "Mật khẩu mới: Admin@123";
             return View();
         }
-
-    
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();

@@ -35,7 +35,6 @@ namespace FootballShop.Areas.Admin.Controllers
 
             return RedirectToAction("Index");
         }
-
         [HttpPost]
         public async Task<IActionResult> StartDelivery(Guid id)
         {
@@ -47,7 +46,6 @@ namespace FootballShop.Areas.Admin.Controllers
 
             return RedirectToAction("Index");
         }
-
         [HttpPost]
         public async Task<IActionResult> Complete(Guid id)
         {
@@ -59,7 +57,6 @@ namespace FootballShop.Areas.Admin.Controllers
 
             return RedirectToAction("Index");
         }
-
         [HttpPost]
         public async Task<IActionResult> Cancel(Guid id)
         {

@@ -140,11 +140,11 @@
                                                                 .Where(s => !string.IsNullOrWhiteSpace(s))
                                                                 .OrderBy(s =>
                                                                 {
-                                                                    // size  39, 40, 41
+                                                                    
                                                                     if (int.TryParse(s, out var num))
                                                                         return num;
 
-                                                                    // size S, M, L
+                                                                  
                                                                     var index = sizeOrder.IndexOf(s.ToUpper());
                                                                     return index >= 0 ? 1000 + index : 2000;
                                                                 })

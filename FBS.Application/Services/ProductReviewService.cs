@@ -17,14 +17,12 @@ namespace FBS.Application.Services
         {
             _unitOfWork = unitOfWork;
         }
-
         public async Task AddReview(ProductReview review)
         {
             var repo = _unitOfWork.GetRepositoryAsync<ProductReview>();
             await repo.Add(review);
             await _unitOfWork.SaveChangesAsync();
         }
-
         public async Task<List<ProductReview>> GetReviews(Guid productId)
         {
             var repo = _unitOfWork.GetRepositoryReadOnlyAsync<ProductReview>();

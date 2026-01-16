@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-
+﻿
 namespace FBS.Application.Services
 {
+    using Microsoft.EntityFrameworkCore;
     using System.Linq;
     using System.Threading.Tasks;
     using FBS.API.Responses.Base;
@@ -23,8 +23,7 @@ namespace FBS.Application.Services
         public OrderService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-        }
-       
+        }      
         public async Task<BaseTableResponse<OrderDto>> GetOrders(BaseSearchDto<OrderSearchDto> dto)
         {
             var result = new BaseTableResponse<OrderDto>();
@@ -411,7 +410,6 @@ namespace FBS.Application.Services
                 Message = "Cập nhật trạng thái thành công"
             };
         }
-
         private async Task AddStatusHistory(Guid orderId,StatusEnum status,string note)
         {
             var historyRepo = _unitOfWork.GetRepositoryAsync<OrderStatusHistory>();

@@ -24,7 +24,6 @@ namespace FootballShop.Areas.Admin.Controllers
             _userManager = userManager;
             _unitOfWork = unitOfWork;
         }
-
         protected CurrentUserViewModel? CurrentUser
         {
             get
@@ -38,8 +37,6 @@ namespace FootballShop.Areas.Admin.Controllers
                 return _currentUser;
             }
         }
-
-
         protected async Task<CurrentUserViewModel?> GetCurrentUserAsync()
         {
             if (User.Identity.IsAuthenticated)
@@ -63,9 +60,7 @@ namespace FootballShop.Areas.Admin.Controllers
             }
             return null;
         }
-
         protected string? CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             base.OnActionExecuting(context);

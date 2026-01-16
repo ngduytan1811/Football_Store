@@ -39,8 +39,12 @@
                                                name="Quantities[]"
                                                class="form-control qty-input"
                                                value="@item.Quantity"
-                                               onblur="autoAddRow(this)"
-                                               onkeydown="handleEnter(event, this)" />
+                                               min="0"
+                                               onkeydown="if(event.key==='-') event.preventDefault(); handleEnter(event, this);    "
+           
+                                               oninput="validateQty(this)"
+                                               onblur="autoAddRow(this)" />
+
                                     </td>
                                 </tr>
                             }
@@ -95,6 +99,18 @@
             autoAddRow(input);
         }
     }
+        function validateQty(input) {
+        if (input.value === "") return;
+
+        const value = parseInt(input.value, 10);
+
+        if (isNaN(value) || value < 0) {
+            alert("Số lượng không được nhỏ hơn 0");
+            input.value = 0;
+            input.focus();
+        }
+    }
+
 
     function autoAddRow(input) {
         const row = input.closest("tr");
@@ -107,10 +123,10 @@
         const sizeVal = (sizeInput.value || "").trim();
         const qtyVal = qtyInput.value;
 
-        // Chưa nhập đủ thì thôi
+        
         if (!sizeVal || qtyVal === "" || qtyVal === null) return;
 
-        // Check trùng size
+     
         const sizes = [...document.querySelectorAll(".size-input")]
             .map(i => (i.value || "").trim())
             .filter(Boolean);
@@ -122,11 +138,11 @@
             return;
         }
 
-        // Chỉ add nếu là dòng cuối
+     
         const rows = tableBody.querySelectorAll("tr");
         if (row !== rows[rows.length - 1]) return;
 
-        // Add dòng mới
+      
         const newRow = document.createElement("tr");
         newRow.innerHTML = `
             <td>
@@ -145,6 +161,8 @@
                        onchange="autoAddRow(this)"
                        onkeydown="handleEnter(event, this)" />
             </td>
+          
+
         `;
 
         tableBody.appendChild(newRow);

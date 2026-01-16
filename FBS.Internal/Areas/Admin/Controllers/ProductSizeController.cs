@@ -55,8 +55,6 @@ namespace FBS.Internal.Areas.Admin.Controllers
         }
 
 
-
-
         [HttpPost]
         public async Task<IActionResult> SaveProductSize(Guid productColorId, Guid productId,List<string> Sizes,List<int> Quantities)
         {
@@ -64,6 +62,16 @@ namespace FBS.Internal.Areas.Admin.Controllers
             {
                 if (string.IsNullOrWhiteSpace(Sizes[i]))
                     continue;
+                if (Quantities[i] < 0)
+                {
+                    ModelState.AddModelError(
+                        "",
+                        $"Số lượng của size {Sizes[i]} không được nhỏ hơn 0"
+                    );
+
+                    
+                    return View("Index");
+                }
 
                 var dto = new UpsertProductSizeDto
                 {

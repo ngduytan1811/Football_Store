@@ -49,9 +49,7 @@ namespace FBS.Infrastructure.Repositories
             return (IRepositoryAsync<TEntity>)_repositories[type];
         }
 
-        // -------------------------
-        // READONLY REPOSITORY
-        // -------------------------
+        
         public IRepositoryReadOnlyAsync<TEntity> GetRepositoryReadOnlyAsync<TEntity>()
             where TEntity : class
         {
@@ -64,9 +62,7 @@ namespace FBS.Infrastructure.Repositories
             return (IRepositoryReadOnlyAsync<TEntity>)_repositories[type];
         }
 
-        // -------------------------
-        // SAVE
-        // -------------------------
+       
         public async Task<int> SaveChangesAsync()
         {
             SaveChangesInternal();
@@ -79,9 +75,6 @@ namespace FBS.Infrastructure.Repositories
             GC.SuppressFinalize(this);
         }
 
-        // -------------------------
-        // INTERNAL SAVE LOGIC
-        // -------------------------
         private void SaveChangesInternal()
         {
             Context.ChangeTracker.DetectChanges();

@@ -91,7 +91,6 @@ namespace FBS.Application.Services
                 })
                 .ToList();
         }
-
         public async Task<BaseTableResponse<ProductDto>> GetProducts(BaseSearchDto<ProductSearchDto> dto)
         {
             var result = new BaseTableResponse<ProductDto>();
@@ -213,8 +212,6 @@ namespace FBS.Application.Services
 
             return result;
         }
-
-
         public async Task<BaseResponse<ProductDto>> FindById(Guid productId)
         {
             var result = new BaseResponse<ProductDto>();
@@ -270,8 +267,6 @@ namespace FBS.Application.Services
 
             return result;
         }
-
-
         public async Task<BaseResponse<string>> CreateProductReview(ProductReviewSaveDto dto)
         {
             var result = new BaseResponse<string>();
@@ -289,8 +284,7 @@ namespace FBS.Application.Services
             await _unitOfWork.SaveChangesAsync();
 
             return result;
-        }
-      
+        }     
         public async Task<BaseResponse<Guid>> CreateProduct(ProductSaveDto dto)
         {
             var result = new BaseResponse<Guid>();
@@ -363,7 +357,6 @@ namespace FBS.Application.Services
             result.Type = GlobalConstants.ResponseType.Success;
             return result;
         }
-
         public async Task AddProductImages(Guid productId, List<string> images)
         {
             var repo = _unitOfWork.GetRepositoryAsync<ProductImage>();
@@ -380,7 +373,6 @@ namespace FBS.Application.Services
 
             await _unitOfWork.SaveChangesAsync();
         }
-
         public async Task<BaseResponse<string>> UpdateProduct(Guid id, ProductSaveDto dto, List<string> newImages)
         {
             var result = new BaseResponse<string>();
@@ -431,7 +423,7 @@ namespace FBS.Application.Services
             {
                 if (!keepImages.Contains(img.ImagePath))
                 {
-                    await productImageRep.Delete(img);   // chỉ xoá ảnh user xoá
+                    await productImageRep.Delete(img);   
                 }
             }
             // thêm ảnh phụ
@@ -453,7 +445,6 @@ namespace FBS.Application.Services
 
             return result;
         }
-
         public async Task RemoveProductImages(Guid productId)
         {
             var repo = _unitOfWork.GetRepositoryAsync<ProductImage>();
@@ -467,8 +458,7 @@ namespace FBS.Application.Services
             }
 
             await _unitOfWork.SaveChangesAsync();
-        }
-     
+        }    
         public async Task<BaseResponse<string>> DeleteProduct(Guid id)
         {
             var result = new BaseResponse<string>();

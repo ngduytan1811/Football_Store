@@ -19,7 +19,6 @@ namespace FBS.Application.Services
         {
             _unitOfWork = unitOfWork;
         }
-
         public async Task UpsertAsync(UpsertProductSizeDto dto)
         {
             
@@ -67,7 +66,6 @@ namespace FBS.Application.Services
 
             await _unitOfWork.SaveChangesAsync();
         }
-
         public async Task<List<ProductSizeStockDto>> GetByProductColorAsync(Guid productColorId)
         {
             var repo = _unitOfWork.GetRepositoryReadOnlyAsync<ProductSize>();

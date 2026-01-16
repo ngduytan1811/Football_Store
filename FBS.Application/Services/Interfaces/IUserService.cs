@@ -1,5 +1,4 @@
 ﻿
-
 namespace FBS.Application.Services.Interfaces
 {
     using System.Threading.Tasks;

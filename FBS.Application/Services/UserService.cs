@@ -86,7 +86,6 @@ namespace FBS.Application.Services
 
             return result;
         }
-
         public async Task<BaseResponse<UserDto>> FindById(Guid userId)
         {
             var result = new BaseResponse<UserDto>();
@@ -112,7 +111,6 @@ namespace FBS.Application.Services
             result.Data = data;
             return result;
         }
-
         public async Task<BaseResponse<string>> CreateUser(UserSaveDto dto)
         {
             var result = new BaseResponse<string>();
@@ -156,7 +154,6 @@ namespace FBS.Application.Services
 
             return result;
         }
-
         public async Task<BaseResponse<string>> ResetPassword(string email)
         {
             var result = new BaseResponse<string>();
@@ -180,7 +177,6 @@ namespace FBS.Application.Services
 
             return result;
         }
-
         public async Task<BaseResponse<string>> UpdateUser(Guid userId, UserSaveDto dto)
         {
             var result = new BaseResponse<string>();
@@ -212,7 +208,6 @@ namespace FBS.Application.Services
 
             return result;
         }
-
         public async Task<BaseResponse<string>> DeleteUser(Guid userId)
         {
             var result = new BaseResponse<string>();
@@ -231,7 +226,6 @@ namespace FBS.Application.Services
 
             return result;
         }
-
         private async Task<string?> CheckUserExists(UserSaveDto dto, Guid? userId = null)
         {
             var queryUser = await _unitOfWork.GetRepositoryReadOnlyAsync<User>().QueryAll();

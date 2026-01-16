@@ -18,7 +18,7 @@
                 return resourceManager?.GetString(resourceKey);
             }
 
-            return resourceKey; // Fallback with the key name
+            return resourceKey; 
         }
 
         public static string ExcelRange(int lastColumnIndex, int rowIndex)
