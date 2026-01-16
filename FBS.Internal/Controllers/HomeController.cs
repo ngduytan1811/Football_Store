@@ -92,8 +92,6 @@ namespace FootballShop.Controllers
 
 
 
-
-
         public IActionResult Privacy()
         {
             return View();
