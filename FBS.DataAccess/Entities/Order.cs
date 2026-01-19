@@ -25,6 +25,7 @@ namespace FBS.Infrastructure.Entities
         public StatusEnum Status { get; set; }
         public decimal ShippingFee { get; set; }
         public decimal TotalAmount { get; set; }
+        public bool IsStockDeducted { get; set; } = false;
 
 
         public virtual ICollection<OrderItem> OrderItems { get; set; }

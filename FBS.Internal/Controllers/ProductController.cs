@@ -4,6 +4,7 @@ using FBS.Application.Services;
 using FBS.Application.Services.Interfaces;
 using FBS.Infrastructure.Entities;
 using FBS.Infrastructure.Repositories.Interfaces;
+using FBS.Internal.Models;
 using FBS.Shared.DataTranferObjects.Base;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -52,31 +53,34 @@ namespace FBS.Internal.Controllers
         public async Task<IActionResult> Detail(Guid id, ProductSearchDto request)
         {
             var data = await _productService.FindById(id);
-
             if (data?.Data == null)
                 return RedirectToAction("List");
 
             var product = data.Data;
+
             var colorRepo = _unitOfWork.GetRepositoryReadOnlyAsync<ProductColor>();
-            var productColor = await (await colorRepo.QueryAll()).Include(c => c.ProductSizes).FirstOrDefaultAsync(c => c.ProductId == id);
-            if (productColor != null)
-            {
-                ViewBag.SizeStocks = productColor.ProductSizes
-                    .Select(ps => new
-                    {
-                        size = ps.Size,
-                        quantity = ps.Quantity
-                    })
-                    .ToList();
+            var productColors = await (await colorRepo.QueryAll())
+                .Where(c => c.ProductId == id)
+                .Include(c => c.ProductSizes)
+                .ToListAsync();
 
-                ViewBag.ProductColorId = productColor.Id;
-            }
-            else
+            ViewBag.Colors = productColors.Select(c => new
             {
-                ViewBag.SizeStocks = new List<object>();
-            }
+                id = c.Id,
+                color = c.Color
+            }).ToList();
+
+            var sizeStocks = productColors.SelectMany(c => c.ProductSizes.Select(ps => new SizeStockViewModel
+                 {
+                     Size = ps.Size,
+                     Quantity = ps.Quantity
+                 }))
+                 .ToList();
+
+            ViewBag.SizeStocks = sizeStocks;
+
+
             var randomProducts = await _productService.GetRandomProducts();
-
             var reviews = await _productReviewService.GetReviews(id);
 
             product.Reviews = reviews.Select(r => new ProductReivewDto
@@ -85,17 +89,14 @@ namespace FBS.Internal.Controllers
                 Message = r.Message
             }).ToList();
 
-           
             ViewData["Product"] = product;
             ViewData["RandomProducts"] = randomProducts;
             ViewData["Reviews"] = product.Reviews;
             ViewData["SearchData"] = request ?? new ProductSearchDto();
 
-            return View(new CartItemDto
-            {
-                ProductId = id
-            });
+            return View(new CartItemDto { ProductId = id });
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetStockByColor(Guid productColorId)

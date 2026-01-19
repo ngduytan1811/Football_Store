@@ -382,8 +382,11 @@ namespace FBS.Application.Services
         }
         public async Task<BaseResponse<string>> UpdateOrderStatus(Guid orderId,StatusEnum newStatus,string note)
         {
-            var orderRepo = _unitOfWork.GetRepositoryAsync<Order>();
-            var order = await orderRepo.GetByIdAsync(orderId);
+            var orderReadRepo = _unitOfWork.GetRepositoryReadOnlyAsync<Order>();
+
+            var order = await (await orderReadRepo.QueryAll())
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
 
             if (order == null)
             {
@@ -394,14 +397,49 @@ namespace FBS.Application.Services
                 };
             }
 
+            if (!order.IsStockDeducted &&
+                (
+                    newStatus == StatusEnum.Active ||
+                    newStatus == StatusEnum.InHandler ||
+                    newStatus == StatusEnum.WaitingApproval
+                ))
+            {
+                var sizeRepo = _unitOfWork.GetRepositoryAsync<ProductSize>();
+
+                foreach (var item in order.OrderItems)
+                {
+                    var size = await sizeRepo.Single(ps =>
+                        ps.ProductColor.ProductId == item.ProductId &&
+                        ps.ProductColor.Color == item.ProductColor &&
+                        ps.Size == item.ProductSize
+                    );
+
+                    if (size == null)
+                        continue;
+
+                    if (size.Quantity < item.Quantity)
+                    {
+                        return new BaseResponse<string>
+                        {
+                            Type = GlobalConstants.ResponseType.Error,
+                            Message = "Không đủ tồn kho"
+                        };
+                    }
+
+                    size.Quantity -= item.Quantity.Value;
+                    await sizeRepo.Update(size);
+                }
+
+                order.IsStockDeducted = true;
+            }
+
             order.Status = newStatus;
             order.UpdatedAt = DateTime.Now;
 
-            orderRepo.Update(order);
+            var orderWriteRepo = _unitOfWork.GetRepositoryAsync<Order>();
+            orderWriteRepo.Update(order);
 
-          
             await AddStatusHistory(order.Id, newStatus, note);
-
             await _unitOfWork.SaveChangesAsync();
 
             return new BaseResponse<string>
@@ -410,6 +448,8 @@ namespace FBS.Application.Services
                 Message = "Cập nhật trạng thái thành công"
             };
         }
+
+
         private async Task AddStatusHistory(Guid orderId,StatusEnum status,string note)
         {
             var historyRepo = _unitOfWork.GetRepositoryAsync<OrderStatusHistory>();

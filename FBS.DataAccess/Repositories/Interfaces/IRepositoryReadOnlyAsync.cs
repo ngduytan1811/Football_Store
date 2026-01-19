@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+    using FBS.Infrastructure.Entities;
     using Microsoft.EntityFrameworkCore.Query;
 
     public interface IRepositoryReadOnlyAsync<T>
@@ -26,5 +27,6 @@
         Task<bool> Any(Expression<Func<T, bool>> expression);
 
         Task<IQueryable<TType>> Select<TType>(Expression<Func<T, TType>> select);
+        
     }
 }

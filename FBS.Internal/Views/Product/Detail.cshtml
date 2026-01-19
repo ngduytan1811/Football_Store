@@ -1,6 +1,6 @@
 ﻿@using FBS.Application.DataTranferObjects.Cart
 @using FBS.Application.DataTranferObjects.Products
-
+@using FBS.Internal.Models
 @{
     ViewData["Title"] = "Detail";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -136,20 +136,23 @@
                                                             @{
                                                                 var sizeOrder = new List<string> { "XS", "S", "M", "L", "XL", "2XL", "3XL" };
 
-                                                                var orderedSizes = productData.Sizes
-                                                                .Where(s => !string.IsNullOrWhiteSpace(s))
+                                                                var sizeStocks = ViewBag.SizeStocks as List<SizeStockViewModel>;
+
+                                                                var orderedSizes = sizeStocks!
+                                                                .Select(x => x.Size)
+                                                                .Distinct()
                                                                 .OrderBy(s =>
                                                                 {
-                                                                    
                                                                     if (int.TryParse(s, out var num))
                                                                         return num;
 
-                                                                  
                                                                     var index = sizeOrder.IndexOf(s.ToUpper());
                                                                     return index >= 0 ? 1000 + index : 2000;
                                                                 })
                                                                 .ToList();
                                                             }
+
+
                                                             @foreach (var s in orderedSizes)
                                                             {
                                                                 <label class="size-item" data-size ="@s">

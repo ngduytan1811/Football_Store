@@ -21,15 +21,15 @@ namespace FootballShop.Areas.Admin.Controllers
         public async Task<IActionResult> Index(string? keyword, DateTime? fromDate, DateTime? toDate, StatusEnum? status)
         {
             var repo = _unitOfWork.GetRepositoryReadOnlyAsync<Order>();
-            var query = await repo.QueryAll();   // IQueryable
+            var query = await repo.QueryAll();   
 
-            // lọc trạng thái đơn
+         
             if (status.HasValue)
             {
                 query = query.Where(o => o.Status == status.Value);
             }
 
-            // lọc từ khóa
+    
             if (!string.IsNullOrEmpty(keyword))
             {
                 keyword = keyword.Trim().ToLower();
@@ -42,14 +42,14 @@ namespace FootballShop.Areas.Admin.Controllers
                 );
             }
 
-            // lọc theo ngày
+        
             if (fromDate.HasValue)
                 query = query.Where(o => o.CreatedAt >= fromDate);
 
             if (toDate.HasValue)
                 query = query.Where(o => o.CreatedAt < toDate.Value.AddDays(1));
 
-           // kết quả
+    
             var orders = query
                 .OrderByDescending(o => o.CreatedAt)
                 .ToList();
@@ -93,31 +93,69 @@ namespace FootballShop.Areas.Admin.Controllers
         }
       
         [HttpPost]
-        [Authorize(Roles = "Quanlydonhang")]
+        [Authorize(Roles = "Quanlydonhang")]     
         [Authorize(Policy = "Order.Update")]
-       
         public async Task<IActionResult> UpdateStatus(Guid id, StatusEnum status)
         {
-            var repo = _unitOfWork.GetRepositoryAsync<Order>();
-            var order = await repo.Single(x => x.Id == id);
+            var readRepo = _unitOfWork.GetRepositoryReadOnlyAsync<Order>();
+            var order = await (await readRepo.QueryAll())
+                .Include(o => o.OrderItems)
+                .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
                 return NotFound();
 
-            
             if (order.PaymentMethod == "VietQR"
                 && order.PaymentStatus == PaymentStatusEnum.Unpaid)
             {
-                TempData["Error"] = "Đơn hàng VietQR chưa thanh toán, không thể xử lý!";
+                TempData["Error"] = "Đơn VietQR chưa thanh toán";
                 return RedirectToAction("Detail", new { id });
             }
 
-            order.Status = status;
+            if (!order.IsStockDeducted &&
+                (status == StatusEnum.Active ||
+                 status == StatusEnum.InHandler ||
+                 status == StatusEnum.WaitingApproval))
+            {
+                var colorRepo = _unitOfWork.GetRepositoryReadOnlyAsync<ProductColor>();
+                var sizeRepo = _unitOfWork.GetRepositoryAsync<ProductSize>();
 
-            await repo.Update(order);
+                var colors = await (await colorRepo.QueryAll())
+                    .Include(c => c.ProductSizes)
+                    .ToListAsync();
+
+                foreach (var item in order.OrderItems)
+                {
+                    var color = colors.FirstOrDefault(c =>
+                        c.ProductId == item.ProductId &&
+                        c.Color == item.ProductColor);
+
+                    if (color == null) continue;
+
+                    var size = color.ProductSizes
+                        .FirstOrDefault(ps => ps.Size == item.ProductSize);
+
+                    if (size == null) continue;
+
+                    if (size.Quantity < item.Quantity)
+                    {
+                        TempData["Error"] = "Không đủ tồn kho";
+                        return RedirectToAction("Detail", new { id });
+                    }
+
+                    size.Quantity -= item.Quantity.Value;
+                    await sizeRepo.Update(size);
+                }
+
+                order.IsStockDeducted = true;
+            }
+
+            var writeRepo = _unitOfWork.GetRepositoryAsync<Order>();
+            order.Status = status;
+            await writeRepo.Update(order);
             await _unitOfWork.SaveChangesAsync();
 
-            TempData["Success"] = "Cập nhật trạng thái đơn hàng thành công!";
+            TempData["Success"] = "Cập nhật trạng thái thành công";
             return RedirectToAction("Detail", new { id });
         }
         [HttpPost]
