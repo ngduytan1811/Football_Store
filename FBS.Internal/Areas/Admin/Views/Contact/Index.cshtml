@@ -103,13 +103,21 @@
                                             <i class="ri-eye-line"></i> Xem
                                         </a>
 
-                                       
-                                        <a asp-action="Delete"
-                                           asp-route-id="@c.Id"
-                                           class="action-btn btn-delete"
-                                           onclick="return confirm('Bạn có chắc muốn xóa liên hệ này?')">
-                                            <i class="ri-delete-bin-line"></i> Xóa
-                                        </a>
+                                        <form asp-area="Admin"
+                                              asp-controller="Contact"
+                                              asp-action="Delete"
+                                              asp-route-id="@c.Id"
+                                              method="post"
+                                              style="display:inline"
+                                              onsubmit="return confirm('Bạn có chắc muốn xóa liên hệ này?')">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit" class="action-btn btn-delete">
+                                                <i class="ri-delete-bin-line"></i> Xóa
+                                            </button>
+                                        </form>
+
 
                                     </td>
                                 </tr>

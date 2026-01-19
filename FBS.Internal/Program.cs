@@ -27,7 +27,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Customer.Update", policy => policy.RequireClaim("Permission", "Customer.Update"));
     options.AddPolicy("Customer.Delete", policy => policy.RequireClaim("Permission", "Customer.Delete"));
     options.AddPolicy("Contact.Manage", policy => policy.RequireClaim("Permission", "Contact.Manage"));
-    options.AddPolicy("Contact.Delete", policy => policy.RequireClaim("Permission", "Contact.Delete "));
+    options.AddPolicy("Contact.Delete", policy => policy.RequireClaim("Permission", "Contact.Delete"));
 
     options.AddPolicy("Order.View", policy => policy.RequireClaim("Permission", "Order.View"));
     options.AddPolicy("Order.Update", policy => policy.RequireClaim("Permission", "Order.Update"));

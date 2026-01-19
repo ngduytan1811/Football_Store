@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FBS.Internal.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class ContactController : BaseAdminController
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -72,6 +73,8 @@ namespace FBS.Internal.Areas.Admin.Controllers
             return View(contact);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles = "Lienhe")]
         [Authorize(Policy = "Contact.Delete")]
         public async Task<IActionResult> Delete(Guid id)
@@ -79,7 +82,7 @@ namespace FBS.Internal.Areas.Admin.Controllers
             var repo = _unitOfWork.GetRepositoryAsync<Contact>();
 
             var contact = await repo.FindById(id);
-            if (contact == null)
+            if (contact == null || contact.IsDeleted)
                 return NotFound();
 
             contact.IsDeleted = true;
@@ -88,7 +91,8 @@ namespace FBS.Internal.Areas.Admin.Controllers
             await _unitOfWork.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Xóa liên hệ thành công!";
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
+
     }
 }
